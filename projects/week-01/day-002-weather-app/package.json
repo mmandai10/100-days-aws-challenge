@@ -1,0 +1,13 @@
+﻿{
+  "name": "day-002-weather-app",
+  "version": "1.0.0",
+  "description": "Day 2 : weather-app",
+  "scripts": {
+    "dev": "echo 'Start development server'",
+    "build": "echo 'Build project'",
+    "test": "echo 'Run tests'",
+    "deploy": "echo 'Deploy to AWS'"
+  },
+  "author": "",
+  "license": "MIT"
+}

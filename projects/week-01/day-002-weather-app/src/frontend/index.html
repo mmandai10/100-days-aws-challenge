@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App - Day 2 | 100 Days AWS Challenge</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>🌤️ Weather App</h1>
+        <p class="subtitle">100 Days AWS Challenge - Day 2</p>
+        
+        <div class="search-box">
+            <input type="text" id="cityInput" placeholder="都市名を入力（例：Tokyo）" />
+            <button id="searchBtn">天気を検索</button>
+        </div>
+        
+        <div id="weatherResult" class="weather-result hidden">
+            <h2 id="cityName"></h2>
+            <div class="weather-info">
+                <div class="temperature">
+                    <span id="temp"></span>°C
+                </div>
+                <div class="description">
+                    <span id="weatherDesc"></span>
+                </div>
+                <div class="details">
+                    <p>体感温度: <span id="feelsLike"></span>°C</p>
+                    <p>湿度: <span id="humidity"></span>%</p>
+                    <p>風速: <span id="windSpeed"></span> m/s</p>
+                </div>
+            </div>
+        </div>
+        
+        <div id="errorMessage" class="error hidden"></div>
+    </div>
+    
+    <script src="app.js"></script>
+</body>
+</html>
