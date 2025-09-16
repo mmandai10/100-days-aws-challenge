@@ -42,10 +42,27 @@
   - 同期/非同期処理の違い
   - S3の役割（ファイル配信）とブラウザでの実行
 
+## Day 3: ToDo App (2025-09-15)
+- ✅ LocalStorageを使用したToDo App作成
+- ✅ CRUD機能（作成・読取・更新・削除）実装
+- ✅ フィルタリング機能（全て/未完了/完了）
+- ✅ S3静的ホスティングでデプロイ
+- 📍 URL: http://100days-challenge-day003-todo-app-2025.s3-website-ap-northeast-1.amazonaws.com
+- 💡 学習: LocalStorage API、DOM操作、S3パブリックアクセス設定
 
 ## Day 4 (2025-09-14)
-- Project: weather-dashboard
-- Status: Started
+## Day 4 - Weather Dashboard (2025/09/16)
+- ✅ 複数都市の天気を同時表示するダッシュボード作成
+- ✅ Chart.jsで気温比較グラフを実装
+- ✅ LocalStorageでお気に入り都市を保存
+- ✅ CSS Gridでレスポンシブレイアウト実装
+- ✅ S3静的ウェブサイトホスティングで公開
+- 公開URL: http://100days-challenge-day004-weather-dashboard-2025.s3-website-ap-northeast-1.amazonaws.com
+- 学習ポイント:
+  - 複数API呼び出しの管理
+  - データ可視化（グラフ）
+  - ブラウザストレージの活用
+  - レスポンシブデザイン
 
 
 ## Day 5 (2025-09-14)

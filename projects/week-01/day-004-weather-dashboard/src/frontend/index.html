@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Dashboard - Day 4 | 100 Days AWS Challenge</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Chart.jsライブラリ（グラフ用） -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- ヘッダー部分 -->
+        <header class="header">
+            <h1>🌍 Weather Dashboard</h1>
+            <p>Day 4 - 100 Days AWS Challenge</p>
+        </header>
+
+        <!-- 都市追加セクション -->
+        <div class="add-city">
+            <h2>都市を追加</h2>
+            <div class="city-input-group">
+                <input type="text" id="cityInput" placeholder="都市名を入力（例: Tokyo, London, New York）">
+                <button id="addCityBtn">都市を追加</button>
+            </div>
+        </div>
+
+        <!-- お気に入り都市 -->
+        <div class="favorites">
+            <h3>⭐ お気に入り都市</h3>
+            <div id="favoritesList">
+                <!-- JavaScriptで動的に追加 -->
+            </div>
+        </div>
+
+        <!-- 天気カードグリッド -->
+        <div id="weatherGrid" class="weather-grid">
+            <!-- JavaScriptで動的にカードを追加 -->
+        </div>
+
+        <!-- グラフセクション -->
+        <div class="chart-section">
+            <h2>📊 気温比較グラフ</h2>
+            <div class="chart-container">
+                <canvas id="temperatureChart"></canvas>
+            </div>
+        </div>
+
+        <!-- フッター -->
+        <footer class="footer">
+            <p>最終更新: <span id="lastUpdate">-</span></p>
+            <p>© 2025 100 Days AWS Challenge</p>
+        </footer>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="config.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
