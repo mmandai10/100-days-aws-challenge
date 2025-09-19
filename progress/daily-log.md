@@ -65,9 +65,14 @@
   - レスポンシブデザイン
 
 
-## Day 5 (2025-09-14)
-- Project: task-manager
-- Status: Started
+## Day 5: Task Manager (2025-09-19)
+- ✅ タスク管理アプリ作成（カテゴリー・優先度・期限管理）
+- ✅ LocalStorageでデータ永続化
+- ✅ フィルター機能実装（ステータス・カテゴリー）
+- ✅ S3静的ホスティングでデプロイ
+- 📍 URL: http://100days-challenge-day005-task-manager-2025.s3-website-ap-northeast-1.amazonaws.com
+- 💡 学習: DOM操作、イベント処理、LocalStorage API、データフィルタリング
+- 🔮 次回: DynamoDBと連携してクラウドストレージ化予定
 
 
 ## Day 6 (2025-09-14)

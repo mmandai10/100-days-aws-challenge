@@ -72,8 +72,6 @@
 「HANDOVER.mdの内容に基づいて、new-project.ps1の中身を作成するところから続けたい」
 と伝えてください。
 
-# HANDOVER.md の最後に追記
-Add-Content -Path "HANDOVER.md" -Value @"
 
 ## 作業進行方法（重要）
 - **一つずつ確認しながら進める**

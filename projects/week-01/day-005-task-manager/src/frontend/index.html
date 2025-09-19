@@ -3,12 +3,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Day 5 - task-manager</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Day 5 - Task Manager with DynamoDB</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>Day 5 : task-manager</h1>
-    <p>繝励Ο繧ｸ繧ｧ繧ｯ繝医ｒ髢句ｧ九＠縺ｾ縺励ｇ縺・ｼ・/p>
-    <script src="script.js"></script>
+    <div class="container">
+        <!-- ヘッダー部分 -->
+        <header class="header">
+            <h1>📝 Task Manager</h1>
+            <p class="subtitle">Day 5 - DynamoDB連携版</p>
+        </header>
+
+        <!-- タスク入力部分 -->
+        <div class="task-input-section">
+            <h2>新しいタスクを追加</h2>
+            <form id="taskForm" class="task-form">
+                <input type="text" id="taskTitle" placeholder="タスクのタイトル" required>
+                <textarea id="taskDescription" placeholder="詳細（任意）"></textarea>
+                
+                <!-- カテゴリーと優先度 -->
+                <div class="task-options">
+                    <select id="taskCategory">
+                        <option value="">カテゴリー選択</option>
+                        <option value="work">仕事</option>
+                        <option value="personal">個人</option>
+                        <option value="shopping">買い物</option>
+                        <option value="study">学習</option>
+                    </select>
+                    
+                    <select id="taskPriority">
+                        <option value="low">優先度: 低</option>
+                        <option value="medium" selected>優先度: 中</option>
+                        <option value="high">優先度: 高</option>
+                    </select>
+                    
+                    <input type="date" id="taskDueDate">
+                </div>
+                
+                <button type="submit" class="add-btn">タスクを追加</button>
+            </form>
+        </div>
+
+        <!-- フィルター部分 -->
+        <div class="filter-section">
+            <button class="filter-btn active" data-filter="all">すべて</button>
+            <button class="filter-btn" data-filter="active">未完了</button>
+            <button class="filter-btn" data-filter="completed">完了</button>
+            <select id="categoryFilter" class="category-filter">
+                <option value="">全カテゴリー</option>
+                <option value="work">仕事</option>
+                <option value="personal">個人</option>
+                <option value="shopping">買い物</option>
+                <option value="study">学習</option>
+            </select>
+        </div>
+
+        <!-- タスクリスト表示部分 -->
+        <div id="taskList" class="task-list">
+            <!-- JavaScriptで動的に追加されます -->
+        </div>
+
+        <!-- 統計情報 -->
+        <div class="stats">
+            <span id="taskCount">0 個のタスク</span>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
 </body>
 </html>
