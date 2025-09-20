@@ -75,9 +75,21 @@
 - 🔮 次回: DynamoDBと連携してクラウドストレージ化予定
 
 
-## Day 6 (2025-09-14)
-- Project: user-auth
-- Status: Started
+## Day 6 - IAM User & Custom Policy (2025/09/20)
+- ✅ IAMユーザー作成（day6-test-user）
+- ✅ ユーザーグループへの追加
+- ✅ アクセスキー生成とCLI設定  
+- ✅ カスタムIAMポリシー作成（Day6-SelfUserAccess-Policy）
+- ✅ 最小権限の原則を実装
+- 学習ポイント:
+  - IAMの4要素（ユーザー、グループ、ロール、ポリシー）
+  - アクセスキーとシークレットキーの管理
+  - カスタムポリシーのJSON構造
+  - 固定リソース vs 動的変数の違い
+  - セキュリティのベストプラクティス
+- 📝 今後の課題: IAM全体設計（docs/learning-notes/iam-advanced-topics.md作成）
+"@ -Encoding UTF8
+Write-Host "✅ daily-log.md を更新しました" -ForegroundColor Green
 
 
 ## Day 7 (2025-09-14)
