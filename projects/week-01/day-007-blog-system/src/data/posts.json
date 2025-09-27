@@ -1,0 +1,25 @@
+{
+  "posts": [
+    {
+      "id": 1,
+      "title": "S3静的ホスティングの魅力",
+      "date": "2025-09-27",
+      "excerpt": "AWSのS3を使って静的サイトをホスティングする方法とメリットを解説します。",
+      "content": "article1.html"
+    },
+    {
+      "id": 2,
+      "title": "サーバーレスアーキテクチャ入門",
+      "date": "2025-09-26",
+      "excerpt": "サーバー管理不要で運用できるサーバーレスの基本概念を学びます。",
+      "content": "article2.html"
+    },
+    {
+      "id": 3,
+      "title": "CloudFrontでCDN配信",
+      "date": "2025-09-25",
+      "excerpt": "CloudFrontを使って世界中に高速配信する方法を紹介します。",
+      "content": "article3.html"
+    }
+  ]
+}
