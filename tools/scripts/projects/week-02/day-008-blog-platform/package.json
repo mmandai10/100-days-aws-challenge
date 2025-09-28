@@ -1,0 +1,13 @@
+﻿{
+  "name": "day-008-blog-platform",
+  "version": "1.0.0",
+  "description": "Day 8 : blog-platform",
+  "scripts": {
+    "dev": "echo 'Start development server'",
+    "build": "echo 'Build project'",
+    "test": "echo 'Run tests'",
+    "deploy": "echo 'Deploy to AWS'"
+  },
+  "author": "",
+  "license": "MIT"
+}

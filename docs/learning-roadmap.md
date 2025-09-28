@@ -8,126 +8,227 @@
 
 ---
 
-## Week 1: Webアプリ基礎編
-### 作るもの重視で、AWSは道具として学ぶ
+## 🎯 Week 1-2: Frontend Foundation (Day 1-14)
 
-| Day | 作るアプリ | メイン実装 | AWS要素 | 完了 |
-|-----|-----------|-----------|---------|------|
-| 1 | ポートフォリオサイト | HTML/CSS基礎 | S3静的ホスティング | ✅ |
-| 2 | 天気予報アプリ | API連携、非同期処理 | S3でホスト | ✅ |
-| 3 | ToDoリスト | LocalStorage、CRUD | S3でホスト | ✅ |
-| 4 | 天気ダッシュボード | Chart.js、データ可視化 | S3でホスト | ✅ |
-| 5 | タスク管理アプリ | ドラッグ&ドロップUI | S3でホスト | ✅ |
-| 6 | （IAM学習日） | - | IAM基礎 | ✅ |
-| 7 | マークダウンブログ | Markdown→HTML変換 | S3+CloudFront | ⏳ |
+### Week 1: Static Web Apps
+- **Day 1-7**: HTML/CSS/JavaScript基礎
+  - Day 1: Hello World (S3)
+  - Day 2: Weather App (API連携)
+  - Day 3: ToDo App (LocalStorage)
+  - Day 4: Weather Dashboard (Chart.js)
+  - Day 5: Task Manager (複雑なDOM操作)
+  - Day 6: User Auth (フロントエンド認証)
+  - Day 7: Blog System (静的ホスティング)
 
-### Day 6の派生学習（Day 20-21で実施）
-- [ ] ユーザー認証システムの実装（Cognito活用）
-- [ ] ロールベースアクセス制御の実装
-- [ ] セキュアなAPIの作り方
+### Week 2: Interactive Web Apps
+- **Day 8-14**: より高度なフロントエンド
+  - Day 8: E-commerce Site (ショッピングカート)
+  - Day 9: Portfolio Site (レスポンシブ)
+  - Day 10: Game (Canvas API)
+  - Day 11: Chat App UI (WebSocket準備)
+  - Day 12: Dashboard (データ可視化)
+  - Day 13: PWA (Progressive Web App)
+  - Day 14: CloudFront連携 (CDN)
+
+## 🔧 Week 3: Serverless Backend (Day 15-21)
+
+### Node.js + AWS Lambda
+- **Day 15**: Lambda基礎 (Hello World API)
+- **Day 16**: API Gateway + Lambda (REST API)
+- **Day 17**: DynamoDB基礎 (NoSQL)
+- **Day 18**: Authentication (Cognito)
+- **Day 19**: File Upload (S3 + Lambda)
+- **Day 20**: Full Stack App (React + Lambda)
+- **Day 21**: Error Handling & Monitoring
+
+## ☕ Week 4: Java Backend Deep Dive (Day 22-28)
+
+### Java + Spring Boot + AWS
+
+#### Day 22: Java Environment Setup
+**必須項目:**
+- Java 17+ インストール
+- Maven/Gradle セットアップ  
+- Spring Boot プロジェクト作成
+- AWS SDK for Java設定
+
+**作成物:** Hello World Spring Boot API  
+**デプロイ:** AWS Elastic Beanstalk
+
+#### Day 23: Spring Boot REST API
+**必須項目:**
+- RESTController作成
+- JSONレスポンス
+- エラーハンドリング
+- Validationアノテーション
+
+**作成物:** Task Management API  
+**学習:** @RestController, @RequestMapping, @Valid
+
+#### Day 24: Database Integration
+**必須項目:**
+- Spring Data JPA設定
+- Entity作成とマッピング
+- Repository pattern
+- RDS (MySQL) 連携
+
+**作成物:** JPA を使った CRUD API  
+**AWS:** RDS インスタンス作成・接続
+
+#### Day 25: Spring Security
+**必須項目:**
+- Spring Security設定
+- JWT認証
+- Password暗号化
+- Role-based認可
+
+**作成物:** 認証付きAPI  
+**学習:** @PreAuthorize, SecurityFilterChain
+
+#### Day 26: AWS Integration
+**必須項目:**
+- S3ファイルアップロード
+- SQSメッセージング
+- Parameter Store設定管理
+- CloudWatch ログ
+
+**作成物:** AWS完全統合API  
+**実務知識:** AWS SDK使い方、設定外部化
+
+#### Day 27: Microservices Architecture
+**必須項目:**
+- Service分割設計
+- Inter-service通信
+- Configuration Server
+- Service Discovery
+
+**作成物:** User Service + Product Service  
+**学習:** Microservicesパターン
+
+#### Day 28: Production Ready
+**必須項目:**
+- Docker化
+- ECS/Fargate デプロイ
+- Application Load Balancer
+- CI/CD パイプライン
+
+**作成物:** 本番運用可能なJavaアプリ  
+**AWS:** ECS Cluster, CodePipeline
+
+## 🚀 Week 5: Advanced Topics (Day 29-35)
+
+### Performance & Scalability
+- **Day 29**: Node.js vs Java パフォーマンス比較
+- **Day 30**: キャッシュ戦略 (Redis/ElastiCache)
+- **Day 31**: Message Queue (SQS/SNS)
+- **Day 32**: Event-Driven Architecture
+- **Day 33**: Auto Scaling
+- **Day 34**: Multi-Region Deployment
+- **Day 35**: Cost Optimization
+
+## 📊 Week 6-14: Real-World Projects (Day 36-100)
+
+### 大規模プロジェクト
+- **Day 36-50**: E-commerce Platform (Java + React)
+- **Day 51-65**: Social Media App (Node.js + React)
+- **Day 66-80**: IoT Dashboard (Java + Time Series DB)
+- **Day 81-95**: Enterprise SaaS (Multi-tenant)
+- **Day 96-100**: Portfolio & Resume Projects
+
+## 💡 Java学習の段階的アプローチ
+
+### Level 1: Java基礎 (Day 22-24)
+```java
+// Spring Boot基本構造を理解
+@RestController
+public class HelloController {
+    @GetMapping("/hello")
+    public String hello() {
+        return "Hello from Spring Boot!";
+    }
+}
+```
+
+### Level 2: Spring Ecosystem (Day 25-27)
+```java
+// Spring Data JPA + Security
+@Entity
+public class User {
+    @Id 
+    @GeneratedValue
+    private Long id;
+    
+    @Column(nullable = false)
+    private String username;
+    
+    // getters, setters...
+}
+```
+
+### Level 3: AWS統合 (Day 28)
+```java
+// AWS SDK使用例
+@Service
+public class S3Service {
+    @Autowired
+    private AmazonS3 s3Client;
+    
+    public String uploadFile(MultipartFile file) {
+        // S3アップロード実装
+        return s3Client.putObject(bucketName, fileName, file.getInputStream(), metadata)
+            .getETag();
+    }
+}
+```
+
+## 🎯 学習目標設定
+
+### JavaScript開発者がJavaを学ぶメリット
+1. **型安全性** - コンパイル時エラー検出
+2. **エンタープライズ開発** - 大規模システム構築
+3. **パフォーマンス** - 高速処理とメモリ効率
+4. **Java生態系** - Spring、Maven、JUnit等
+
+### Java学習後の比較理解
+- **Node.js**: 高速開発、リアルタイム処理
+- **Java**: 堅牢性、スケーラビリティ、保守性
+
+## 📚 推奨学習リソース
+
+### Java基礎
+- Oracle Java Documentation
+- Spring Boot Reference Guide
+- Baeldung (Java/Spring tutorials)
+
+### AWS + Java
+- AWS SDK for Java Developer Guide
+- AWS Elastic Beanstalk Java Guide
+- Spring Cloud AWS
+
+## 🔄 継続的な比較学習
+
+各Javaプロジェクト完了後、同等のNode.jsバージョンと比較：
+- 開発速度
+- パフォーマンス  
+- コード可読性
+- 保守性
+- AWS統合の違い
+
+## 📋 Java Week チェックリスト
+
+### Day 22 チェック項目
+- [ ] Java 17+ インストール完了
+- [ ] Spring Boot Starter Project作成
+- [ ] AWS SDK for Java設定
+- [ ] Elastic Beanstalk初回デプロイ成功
+
+### Day 23-28 継続項目
+- [ ] 毎日Gitコミット
+- [ ] Node.jsとの違いを記録
+- [ ] AWS費用モニタリング
+- [ ] 学習時間記録
 
 ---
 
-## Week 2: フルスタックアプリ編
-### フロント＋バックエンドの連携
-
-| Day | 作るアプリ | メイン実装 | AWS要素 | 完了 |
-|-----|-----------|-----------|---------|------|
-| 8 | URL短縮サービス | 短縮URL生成ロジック | Lambda関数 | ⏳ |
-| 9 | REST API付きメモアプリ | CRUD API実装 | API Gateway+Lambda | ⏳ |
-| 10 | リアルタイムチャット | WebSocket通信 | DynamoDB+Lambda | ⏳ |
-| 11 | 画像リサイズツール | 画像処理 | S3トリガー+Lambda | ⏳ |
-| 12 | ワークフロー管理 | 状態管理 | Step Functions | ⏳ |
-| 13 | スケジュール通知アプリ | 定期実行 | EventBridge | ⏳ |
-| 14 | 週の統合プロジェクト | 全要素を組み合わせ | 複数サービス連携 | ⏳ |
-
----
-
-## Week 3: モダンアプリ開発編
-### React/Next.js + AWS
-
-| Day | 作るアプリ | メイン実装 | AWS要素 | 完了 |
-|-----|-----------|-----------|---------|------|
-| 15 | Reactポートフォリオ | React基礎、コンポーネント | Amplify Hosting | ⏳ |
-| 16 | ショッピングカート | 状態管理（Context API） | DynamoDB連携 | ⏳ |
-| 17 | SNSクローン | 認証、投稿機能 | Cognito+AppSync | ⏳ |
-| 18 | CI/CD自動化 | 自動デプロイ設定 | CodePipeline | ⏳ |
-| 19 | テスト自動化 | Jest、E2Eテスト | CodeBuild | ⏳ |
-| **20** | **認証システム深堀り** | **JWT、OAuth実装** | **Cognito詳細** | ⏳ |
-| **21** | **権限管理システム** | **RBAC実装** | **IAM Advanced** | ⏳ |
-
----
-
-## Week 4-5: 実践的アプリ編
-### 本格的なサービスを作る
-
-| Day | 作るアプリ | メイン実装 | AWS要素 |
-|-----|-----------|-----------|---------|
-| 22-28 | ECサイト完成版 | 商品管理、決済、在庫 | RDS、ElastiCache |
-| 29-35 | 動画配信プラットフォーム | 動画アップロード、ストリーミング | S3、CloudFront、MediaConvert |
-| 36-42 | リアルタイム分析ダッシュボード | データ収集、可視化 | Kinesis、QuickSight |
-| 43-49 | IoTデータ収集システム | センサーデータ処理 | IoT Core、TimeStream |
-
----
-
-## Week 6-10: スケール対応編
-### 大規模対応、パフォーマンス最適化
-
-| 期間 | テーマ | 主な実装 |
-|------|--------|---------|
-| Day 50-56 | マイクロサービス化 | Docker、ECS/Fargate |
-| Day 57-63 | グローバル対応 | 多言語、CDN最適化 |
-| Day 64-70 | セキュリティ強化 | WAF、DDoS対策 |
-| Day 71-77 | 監視・運用 | CloudWatch、X-Ray |
-| Day 78-84 | コスト最適化 | Reserved Instances、Spot |
-| Day 85-91 | 機械学習統合 | SageMaker、Rekognition |
-| Day 92-98 | 最終プロジェクト | 全技術を統合したアプリ |
-| Day 99-100 | 発表準備・振り返り | ポートフォリオ完成 |
-
----
-
-## 📚 追加学習リスト（都度追加）
-
-### フロントエンド強化
-- [ ] TypeScript導入
-- [ ] Next.js SSR/SSG
-- [ ] PWA対応
-- [ ] アクセシビリティ
-
-### バックエンド強化
-- [ ] GraphQL（AppSync）
-- [ ] gRPC通信
-- [ ] WebAssembly統合
-
-### DevOps/インフラ
-- [ ] Terraform/CDK
-- [ ] GitOps
-- [ ] Service Mesh
-
-### データ/AI
-- [ ] 機械学習API活用
-- [ ] データパイプライン
-- [ ] リアルタイム分析
-
----
-
-## 🎯 マイルストーン
-
-- [ ] Day 7: 最初の週完了 → 基本的なWebアプリが作れる
-- [ ] Day 14: サーバーレス完了 → API連携アプリが作れる
-- [ ] Day 30: 1ヶ月達成 → フルスタックアプリが作れる
-- [ ] Day 50: 中級レベル → 本格的なサービスが作れる
-- [ ] Day 100: 完走 → AWSを使った実践的な開発者
-
----
-
-## 📝 メモ欄（気づきや課題）
-
-### Day 6での気づき
-- IAMは単体で学ぶより、実際のアプリに組み込みながら学ぶ方が実践的
-- Day 20-21で認証システムを作りながらIAMを深く理解する予定
-
----
-
-*最終更新: 2025-09-20*
-*次回更新: Day 7開始時*
+このロードマップにより、**Node.js → Java → 両方の長所を理解した**  
+**フルスタック開発者**になることができます！🚀

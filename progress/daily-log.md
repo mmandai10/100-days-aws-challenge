@@ -91,8 +91,49 @@
 "@ -Encoding UTF8
 Write-Host "✅ daily-log.md を更新しました" -ForegroundColor Green
 
+## Day 7: Blog System (2025-09-27)
+- ✅ S3静的ウェブサイトホスティングでブログシステム作成
+- ✅ JSONデータ駆動型の記事管理システム実装
+- ✅ バケットポリシーでパブリックアクセス設定
+- ✅ レスポンシブデザインとナビゲーション機能
+- ✅ 複数記事ページの動的生成
+- 📍 URL: http://100days-challenge-day007-blog-system-2025.s3-website-ap-northeast-1.amazonaws.com
+- 💡 学習: S3静的ホスティング、バケットポリシー、CORS問題解決、JSON連携
 
-## Day 7 (2025-09-14)
-- Project: blog-system
-- Status: Started
+## Day 8 - Blog Platform (2025-09-28)
+- ✅ **Status**: Completed
+- 📱 **Project**: Serverless Blog Platform
+- 🛠️ **Tech Stack**: Lambda + API Gateway + DynamoDB + S3
+- ⏱️ **Time**: 約4時間
+- 📚 **Learned**: 
+  - AWS Lambda関数の作成（Node.js 18、AWS SDK v3）
+  - API GatewayでREST API構築
+  - DynamoDBでNoSQLデータベース操作
+  - Lambdaプロキシ統合の重要性
+  - CORSの設定と対応
+- 🐛 **Issues & Solutions**: 
+  - requireエラー → CommonJS形式に修正
+  - プロキシ統合未設定 → 有効化で解決
+  - API URLの更新漏れ → 正しいURLに修正
+- 💡 **Notes**: サーバーレスアーキテクチャの実装完了。実際に動作するブログシステムを構築。
+- 🔗 **API URL**: https://stns0klxn2.execute-api.ap-northeast-1.amazonaws.com/prod
+"@ | Add-Content -Path "progress\daily-log.md"
 
+Write-Host "✅ daily-log.md updated!" -ForegroundColor Green
+## Day 8 - Serverless Blog Platform (2025-09-28) 
+- ✅ **Status**: Completed
+- 🌐 **Live URL**: http://day-008-blog-platform-20250928.s3-website-ap-northeast-1.amazonaws.com
+- 📱 **Project**: Serverless Blog Platform
+- 🛠️ **Tech Stack**: S3 + API Gateway + Lambda + DynamoDB
+- ⏱️ **Time**: 約5時間
+- 📚 **Learned**: 
+  - サーバーレスアーキテクチャの完全実装
+  - S3静的Webホスティング
+  - API Gateway（REST API、CORS、プロキシ統合）
+  - Lambda関数（Node.js 18、AWS SDK v3）
+  - DynamoDB（NoSQLデータベース）
+- 🐛 **Challenges Overcome**: 
+  - requireエラー → CommonJS形式で解決
+  - プロキシ統合の重要性を学習
+  - CORS設定の理解と実装
+- 💡 **Achievement**: 完全動作するサーバーレスブログを本番環境にデプロイ成功！
