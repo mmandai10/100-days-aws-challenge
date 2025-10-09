@@ -137,3 +137,20 @@ Write-Host "✅ daily-log.md updated!" -ForegroundColor Green
   - プロキシ統合の重要性を学習
   - CORS設定の理解と実装
 - 💡 **Achievement**: 完全動作するサーバーレスブログを本番環境にデプロイ成功！
+
+
+## Day 9: CRUD API with DynamoDB - 完成 (2025-10-08)
+- ✅ Express APIをローカルで開発
+- ✅ DynamoDBテーブル作成・連携
+- ✅ Lambda関数へデプロイ成功
+- ✅ API Gateway設定・公開
+- ✅ サーバーレスAPIの完成
+
+**API URL**: https://87vslu6ri1.execute-api.ap-northeast-1.amazonaws.com/default/day09-crud-api
+
+学習内容：
+- サーバーレスアーキテクチャの理解
+- Lambda関数の作成とデプロイ
+- API Gatewayの設定
+- DynamoDBとの連携
+- ローカル開発からAWSデプロイまでの流れ
