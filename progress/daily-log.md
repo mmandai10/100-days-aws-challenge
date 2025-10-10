@@ -154,3 +154,12 @@ Write-Host "✅ daily-log.md updated!" -ForegroundColor Green
 - API Gatewayの設定
 - DynamoDBとの連携
 - ローカル開発からAWSデプロイまでの流れ
+
+
+## Day 10 - メモ管理API 完全版 (2025-10-09)
+- ✅ Lambda + API Gateway + DynamoDB連携
+- ✅ S3静的ホスティングでフロントエンド公開
+- 📍 公開URL: http://day10-memo-app-yourname-2025.s3-website-ap-northeast-1.amazonaws.com
+- 📍 API URL: https://zuzr1eyi5f.execute-api.ap-northeast-1.amazonaws.com/dev/memos
+- 💡 完全なサーバーレスアーキテクチャを構築
+- 🎯 Day 9の課題を完全に解決
