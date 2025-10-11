@@ -163,3 +163,26 @@ Write-Host "✅ daily-log.md updated!" -ForegroundColor Green
 - 📍 API URL: https://zuzr1eyi5f.execute-api.ap-northeast-1.amazonaws.com/dev/memos
 - 💡 完全なサーバーレスアーキテクチャを構築
 - 🎯 Day 9の課題を完全に解決
+
+
+## Day 11 - AWS Amplify Authentication (2025-10-11)
+- ✅ AWS Amplify CLIのセットアップ完了
+- ✅ Reactプロジェクトの作成（Vite使用）
+- ✅ Amplify初期化（CloudFormationスタック作成）
+- ✅ Cognito User Pool/Identity Pool作成
+- ✅ Authenticatorコンポーネントで認証UI実装
+- ✅ ユーザー登録・ログイン・ログアウト機能完成
+- ✅ メール確認による2段階認証実装
+- 📍 ローカル開発: http://localhost:3000
+- 💡 学習ポイント:
+  - Amplify CLIで自動化されたAWSリソース作成
+  - Cognitoによるユーザー管理の仕組み
+  - Authenticatorコンポーネントの便利さ
+  - 手動実装なら数時間→Amplifyで30分
+- 🛠️ 使用技術:
+  - AWS Amplify
+  - Amazon Cognito
+  - React + Vite
+  - Amplify UI Components
+- ⏱️ Time: 約1時間
+- 🎯 成果: プロダクションレベルの認証機能を短時間で実装
