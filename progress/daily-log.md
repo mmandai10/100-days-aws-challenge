@@ -186,3 +186,63 @@ Write-Host "✅ daily-log.md updated!" -ForegroundColor Green
   - Amplify UI Components
 - ⏱️ Time: 約1時間
 - 🎯 成果: プロダクションレベルの認証機能を短時間で実装
+
+
+## Day 12 - Amplify + API (2025/10/25)
+- ✅ Amplifyプロジェクト作成（React + Auth + API + Storage）
+- ✅ Lambda関数でCRUD操作実装（DynamoDB統合）
+- ✅ API Gateway + Lambda + DynamoDB のサーバーレス構成
+- ✅ Node.js 18ランタイムへの変更
+- ✅ AWSへのデプロイ成功
+- ⏳ 技術的課題: Lambda実行時のaws-sdkモジュール認識問題（継続調査中）
+- 📍 URL: https://ynikbcr9r1.execute-api.ap-northeast-1.amazonaws.com/dev
+- 💡 学習: Amplifyワークフロー、サーバーレスアーキテクチャ、トラブルシューティング
+- ⏱️ Time: 約4時間
+
+## Day 13 - Amplify Storage (Photo Storage App) - 完成 (2025-10-25)
+- ✅ **Status**: Completed
+- 📱 **Project**: Photo Storage App
+- 🛠️ **Tech Stack**: AWS Amplify + React (Vite) + Cognito + S3
+- ⏱️ **Time**: 約4時間
+- 📚 **Learned**: 
+  - Amplify CLI完全習得（init, add auth, add storage, push）
+  - Cognito User Pool認証実装
+  - S3 Storage統合（uploadData, getUrl, list, remove）
+  - IAMロールと権限管理の深い理解
+  - React Hooks活用（useState, useEffect）
+  - Amplify UI Components（Authenticator）
+  - AWS SDK v6の新しいAPI
+  - main.jsxとApp.jsxの役割理解
+  - Viteの理解
+- 🐛 **Challenges & Solutions**: 
+  - IAM権限エラー（AccessDenied: s3:PutObject）
+    → authRoleにAmazonS3FullAccessを追加して解決
+  - Storage設定の再作成（amplify remove storage → add storage → push）
+  - 認証トークンのリフレッシュ（ログアウト/ログイン）
+  - aws-exports.jsの自動生成確認
+- 💡 **Key Features Implemented**: 
+  - ユーザー認証（サインアップ/ログイン/ログアウト）
+  - 画像ファイルアップロード
+  - アップロードプログレスバー
+  - アップロード済み画像一覧表示
+  - 画像削除機能
+- 📍 **URL**: http://localhost:5173
+- 🎯 **Achievement**: 完全に動作するフォトストレージアプリを構築！
+- 📝 **Notes**: 
+  - Day 13で学んだIAM権限管理の知識は、Day 12の課題解決にも応用可能
+  - 最小権限の原則と開発環境での権限のバランスを理解
+  - トラブルシューティングの粘り強さが成功につながった
+
+## Day 12 - 継続課題 (2025-10-25)
+- ⏳ **Status**: In Progress - 要修正
+- 📝 **Issue**: Lambda関数が502エラー（Bad Gateway）
+- 🔍 **Investigation**: 
+  - Lambda実行ロールにDynamoDB権限追加済み
+  - authRoleにも権限追加済み
+  - まだ502エラーが継続
+- 💡 **Next Steps**: 
+  - Lambda関数のCloudWatchログ確認
+  - DynamoDBテーブルの存在確認
+  - Lambda関数のコード確認
+  - API Gateway設定確認
+- 📅 **To Resume**: 別の日に集中して取り組む

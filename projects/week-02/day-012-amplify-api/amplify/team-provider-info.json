@@ -1,0 +1,33 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-day012amplifyapi-dev-73731-authRole",
+      "UnauthRoleArn": "arn:aws:iam::294659522793:role/amplify-day012amplifyapi-dev-73731-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::294659522793:role/amplify-day012amplifyapi-dev-73731-authRole",
+      "Region": "ap-northeast-1",
+      "DeploymentBucketName": "amplify-day012amplifyapi-dev-73731-deployment",
+      "UnauthRoleName": "amplify-day012amplifyapi-dev-73731-unauthRole",
+      "StackName": "amplify-day012amplifyapi-dev-73731",
+      "StackId": "arn:aws:cloudformation:ap-northeast-1:294659522793:stack/amplify-day012amplifyapi-dev-73731/8c78cc40-a704-11f0-afe1-0afcf1645d29",
+      "AmplifyAppId": "d31n3sd1h2hy58",
+      "APIGatewayAuthURL": "https://s3.amazonaws.com/amplify-day012amplifyapi-dev-73731-deployment/amplify-cfn-templates/api/APIGatewayAuthStack.json"
+    },
+    "categories": {
+      "auth": {
+        "day012amplifyapif6a08e2a": {}
+      },
+      "function": {
+        "taskfunction": {
+          "deploymentBucketName": "amplify-day012amplifyapi-dev-73731-deployment",
+          "s3Key": "amplify-builds/taskfunction-6f327867367337705030-build.zip"
+        }
+      },
+      "api": {
+        "taskapi": {}
+      },
+      "storage": {
+        "tasktable": {}
+      }
+    }
+  }
+}

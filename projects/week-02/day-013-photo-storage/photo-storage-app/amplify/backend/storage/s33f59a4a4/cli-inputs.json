@@ -1,0 +1,14 @@
+{
+  "resourceName": "s33f59a4a4",
+  "policyUUID": "3f59a4a4",
+  "bucketName": "photostorageapp09757978aa234e68ac525f75580902cd",
+  "storageAccess": "auth",
+  "guestAccess": [],
+  "authAccess": [
+    "CREATE_AND_UPDATE",
+    "READ",
+    "DELETE"
+  ],
+  "triggerFunction": "NONE",
+  "groupAccess": {}
+}
