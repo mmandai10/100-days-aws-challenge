@@ -1,0 +1,40 @@
+﻿{
+  "CallerReference": "day14-20251026103919",
+  "Comment": "Day 14 CloudFront Distribution",
+  "DefaultRootObject": "index.html",
+  "Origins": {
+    "Quantity": 1,
+    "Items": [
+      {
+        "Id": "S3-Website-day14-cloudfront-demo-3429",
+        "DomainName": "day14-cloudfront-demo-3429.s3-website-ap-northeast-1.amazonaws.com",
+        "CustomOriginConfig": {
+          "HTTPPort": 80,
+          "HTTPSPort": 443,
+          "OriginProtocolPolicy": "http-only"
+        }
+      }
+    ]
+  },
+  "DefaultCacheBehavior": {
+    "TargetOriginId": "S3-Website-day14-cloudfront-demo-3429",
+    "ViewerProtocolPolicy": "redirect-to-https",
+    "AllowedMethods": {
+      "Quantity": 2,
+      "Items": ["GET", "HEAD"]
+    },
+    "ForwardedValues": {
+      "QueryString": false,
+      "Cookies": {
+        "Forward": "none"
+      }
+    },
+    "MinTTL": 0,
+    "Compress": true,
+    "TrustedSigners": {
+      "Enabled": false,
+      "Quantity": 0
+    }
+  },
+  "Enabled": true
+}

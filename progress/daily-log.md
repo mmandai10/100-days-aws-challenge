@@ -246,3 +246,68 @@ Write-Host "✅ daily-log.md updated!" -ForegroundColor Green
   - Lambda関数のコード確認
   - API Gateway設定確認
 - 📅 **To Resume**: 別の日に集中して取り組む
+
+
+## Day 14: CloudFront導入とパフォーマンス最適化 (2025-10-26)
+
+### 🎯 目標
+- CloudFrontを使ったCDN配信の実装
+- HTTPS化
+- パフォーマンス測定と比較
+
+### 📚 学習内容
+
+#### CloudFront構築
+- ディストリビューションの作成
+- S3 Website EndpointをOriginとして設定
+- HTTPS証明書（CloudFront提供）の利用
+- Default root object設定（index.html）
+
+#### キャッシュ戦略
+- **CachingOptimized**ポリシー使用
+- TTL: 24時間（デフォルト）
+- エッジロケーション単位でキャッシュ
+- キャッシュの有無は「そのエッジに最近アクセスがあったか」で決まる
+
+#### 圧縮設定
+- Gzip/Brotli圧縮有効
+- テキストファイル（HTML, CSS, JS）を自動圧縮
+
+### 📊 パフォーマンス測定結果
+
+#### S3直接アクセス（HTTP）
+- Finish: 528 ms
+- Transferred: 1.0 MB
+- JavaScript: 701 kB
+- CSS: 316 kB
+
+#### CloudFront経由（HTTPS）
+- Finish: 279 ms（47%高速化）
+- Transferred: 218 kB（78%削減）
+- JavaScript: 188 kB（73%削減）
+- CSS: 28.5 kB（91%削減）
+
+### 🔧 トラブルシューティング
+- 504 Gateway Timeout → Default root object未設定
+- Origin再作成で解決（HTTP port 80を明示的に設定）
+- キャッシュ無効化の実施
+
+### 💡 重要な学習ポイント
+
+#### CloudFrontを使うべきケース
+- グローバルユーザー向けサービス
+- 静的コンテンツが多い
+- HTTPS必須
+- トラフィックが多い
+
+#### 静的 vs 動的コンテンツ
+- **静的**: 誰が見ても同じ（HTML, CSS, JS, 画像）→ キャッシュ可能
+- **動的**: 人によって違う（API、ユーザー固有データ）→ キャッシュ不可
+
+### 🚀 成果物
+- CloudFrontディストリビューション: d2urga0xhl8pdu.cloudfront.net
+- HTTPS対応完了
+- 圧縮とキャッシュによる高速化達成
+
+### 📝 次のステップ
+- Day 15以降の学習継続
