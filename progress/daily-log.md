@@ -311,3 +311,120 @@ Write-Host "✅ daily-log.md updated!" -ForegroundColor Green
 
 ### 📝 次のステップ
 - Day 15以降の学習継続
+
+# Day 15の記録をdaily-log.mdに追加
+$day15Log = @"
+
+## Day 15 - AWS SAM入門 (2025-10-26)
+- ✅ **Status**: Completed
+- 📁 **Project**: day15-hello-world (SAM Serverless API)
+- 🛠️ **Tech Stack**: AWS SAM, Lambda (Node.js 22), API Gateway, DynamoDB
+- ⏱️ **Time**: 約4時間
+- 🎯 **Goal**: Infrastructure as Code による自動構築を学ぶ
+
+### 📚 学んだこと
+
+#### 1. AWS SAM (Serverless Application Model)
+- **Infrastructure as Code の威力**
+  - template.yaml だけで Lambda + API Gateway + DynamoDB + IAM が自動構築
+  - 手動 Console 操作（10-15ステップ）が YAML 数行で完結
+- **sam build と sam deploy の違い**
+  - `sam build`: ローカルでパッケージング、依存関係解決
+  - `sam deploy`: S3 にアップロード → CloudFormation でリソース作成
+
+#### 2. API Gateway の本質理解
+- **役割**: 外部ネットワークと Lambda をつなぐ HTTPS エンドポイント
+- **提供機能**: ルーティング、認証、リクエスト/レスポンス変換、CORS
+- **リクエストフロー**: 
+```
+  インターネット → API Gateway → Lambda → DynamoDB
+```
+
+#### 3. Lambda 関数の構造
+- **event パラメータ**: API Gateway から渡される情報すべて
+  - httpMethod, path, headers, body, pathParameters など
+- **レスポンス形式**: statusCode, headers, body を返す
+- **環境変数**: SAM が自動設定（`process.env.SAMPLE_TABLE`）
+
+#### 4. DynamoDB 操作
+- **scan**: テーブル全体を取得（遅い、コスト高）
+- **get**: 主キー指定で1件取得（速い、コスト安）
+- **put**: アイテム追加/更新
+- **AWS SDK**: Lambda 関数内でデータ操作
+
+#### 5. IAM ロールとポリシー
+- **Role**: 誰が（どのサービスが）使えるか
+- **Policy**: 何ができるか（具体的な操作）
+- **SAM の自動作成**: DynamoDBCrudPolicy で必要な権限を自動付与
+
+#### 6. CloudFormation 組み込み関数
+- **!Ref**: リソースを参照して実際の値に置き換える
+- **!Sub**: 変数を展開して文字列を作成
+
+### 🐛 トラブルシューティング
+
+#### 問題1: DNS 解決エラー
+- **現象**: API Gateway エンドポイントに到達できない
+- **原因**: CloudFormation Outputs の URL が実際と異なる（z1low vs z11ow）
+- **解決**: Console から正しい URL を確認
+
+#### 問題2: API Gateway にメソッドが表示されない
+- **原因**: デプロイメントが正しく作成されていなかった
+- **解決**: リソースメニューから「API をデプロイ」を手動実行
+
+#### 問題3: AWS Academy 権限制限
+- **現象**: day6-test-user では CloudFormation 権限不足
+- **解決**: challenge-user プロファイルに切り替え
+
+### ✅ 成果物
+
+#### デプロイされたリソース
+- **CloudFormation スタック**: day15-hello-world (UPDATE_COMPLETE)
+- **API Gateway**: z11ow7z6e6 (REGIONAL)
+- **Lambda 関数**: 3つ
+  - getAllItemsFunction (GET /)
+  - getByIdFunction (GET /{id})
+  - putItemFunction (POST /)
+- **DynamoDB テーブル**: SampleTable (id: String)
+- **IAM Roles**: 各 Lambda 用に自動作成
+
+#### API エンドポイント
+- **URL**: https://z11ow7z6e6.execute-api.ap-northeast-1.amazonaws.com/Prod/
+- **テスト結果**: 
+  - ✅ GET / → 全アイテム取得成功
+  - ✅ POST / → アイテム追加成功
+  - ✅ GET /{id} → 特定アイテム取得成功
+
+### 💡 重要な学び
+
+1. **SAM vs AWS SDK の違い**
+   - SAM = インフラ構築（建物を建てる）
+   - AWS SDK = データ操作（建物の中で作業）
+
+2. **Console テストの重要性**
+   - API Gateway Console から直接テスト可能
+   - DNS 問題時の代替手段として有効
+
+3. **URL 確認の重要性**
+   - CloudFormation Outputs を鵜呑みにしない
+   - Console で実際の URL を必ず確認
+
+4. **Infrastructure as Code のメリット**
+   - 再現性: 同じ構成を何度でも作れる
+   - 効率性: 手動作業の大幅削減
+   - 一貫性: 設定ミスの防止
+
+### 📝 次回への課題
+- ❌ **Day 12**: Lambda/DynamoDB エラーが未解決（502 エラー継続）
+- ✅ **Day 15**: 完全成功
+
+### 🔗 関連リソース
+- CloudFormation スタック: day15-hello-world
+- プロファイル: challenge-user
+- リージョン: ap-northeast-1
+"@
+
+# ローカルのdaily-log.mdに追記
+Add-Content -Path "C:\100-days-aws-challenge\progress\daily-log.md" -Value $day15Log -Encoding UTF8
+
+Write-Host "✅ daily-log.md を更新しました！" -ForegroundColor Green
