@@ -883,4 +883,57 @@ RDS/Aurora (VPC内)
 
 ---
 
-**このロードマップで100日後には「フルスタック + クラウドエンジニア（Node.js & Java）」になれる！** 🚀
+**このロードマップで100日後には「フルスタック + クラウドエンジニア」になれる！** 🚀
+```
+
+## 🎯 学習目標設定
+
+### JavaScript開発者がJavaを学ぶメリット
+1. **型安全性** - コンパイル時エラー検出
+2. **エンタープライズ開発** - 大規模システム構築
+3. **パフォーマンス** - 高速処理とメモリ効率
+4. **Java生態系** - Spring、Maven、JUnit等
+
+### Java学習後の比較理解
+- **Node.js**: 高速開発、リアルタイム処理
+- **Java**: 堅牢性、スケーラビリティ、保守性
+
+## 📚 推奨学習リソース
+
+### Java基礎
+- Oracle Java Documentation
+- Spring Boot Reference Guide
+- Baeldung (Java/Spring tutorials)
+
+### AWS + Java
+- AWS SDK for Java Developer Guide
+- AWS Elastic Beanstalk Java Guide
+- Spring Cloud AWS
+
+## 🔄 継続的な比較学習
+
+各Javaプロジェクト完了後、同等のNode.jsバージョンと比較：
+- 開発速度
+- パフォーマンス  
+- コード可読性
+- 保守性
+- AWS統合の違い
+
+## 📋 Java Week チェックリスト
+
+### Day 22 チェック項目
+- [ ] Java 17+ インストール完了
+- [ ] Spring Boot Starter Project作成
+- [ ] AWS SDK for Java設定
+- [ ] Elastic Beanstalk初回デプロイ成功
+
+### Day 23-28 継続項目
+- [ ] 毎日Gitコミット
+- [ ] Node.jsとの違いを記録
+- [ ] AWS費用モニタリング
+- [ ] 学習時間記録
+
+---
+
+このロードマップにより、**Node.js → Java → 両方の長所を理解した**  
+**フルスタック開発者**になることができます！🚀
