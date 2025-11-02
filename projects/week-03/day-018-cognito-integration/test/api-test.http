@@ -1,0 +1,88 @@
+﻿### Day 16 - API Gateway + Lambda テスト用リクエスト
+### 使用方法: VSCodeでREST Client拡張機能をインストール後、各リクエストの上の「Send Request」をクリック
+
+### 変数設定（デプロイ後にURLを更新してください）
+@baseUrl = https://YOUR-API-ID.execute-api.ap-northeast-1.amazonaws.com/prod
+
+###############################################
+# 1. GET /tasks - タスク一覧取得
+###############################################
+
+### すべてのタスクを取得
+GET {{baseUrl}}/tasks
+Content-Type: application/json
+
+### ステータスでフィルタリング
+GET {{baseUrl}}/tasks?status=completed
+Content-Type: application/json
+
+###############################################
+# 2. GET /tasks/{id} - 特定タスク取得
+###############################################
+
+### タスクID: 1 を取得
+GET {{baseUrl}}/tasks/1
+Content-Type: application/json
+
+### タスクID: 2 を取得
+GET {{baseUrl}}/tasks/2
+Content-Type: application/json
+
+### 存在しないタスク（404エラー）
+GET {{baseUrl}}/tasks/999
+Content-Type: application/json
+
+###############################################
+# 3. POST /tasks - タスク作成
+###############################################
+
+### 新しいタスクを作成
+POST {{baseUrl}}/tasks
+Content-Type: application/json
+
+{
+  \"title\": \"Lambda関数をテストする\",
+  \"description\": \"Day 16の学習内容\",
+  \"status\": \"in-progress\"
+}
+
+### タイトルなしでエラーテスト（400エラー）
+POST {{baseUrl}}/tasks
+Content-Type: application/json
+
+{
+  \"description\": \"タイトルなし\"
+}
+
+###############################################
+# 4. PUT /tasks/{id} - タスク更新
+###############################################
+
+### タスクID: 2 を更新
+PUT {{baseUrl}}/tasks/2
+Content-Type: application/json
+
+{
+  \"title\": \"API Gateway完全理解\",
+  \"status\": \"completed\"
+}
+
+### 存在しないタスクを更新（404エラー）
+PUT {{baseUrl}}/tasks/999
+Content-Type: application/json
+
+{
+  \"title\": \"存在しないタスク\"
+}
+
+###############################################
+# 5. DELETE /tasks/{id} - タスク削除
+###############################################
+
+### タスクID: 1 を削除
+DELETE {{baseUrl}}/tasks/1
+Content-Type: application/json
+
+### 存在しないタスクを削除（404エラー）
+DELETE {{baseUrl}}/tasks/999
+Content-Type: application/json
