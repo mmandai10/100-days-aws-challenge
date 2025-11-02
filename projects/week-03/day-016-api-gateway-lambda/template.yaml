@@ -1,0 +1,102 @@
+﻿AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Day 16 - API Gateway + Lambda REST API
+
+Globals:
+  Function:
+    Timeout: 10
+    Runtime: nodejs20.x
+    MemorySize: 128
+    Environment:
+      Variables:
+        TABLE_NAME: tasks
+
+Resources:
+  # API Gateway
+  TasksApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: prod
+      Cors:
+        AllowMethods: "'GET,POST,PUT,DELETE,OPTIONS'"
+        AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+        AllowOrigin: "'*'"
+
+  # GET /tasks - タスク一覧取得
+  GetTasksFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/handlers/
+      Handler: getTasks.handler
+      Events:
+        GetTasks:
+          Type: Api
+          Properties:
+            RestApiId: !Ref TasksApi
+            Path: /tasks
+            Method: GET
+
+  # GET /tasks/{id} - 特定タスク取得
+  GetTaskFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/handlers/
+      Handler: getTask.handler
+      Events:
+        GetTask:
+          Type: Api
+          Properties:
+            RestApiId: !Ref TasksApi
+            Path: /tasks/{id}
+            Method: GET
+
+  # POST /tasks - タスク作成
+  CreateTaskFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/handlers/
+      Handler: createTask.handler
+      Events:
+        CreateTask:
+          Type: Api
+          Properties:
+            RestApiId: !Ref TasksApi
+            Path: /tasks
+            Method: POST
+
+  # PUT /tasks/{id} - タスク更新
+  UpdateTaskFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/handlers/
+      Handler: updateTask.handler
+      Events:
+        UpdateTask:
+          Type: Api
+          Properties:
+            RestApiId: !Ref TasksApi
+            Path: /tasks/{id}
+            Method: PUT
+
+  # DELETE /tasks/{id} - タスク削除
+  DeleteTaskFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/handlers/
+      Handler: deleteTask.handler
+      Events:
+        DeleteTask:
+          Type: Api
+          Properties:
+            RestApiId: !Ref TasksApi
+            Path: /tasks/{id}
+            Method: DELETE
+
+Outputs:
+  TasksApiUrl:
+    Description: API Gateway endpoint URL
+    Value: !Sub 'https://${TasksApi}.execute-api.${AWS::Region}.amazonaws.com/prod/tasks'
+  
+  TasksApiId:
+    Description: API Gateway ID
+    Value: !Ref TasksApi

@@ -1,0 +1,15 @@
+﻿{
+  "name": "day-016-api-gateway-lambda",
+  "version": "1.0.0",
+  "description": "Day 16: API Gateway + Lambda REST API",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": ["aws", "lambda", "api-gateway", "rest-api"],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "uuid": "^9.0.0"
+  }
+}

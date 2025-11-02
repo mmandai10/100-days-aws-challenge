@@ -1,4 +1,4 @@
-﻿# 100 Days AWS Challenge - 完全版学習ロードマップ
+﻿# 100 Days AWS Challenge - 完全版学習ロードマップ（改訂版）
 
 ## 🎯 このファイルの使い方
 1. 各Dayを始める時に「Day Xを始めたい」と伝える
@@ -10,8 +10,10 @@
 - ✅ Day 2: Weather App - 完了・デプロイ済み
 - ✅ Day 3: ToDo App - 完了・デプロイ済み  
 - ✅ Day 4: Weather Dashboard - 完了・デプロイ済み
+- ✅ Day 15: AWS SAM - 完了
+- ✅ Day 16: API Gateway + Lambda - 完了
 - 🔄 Day 1,5,6,7: 開始済み（要完成）
-- ⏳ Day 8以降: 未着手
+- ⏳ Day 17以降: 未着手
 
 ---
 
@@ -91,7 +93,7 @@
 - 衝突判定
 - スコアシステム
 
-### Day 11: AWS Amplify Auth 👈 **次はここ！**
+### Day 11: AWS Amplify Auth
 **作成物**: Amplify認証アプリ
 **必須実装**:
 - Amplify CLI初期化
@@ -125,26 +127,26 @@
 
 ## 📅 Week 3: Serverless Backend (Day 15-21)
 
-### Day 15: Lambda Hello World
-**作成物**: 初めてのLambda関数
+### Day 15: AWS SAM ✅ 完了
+**作成物**: SAMで作る初めてのサーバーレスアプリ
+- AWS SAM CLI使用
 - Lambda関数作成
-- イベント/コンテキスト理解
-- CloudWatchログ
-- 環境変数
+- テンプレート理解
+- デプロイ自動化
 
-### Day 16: API Gateway + Lambda
+### Day 16: API Gateway + Lambda ✅ 完了
 **作成物**: REST API構築
 - APIエンドポイント設計
 - リクエスト/レスポンス変換
 - CORS設定
-- APIキー管理
+- HTTPメソッド理解
 
 ### Day 17: DynamoDB CRUD
 **作成物**: NoSQLデータベース操作
 - テーブル設計
 - パーティションキー/ソートキー
-- クエリ/スキャン
-- バッチ操作
+- CRUD操作実装
+- Day 16のAPIにDynamoDB統合
 
 ### Day 18: Cognito Integration
 **作成物**: セキュアAPI
@@ -170,154 +172,499 @@
 
 ---
 
-## 📅 Week 4: Java + Spring Boot (Day 22-28)
+## 📅 Week 4: Java + Spring Boot + RDS (Day 22-28) 🆕
 
-### Day 22: Java環境構築
+### Day 22: Java環境構築 + AWS RDS準備
+**作成物**: Hello World REST API + RDS環境構築
+
 **必須セットアップ**:
-- Java 17+インストール
-- Maven/Gradle設定
-- Spring Initializr
-- IDE設定（IntelliJ/Eclipse）
-**作成物**: Hello World REST API
-
-### Day 23: Spring Boot REST API
-**作成物**: タスク管理API
-```java
-@RestController
-@RequestMapping("/api/tasks")
-public class TaskController {
-    // CRUD endpoints
-}
+```
+✅ Java 17+ インストール
+✅ Maven/Gradle設定
+✅ Spring Initializr
+✅ IDE設定（IntelliJ/Eclipse）
+✅ AWS RDS Aurora Serverless v2 作成（または MySQL）
 ```
 
-### Day 24: JPA + MySQL/PostgreSQL
-**作成物**: データベース連携API
-- Entity設計
-- Repository作成
-- トランザクション管理
-- マイグレーション（Flyway）
+**RDS vs Aurora Serverless 選択ガイド**:
+- **RDS MySQL（db.t3.micro）**: 初学者向け、無料枠あり、予測可能な料金
+- **Aurora Serverless v2**: 使用量課金、自動スケーリング、より高性能
 
-### Day 25: Spring Security + JWT
-**作成物**: セキュアAPI
-- JWT認証実装
-- Role-based認可
-- パスワード暗号化
-- セッション管理
-
-### Day 26: AWS SDK for Java
-**作成物**: AWS統合アプリ
-- S3操作
-- DynamoDB操作
-- SQS/SNS連携
-- Parameter Store
-
-### Day 27: Microservices
-**作成物**: マイクロサービス構築
-- Service間通信
-- API Gateway pattern
-- Circuit Breaker
-- Service Discovery
-
-### Day 28: Docker + ECS/Fargate
-**作成物**: コンテナ化&デプロイ
-- Dockerfile作成
-- ECRプッシュ
-- ECSタスク定義
-- ALB設定
-
----
-
-## 💡 Java学習の段階的アプローチ
-
-### Level 1: Java基礎 (Day 22-24)
+**作成内容**:
 ```java
-// Spring Boot基本構造を理解
 @RestController
 public class HelloController {
     @GetMapping("/hello")
     public String hello() {
-        return "Hello from Spring Boot!";
+        return "Hello from Spring Boot + RDS!";
     }
 }
 ```
 
-### Level 2: Spring Ecosystem (Day 25-27)
+**重要な学習ポイント**:
+- VPC設定（RDSはVPC内に配置）
+- セキュリティグループ設定
+- RDS エンドポイント取得
+
+---
+
+### Day 23: Spring Boot REST API（RDS接続なし）
+**作成物**: タスク管理API（メモリ内データ）
+
+**目的**: Day 16のNode.js版と同じことをJavaで実装して比較
+
+**実装内容**:
 ```java
-// Spring Data JPA + Security
+@RestController
+@RequestMapping("/api/tasks")
+public class TaskController {
+    private List<Task> tasks = new ArrayList<>();
+    
+    @GetMapping
+    public List<Task> getAllTasks() { }
+    
+    @PostMapping
+    public Task createTask(@RequestBody Task task) { }
+    
+    @PutMapping("/{id}")
+    public Task updateTask(@PathVariable String id, 
+                           @RequestBody Task task) { }
+    
+    @DeleteMapping("/{id}")
+    public void deleteTask(@PathVariable String id) { }
+}
+```
+
+**Node.js（Day 16）との比較記録**:
+- コード量の違い
+- 型安全性の恩恵
+- 開発速度
+- エラーハンドリングの違い
+- IDEサポート
+
+---
+
+### Day 24: JPA + RDS MySQL統合 ⭐ **最重要**
+**作成物**: データベース連携タスク管理API
+
+**技術スタック**:
+- Spring Data JPA
+- RDS MySQL / Aurora Serverless
+- Flyway（マイグレーション）
+
+**Entity設計**:
+```java
 @Entity
-public class User {
-    @Id 
-    @GeneratedValue
-    private Long id;
+@Table(name = "tasks")
+public class Task {
+    @Id
+    @GeneratedValue(generator = "uuid")
+    @GenericGenerator(name = "uuid", strategy = "uuid2")
+    private String id;
     
     @Column(nullable = false)
-    private String username;
+    private String title;
     
-    // getters, setters...
+    private String description;
+    
+    @Enumerated(EnumType.STRING)
+    private TaskStatus status;
+    
+    @CreatedDate
+    private LocalDateTime createdAt;
+    
+    @LastModifiedDate
+    private LocalDateTime updatedAt;
 }
 ```
 
-### Level 3: AWS統合 (Day 28)
+**Repository作成**:
 ```java
-// AWS SDK使用例
-@Service
-public class S3Service {
-    @Autowired
-    private AmazonS3 s3Client;
+public interface TaskRepository extends JpaRepository<Task, String> {
+    List<Task> findByStatus(TaskStatus status);
     
-    public String uploadFile(MultipartFile file) {
-        // S3アップロード実装
-        return s3Client.putObject(bucketName, fileName, file.getInputStream(), metadata)
-            .getETag();
+    @Query("SELECT t FROM Task t WHERE t.title LIKE %:keyword%")
+    List<Task> searchByKeyword(@Param("keyword") String keyword);
+}
+```
+
+**Flyway マイグレーション**:
+```sql
+-- V1__create_tasks_table.sql
+CREATE TABLE tasks (
+    id VARCHAR(36) PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    description TEXT,
+    status VARCHAR(20) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP 
+                ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_status ON tasks(status);
+```
+
+**重要な学習ポイント**:
+- **JPA（Java）vs AWS SDK（Node.js）の違い**
+- **RDS（リレーショナル）vs DynamoDB（NoSQL）の違い**
+- トランザクション管理
+- コネクションプール
+- N+1問題の理解と対策
+
+**Day 17（DynamoDB）との比較**:
+- データモデリングの違い
+- クエリの柔軟性
+- パフォーマンス特性
+- コスト構造
+
+---
+
+### Day 25: Spring Security + JWT
+**作成物**: セキュアAPI
+
+**実装内容**:
+```java
+@Configuration
+@EnableWebSecurity
+public class SecurityConfig {
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) 
+        throws Exception {
+        http
+            .csrf().disable()
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/api/auth/**").permitAll()
+                .anyRequest().authenticated()
+            )
+            .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        return http.build();
     }
 }
 ```
 
-## 🎯 JavaScript開発者がJavaを学ぶメリット
-1. **型安全性** - コンパイル時エラー検出
-2. **エンタープライズ開発** - 大規模システム構築
-3. **パフォーマンス** - 高速処理とメモリ効率
-4. **Java生態系** - Spring、Maven、JUnit等
+**Day 18（Cognito + Lambda）との比較**:
+- 認証の実装方法の違い
+- トークン管理
+- 複雑さ vs 柔軟性
+- AWS管理 vs 自前実装
 
-## 🔄 Java vs Node.js 比較ポイント
-- **Node.js**: 高速開発、リアルタイム処理、イベント駆動
-- **Java**: 堅牢性、スケーラビリティ、保守性、型安全性
-- **比較項目**: 開発速度、パフォーマンス、コード可読性、AWS統合の違い
+---
 
-## 📚 推奨学習リソース
+### Day 26: AWS SDK for Java + RDS最適化
+**作成物**: AWS統合アプリ + パフォーマンス最適化
 
-### Java/Spring Boot
-- Oracle Java Documentation
-- Spring Boot Reference Guide  
-- Baeldung (Java/Spring tutorials)
-- AWS SDK for Java Developer Guide
-- AWS Elastic Beanstalk Java Guide
-- Spring Cloud AWS
+**実装内容**:
 
-## 📋 Java Week チェックリスト
+**1. Secrets Manager統合** - RDS認証情報の安全管理
+```java
+@Configuration
+public class RDSConfig {
+    @Bean
+    public DataSource dataSource(SecretsManagerService secrets) {
+        String password = secrets.getRDSPassword();
+        // DataSource設定
+    }
+}
+```
 
-### Day 22 チェック項目
+**2. RDS Proxy利用** - Lambda接続最適化
+```
+Lambda → RDS Proxy → RDS/Aurora
+（コネクションプール管理・コールドスタート対策）
+```
+
+**3. S3統合** - タスクに添付ファイル機能追加
+```java
+@Service
+public class TaskAttachmentService {
+    private final AmazonS3 s3Client;
+    private final TaskRepository taskRepository;
+    
+    public String uploadAttachment(MultipartFile file, 
+                                   String taskId) {
+        // S3にアップロード
+        String s3Url = s3Client.putObject(...);
+        
+        // RDSにURL保存
+        Task task = taskRepository.findById(taskId);
+        task.setAttachmentUrl(s3Url);
+        taskRepository.save(task);
+        
+        return s3Url;
+    }
+}
+```
+
+**学習ポイント**:
+- Lambda + RDS の接続管理（Day 17のDynamoDBとの違い）
+- VPC Lambda設定
+- コールドスタート問題と対策
+- マルチAWSサービス統合
+
+---
+
+### Day 27: Microservices（RDS + DynamoDB混在）
+**作成物**: マイクロサービスアーキテクチャ
+
+**アーキテクチャ設計**:
+```
+┌─────────────────────┐      ┌──────────────────────┐
+│ Task Service        │      │ User Service         │
+│ (Spring Boot + RDS) │      │ (Spring Boot +       │
+│                     │      │  DynamoDB)           │
+│ - 複雑なクエリ      │      │ - 高速アクセス       │
+│ - JOIN処理          │      │ - シンプルな構造     │
+│ - トランザクション  │      │ - スケーラビリティ   │
+└─────────────────────┘      └──────────────────────┘
+         │                            │
+         └──────────┬─────────────────┘
+                    │
+         ┌──────────▼──────────┐
+         │   API Gateway       │
+         │   (統合エンドポイント)│
+         └─────────────────────┘
+```
+
+**なぜこの構成？適材適所のデータベース選択**:
+- **タスクデータ → RDS**: 複雑な検索（期限切れタスク検索、集計レポート）
+- **ユーザーデータ → DynamoDB**: 高速ログイン、プロフィール取得
+
+**実装例**:
+```java
+// Task Service (RDS)
+@Service
+public class TaskService {
+    @Autowired
+    private TaskRepository taskRepository;
+    
+    public List<Task> getOverdueTasks() {
+        // 複雑なクエリ - RDSが得意
+        return taskRepository.findOverdueTasksWithUserInfo();
+    }
+    
+    @Transactional
+    public void completeTaskAndNotify(String taskId) {
+        // トランザクション - RDSが必要
+        Task task = taskRepository.findById(taskId);
+        task.setStatus(COMPLETED);
+        taskRepository.save(task);
+        notificationService.send(task.getUserId());
+    }
+}
+
+// User Service (DynamoDB)
+@Service
+public class UserService {
+    @Autowired
+    private DynamoDBMapper dynamoDBMapper;
+    
+    public User getUser(String userId) {
+        // 高速な単純取得 - DynamoDBが得意
+        return dynamoDBMapper.load(User.class, userId);
+    }
+}
+```
+
+**学習ポイント**:
+- **データベース選択の判断基準**
+- サービス間通信（REST API / メッセージング）
+- データ整合性の管理
+- 分散システムの課題
+
+---
+
+### Day 28: Docker + ECS/Fargate（RDS接続）
+**作成物**: コンテナ化アプリケーション＋本番デプロイ
+
+**Dockerfile**:
+```dockerfile
+FROM openjdk:17-jdk-slim
+WORKDIR /app
+COPY target/task-api-1.0.0.jar app.jar
+
+# ヘルスチェック
+HEALTHCHECK --interval=30s --timeout=3s \
+  CMD curl -f http://localhost:8080/health || exit 1
+
+EXPOSE 8080
+ENTRYPOINT ["java", "-jar", "/app.jar"]
+```
+
+**ECS Task Definition**:
+```json
+{
+  "family": "task-api",
+  "containerDefinitions": [{
+    "name": "task-api",
+    "image": "123456789.dkr.ecr.ap-northeast-1.amazonaws.com/task-api:latest",
+    "memory": 512,
+    "cpu": 256,
+    "environment": [
+      {"name": "SPRING_PROFILES_ACTIVE", "value": "prod"}
+    ],
+    "secrets": [
+      {
+        "name": "DB_PASSWORD",
+        "valueFrom": "arn:aws:secretsmanager:..."
+      }
+    ],
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-group": "/ecs/task-api",
+        "awslogs-region": "ap-northeast-1"
+      }
+    }
+  }]
+}
+```
+
+**デプロイ構成**:
+```
+Internet
+    ↓
+Application Load Balancer
+    ↓
+ECS Service (Fargate)
+    ├── Task 1 (Container)
+    ├── Task 2 (Container)
+    └── Task 3 (Container)
+    ↓
+RDS/Aurora (VPC内)
+```
+
+**学習ポイント**:
+- ECS/FargateからRDS接続
+- VPC・セキュリティグループ設定
+- ALB設定（ヘルスチェック、ターゲットグループ）
+- **Day 15（SAM + Lambda）との比較**:
+  - デプロイモデルの違い
+  - スケーリング方式
+  - コスト構造
+  - 運用の複雑さ
+
+---
+
+## 📊 Node.js週 vs Java週 - 徹底比較
+
+### Week 3 (Node.js + DynamoDB) vs Week 4 (Java + RDS)
+
+| 観点 | Node.js週（Day 15-21） | Java週（Day 22-28） |
+|------|------------------------|---------------------|
+| **言語** | JavaScript/Node.js | Java 17 |
+| **フレームワーク** | Express（軽量） | Spring Boot（重厚） |
+| **データベース** | DynamoDB（NoSQL） | RDS/Aurora（SQL） |
+| **データモデル** | 柔軟なJSON | 構造化テーブル |
+| **ORマッパー** | AWS SDK（直接操作） | JPA/Hibernate |
+| **クエリ** | 単純（GetItem, Query） | 複雑（JOIN, GROUP BY） |
+| **型安全性** | 弱い（実行時エラー） | 強い（コンパイル時） |
+| **開発速度** | 速い | 遅い（ボイラープレート多） |
+| **デプロイ** | Lambda（SAM） | ECS/Fargate |
+| **起動時間** | 超高速（数ms） | やや遅い（数秒） |
+| **スケーリング** | 自動・即座 | 自動だが時間かかる |
+| **コスト（小規模）** | ほぼ無料 | $10-50/月 |
+| **学習曲線** | 緩やか | 急 |
+| **適用領域** | スタートアップ、新規 | 大企業、既存システム |
+
+### データベース選択基準
+
+**DynamoDBを選ぶべき場合**:
+- ✅ 高速アクセスが最優先（ミリ秒レベル）
+- ✅ シンプルなデータ構造（キー・バリュー）
+- ✅ 柔軟なスキーマが必要
+- ✅ サーバーレス環境
+- ✅ 予測不可能なトラフィック
+
+**RDS/Auroraを選ぶべき場合**:
+- ✅ 複雑なクエリが必要（JOIN、集計）
+- ✅ トランザクションが重要
+- ✅ 既存のSQLアプリ移行
+- ✅ レポート・分析機能
+- ✅ データ整合性が最重要
+
+---
+
+## 📝 Java週の学習記録テンプレート
+
+各Day完了時に以下を daily-log.md に記録：
+
+```markdown
+## Day 24: JPA + RDS統合
+
+### 実装内容
+- Entity設計
+- Repository作成
+- RDS接続設定
+- マイグレーション実装
+
+### Node.js（Day 17 DynamoDB）との比較
+| 項目 | Node.js + DynamoDB | Java + RDS |
+|------|-------------------|-----------|
+| 開発速度 | ◯ 速い | △ 遅い |
+| 型安全性 | △ なし | ◯ あり |
+| クエリ柔軟性 | △ 制限あり | ◯ JOIN可能 |
+| パフォーマンス | ◯ 数ms | △ 数十ms |
+| コスト | ◯ 無料枠内 | △ $20/月 |
+
+### 選択基準の理解
+- **タスク管理アプリの場合**:
+  - シンプル版 → DynamoDB
+  - 高度な検索・レポート → RDS
+  
+### 学習時間
+- 実装: X時間
+- 比較検証: Y時間
+- ドキュメント: Z時間
+
+### トラブルシューティング
+- 発生した問題
+- 解決方法
+- 学んだこと
+```
+
+---
+
+## 🎯 Java週チェックリスト
+
+### Day 22 完了条件
 - [ ] Java 17+ インストール完了
 - [ ] Spring Boot Starter Project作成
-- [ ] AWS SDK for Java設定
-- [ ] Elastic Beanstalk初回デプロイ成功
+- [ ] RDS/Aurora作成・接続確認
+- [ ] Hello World APIデプロイ成功
 
-### Day 23-28 継続項目
-- [ ] 毎日Gitコミット
-- [ ] Node.jsとの違いを記録
-- [ ] AWS費用モニタリング
-- [ ] 学習時間記録
+### Day 24 完了条件（最重要）
+- [ ] JPA Entity定義
+- [ ] Repository実装
+- [ ] RDS接続成功
+- [ ] CRUD操作すべて動作
+- [ ] Flywayマイグレーション実行
+- [ ] DynamoDBとの違いを文書化
+
+### Day 27 完了条件
+- [ ] Task Service（RDS）実装
+- [ ] User Service（DynamoDB）実装
+- [ ] 両サービスのAPI統合
+- [ ] データベース選択基準を理解
+
+### Day 28 完了条件
+- [ ] Dockerイメージ作成
+- [ ] ECRプッシュ成功
+- [ ] ECS/Fargateデプロイ
+- [ ] ALB経由でアクセス確認
+- [ ] RDS接続動作確認
 
 ---
 
 ## 📅 Week 5: Advanced Topics (Day 29-35)
 
 ### Day 29: Performance比較
-**実施内容**: Node.js vs Java
+**実施内容**: Node.js vs Java 徹底比較
 - ベンチマークテスト
 - メモリ使用量
 - レスポンスタイム
 - スケーラビリティ
+- コスト分析
 
 ### Day 30: ElastiCache
 **作成物**: キャッシュシステム
@@ -501,8 +848,8 @@ public class S3Service {
 
 ### 60日目: フルスタック開発者
 - バックエンド構築可能
-- データベース設計
-- API開発
+- データベース設計（NoSQL + SQL）
+- API開発（Node.js + Java）
 
 ### 90日目: クラウドアーキテクト
 - AWS主要サービス習得
@@ -530,61 +877,10 @@ public class S3Service {
 - [ ] GraphQL
 - [ ] gRPC
 - [ ] WebAssembly
+- [ ] Aurora Serverless深掘り
+- [ ] RDS Proxy詳細
 - [ ] その他：＿＿＿＿＿
 
 ---
 
-**このロードマップで100日後には「フルスタック + クラウドエンジニア」になれる！** 🚀
-```
-
-## 🎯 学習目標設定
-
-### JavaScript開発者がJavaを学ぶメリット
-1. **型安全性** - コンパイル時エラー検出
-2. **エンタープライズ開発** - 大規模システム構築
-3. **パフォーマンス** - 高速処理とメモリ効率
-4. **Java生態系** - Spring、Maven、JUnit等
-
-### Java学習後の比較理解
-- **Node.js**: 高速開発、リアルタイム処理
-- **Java**: 堅牢性、スケーラビリティ、保守性
-
-## 📚 推奨学習リソース
-
-### Java基礎
-- Oracle Java Documentation
-- Spring Boot Reference Guide
-- Baeldung (Java/Spring tutorials)
-
-### AWS + Java
-- AWS SDK for Java Developer Guide
-- AWS Elastic Beanstalk Java Guide
-- Spring Cloud AWS
-
-## 🔄 継続的な比較学習
-
-各Javaプロジェクト完了後、同等のNode.jsバージョンと比較：
-- 開発速度
-- パフォーマンス  
-- コード可読性
-- 保守性
-- AWS統合の違い
-
-## 📋 Java Week チェックリスト
-
-### Day 22 チェック項目
-- [ ] Java 17+ インストール完了
-- [ ] Spring Boot Starter Project作成
-- [ ] AWS SDK for Java設定
-- [ ] Elastic Beanstalk初回デプロイ成功
-
-### Day 23-28 継続項目
-- [ ] 毎日Gitコミット
-- [ ] Node.jsとの違いを記録
-- [ ] AWS費用モニタリング
-- [ ] 学習時間記録
-
----
-
-このロードマップにより、**Node.js → Java → 両方の長所を理解した**  
-**フルスタック開発者**になることができます！🚀
+**このロードマップで100日後には「フルスタック + クラウドエンジニア（Node.js & Java）」になれる！** 🚀

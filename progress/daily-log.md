@@ -428,3 +428,79 @@ $day15Log = @"
 Add-Content -Path "C:\100-days-aws-challenge\progress\daily-log.md" -Value $day15Log -Encoding UTF8
 
 Write-Host "✅ daily-log.md を更新しました！" -ForegroundColor Green
+
+
+## Day 16 - API Gateway + Lambda REST API (2025-10-27)
+- ✅ **Status**: Completed
+- 📁 **Project**: day-016-api-gateway-lambda
+- 🛠️ **Tech Stack**: AWS SAM, API Gateway, Lambda (Node.js), UUID
+- ⏱️ **Time**: 3時間
+- 📚 **Learned**: 
+  - API Gatewayの構造理解（ステージ、リソース、メソッド）
+  - REST APIエンドポイント設計（GET, POST, PUT, DELETE）
+  - CORS設定の重要性
+  - HTTPステータスコードの適切な使用（200, 201, 400, 404, 500）
+  - Lambda関数とAPI Gatewayの連携
+  - イベント構造の理解（pathParameters, queryStringParameters, body）
+  - データ永続化の必要性（Lambda関数のメモリは保存されない）
+  - DynamoDB vs RDS vs S3の違いと選択基準
+- 🐛 **Issues**: 
+  - uuidパッケージが見つからないエラー発生
+  - 原因: package.jsonがプロジェクトルートにあり、Lambda関数（src/handlers/）から参照できない
+  - 解決: package.jsonとnode_modulesをsrc/handlers/に移動して再デプロイ
+- 💡 **Notes**: 
+  - Lambda関数間でメモリは共有されない（各関数は独立したコンテナ）
+  - メモリ内データは実行終了後にクリアされる
+  - データを永続化するにはデータベースが必要
+  - Day 17でDynamoDB統合してデータを本当に保存する
+- 📍 **API URL**: https://kp9jpi3j5j.execute-api.ap-northeast-1.amazonaws.com/prod/tasks
+- 🔗 **Stack**: day16-api-gateway-lambda
+
+### Day 16で理解した重要な概念
+
+#### API Gatewayの3層構造
+1. **ステージ (Stage)**: デプロイ先の環境（dev, test, prod）
+2. **リソース (Resources)**: URLパスの構造（/tasks, /tasks/{id}）
+3. **メソッド (Methods)**: HTTP操作（GET, POST, PUT, DELETE）
+
+#### データベース選択基準
+- **DynamoDB**: NoSQL、高速、サーバーレス、シンプルなクエリ
+- **RDS/Aurora**: SQL、複雑なクエリ、トランザクション、JOIN処理
+- **S3**: ファイルストレージ、画像/動画、バックアップ
+
+#### Lambda関数の制約
+- 各関数は独立したメモリ空間
+- 実行終了後にメモリクリア
+- データ永続化には外部ストレージ（DB）が必須
+
+### 次のステップ
+- Day 17: DynamoDB CRUD - データを本当に保存する
+- Day 22-28: Java + Spring Boot + RDS - 
+
+
+## Day 17 - DynamoDB CRUD (2025-11-02)
+- ✅ **Status**: Completed
+- 📁 **Project**: day17-dynamodb-crud
+- 🛠️ **Tech Stack**: Lambda + API Gateway + DynamoDB + AWS SAM
+- ⏱️ **Time**: 約4時間
+- 📚 **Learned**: 
+  - DynamoDBテーブル設計（パーティションキー）
+  - AWS SDK v3の使い方（@aws-sdk/client-dynamodb, @aws-sdk/lib-dynamodb）
+  - DynamoDB CRUD操作実装
+    - PutCommand（作成）
+    - ScanCommand（全件取得）
+    - GetCommand（1件取得）
+    - PutCommand（更新）
+    - DeleteCommand（削除）
+  - SAMのPolicies設定（DynamoDBCrudPolicy）
+  - NoSQLデータモデリングの基礎
+  - Day 16のAPI構成にDynamoDBを統合
+- 🎯 **Achievement**: 
+  - 完全動作するCRUD APIをDynamoDBと統合
+  - メモリ内データ → 永続化データベースへ移行成功
+  - 全5つのエンドポイント動作確認完了
+- 📍 **URL**: https://4uaqttj0pf.execute-api.ap-northeast-1.amazonaws.com/prod/tasks
+- 💡 **Notes**: 
+  - Day 15のSAM基礎から、実際のデータベース統合まで到達
+  - Week 4（Day 24）でJava + RDSと比較予定
+  - DynamoDB vs RDSの選択基準を学ぶ準備完了

@@ -1,0 +1,9 @@
+﻿{
+  "name": "day17-dynamodb-handlers",
+  "version": "1.0.0",
+  "description": "Day 17 - DynamoDB CRUD Lambda handlers",
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.600.0",
+    "@aws-sdk/lib-dynamodb": "^3.600.0"
+  }
+}
