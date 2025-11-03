@@ -504,3 +504,252 @@ Write-Host "✅ daily-log.md を更新しました！" -ForegroundColor Green
   - Day 15のSAM基礎から、実際のデータベース統合まで到達
   - Week 4（Day 24）でJava + RDSと比較予定
   - DynamoDB vs RDSの選択基準を学ぶ準備完了
+
+
+  ## Day 18 - Cognito Integration (2025-11-02)
+- ✅ **Status**: Completed
+- 📁 **Project**: day-018-cognito-integration
+- 🛠️ **Tech Stack**: Cognito + API Gateway Authorizer + Lambda + DynamoDB
+- ⏱️ **Time**: 約6時間
+- 📚 **Key Concepts**:
+  - 認証（Authentication）vs 認可（Authorization）の違い
+  - JWTトークンの仕組み
+  - Cognito: 「誰か」を特定
+  - Lambda: 「何ができるか」を判断
+  - DynamoDB複合キー（userId + id）でデータ分離
+- 🎯 **Achievement**:
+  - Day 17のAPIにCognito認証を統合
+  - 認証なしアクセスは401でブロック確認
+  - Lambda→DynamoDB連携の動作確認完了
+  - ユーザーごとのデータ完全分離を実装
+- 💡 **Lessons**:
+  - 概念理解より実装経験が重要
+  - エラー対応が学習の大半を占めた
+  - Week 4でJavaと比較して理解を深める予定
+  - フロントエンドがないと実感しづらい
+
+
+  # daily-log.mdに追記
+@"
+
+## Day 19 - S3 Event Processing (2025-11-03)
+- ✅ **Status**: Completed
+- 📁 **Project**: day-019-s3-event-processing
+- 🛠️ **Tech Stack**: AWS SAM, Lambda (Node.js 22), S3, Jimp
+- ⏱️ **Time**: 約6時間
+- 📚 **Learned**: 
+  - S3イベントトリガーの仕組み
+  - Lambda関数の自動起動
+  - ネイティブモジュール vs ピュアJavaScriptライブラリ
+  - 画像処理パイプライン構築
+  - エラーハンドリングとトラブルシューティング
+  - 実務レベルの設計思考
+
+### 🎯 作成したシステム
+
+**画像処理パイプライン**
+- S3にアップロードされた画像を自動でリサイズ
+- リサイズ画像（幅800px）とサムネイル（200x200）を生成
+- 処理後の画像を別のS3バケットに保存
+
+### 🏗️ アーキテクチャ
+
+\`\`\`
+ユーザー → S3 Source Bucket → (イベント通知) → Lambda関数
+                                                    ↓
+                                            画像処理(Jimp)
+                                                    ↓
+                                          S3 Processed Bucket
+                                            ├── resized/
+                                            └── thumbnails/
+\`\`\`
+
+### 📋 処理フロー
+
+1. ユーザーが画像をS3にアップロード
+2. S3イベント通知がLambda関数を自動起動
+3. Lambda関数内で画像処理：
+   - S3から元画像を取得
+   - Jimpで画像読み込み
+   - リサイズ処理（幅800px、アスペクト比維持）
+   - サムネイル作成（200x200、カバー）
+4. 処理後の画像を別のS3バケットに保存
+5. CloudWatch Logsに処理結果を記録
+
+### 🐛 トラブルシューティング経験
+
+#### 問題1: 循環依存エラー
+- **現象**: CloudFormationデプロイが失敗
+- **原因**: S3 → Lambda → S3 の循環参照
+- **解決**: Lambda Eventsセクションを削除、手動でS3イベント通知を設定
+
+#### 問題2: sharpライブラリがLambdaで動作しない
+- **エラー**: \`Could not load the "sharp" module using the linux-x64 runtime\`
+- **原因**: Windows開発環境でビルドされたsharpがLinux Lambdaで動作しない
+- **解決策の選択肢**:
+  - ❌ Docker使用: \`sam build --use-container\` (Docker未起動)
+  - ✅ jimpに変更: ピュアJavaScript、プラットフォーム非依存
+
+#### 問題3: Lambda関数が起動しない
+- **現象**: 画像アップロード後、何も処理されない
+- **原因**: S3イベント通知のプレフィックス設定（\`images/\`）がデフォルト値
+- **解決**: プレフィックス・サフィックスを空にして全ファイルを対象化
+
+#### 問題4: CLIでのJSON設定エラー
+- **エラー**: \`Unable to load paramfile (notification-configuration.json)\`
+- **原因**: PowerShellのエンコーディング問題
+- **解決**: AWS Consoleから手動でイベント通知を設定
+
+### 💡 重要な学び
+
+#### 1. ネイティブモジュールの理解
+-
+## Day 19 - S3 Event Processing (2025-11-03)
+- ✅ **Status**: Completed
+- 📁 **Project**: day-019-s3-event-processing
+- 🛠️ **Tech Stack**: AWS SAM, Lambda (Node.js 22), S3, Jimp
+- ⏱️ **Time**: 約6時間
+- 📚 **Learned**: 
+  - S3イベントトリガーの仕組み
+  - Lambda関数の自動起動
+  - ネイティブモジュール vs ピュアJavaScriptライブラリ
+  - 画像処理パイプライン構築
+  - エラーハンドリングとトラブルシューティング
+  - 実務レベルの設計思考
+
+### 🎯 作成したシステム
+
+**画像処理パイプライン**
+- S3にアップロードされた画像を自動でリサイズ
+- リサイズ画像（幅800px）とサムネイル（200x200）を生成
+- 処理後の画像を別のS3バケットに保存
+
+### 🏗️ アーキテクチャ
+
+\\\
+ユーザー → S3 Source Bucket → (イベント通知) → Lambda関数
+                                                    ↓
+                                            画像処理(Jimp)
+                                                    ↓
+                                          S3 Processed Bucket
+                                            ├── resized/
+                                            └── thumbnails/
+\\\
+
+### 📋 処理フロー
+
+1. ユーザーが画像をS3にアップロード
+2. S3イベント通知がLambda関数を自動起動
+3. Lambda関数内で画像処理：
+   - S3から元画像を取得
+   - Jimpで画像読み込み
+   - リサイズ処理（幅800px、アスペクト比維持）
+   - サムネイル作成（200x200、カバー）
+4. 処理後の画像を別のS3バケットに保存
+5. CloudWatch Logsに処理結果を記録
+
+### 🐛 トラブルシューティング経験
+
+#### 問題1: 循環依存エラー
+- **現象**: CloudFormationデプロイが失敗
+- **原因**: S3 → Lambda → S3 の循環参照
+- **解決**: Lambda Eventsセクションを削除、手動でS3イベント通知を設定
+
+#### 問題2: sharpライブラリがLambdaで動作しない
+- **エラー**: \Could not load the "sharp" module using the linux-x64 runtime\
+- **原因**: Windows開発環境でビルドされたsharpがLinux Lambdaで動作しない
+- **解決策の選択肢**:
+  - ❌ Docker使用: \sam build --use-container\ (Docker未起動)
+  - ✅ jimpに変更: ピュアJavaScript、プラットフォーム非依存
+
+#### 問題3: Lambda関数が起動しない
+- **現象**: 画像アップロード後、何も処理されない
+- **原因**: S3イベント通知のプレフィックス設定（\images/\）がデフォルト値
+- **解決**: プレフィックス・サフィックスを空にして全ファイルを対象化
+
+#### 問題4: CLIでのJSON設定エラー
+- **エラー**: \Unable to load paramfile (notification-configuration.json)\
+- **原因**: PowerShellのエンコーディング問題
+- **解決**: AWS Consoleから手動でイベント通知を設定
+
+### 💡 重要な学び
+
+#### 1. ネイティブモジュールの理解
+- **ネイティブモジュール**: C/C++で書かれたコードをNode.jsから呼び出す
+- **問題**: 開発環境（Windows）と本番環境（Linux）でバイナリが異なる
+- **sharp**: 高速だがプラットフォーム依存（Docker必須）
+- **jimp**: 遅いがクロスプラットフォーム（Docker不要）
+
+#### 2. S3イベント通知の動作
+- バケット全体に対して設定（特定ファイルではない）
+- プレフィックス・サフィックスでフィルタリング可能
+- Lambda関数内でファイル種別チェックを推奨（柔軟性）
+
+#### 3. Lambda関数の制約
+- **メモリ**: 128MB〜10GB（今回512MB使用）
+- **タイムアウト**: 最大15分（今回30秒）
+- **一時ストレージ**: /tmp 最大10GB
+- **実行環境**: Linux (Amazon Linux 2)
+
+#### 4. エラー対応の流れ
+1. エラーメッセージを正確に読む
+2. CloudWatch Logsで詳細確認
+3. 設定を確認（IAM権限、イベント通知）
+4. 小さく分けてテスト
+5. 別のアプローチを検討
+
+### 📊 実務的な設計思考
+
+#### システム設計のポイント
+- **スケーラビリティ**: 同時に1000件処理可能
+- **コスト効率**: 従量課金で無駄なし（約\/月 for 10K画像）
+- **エラーハンドリング**: 失敗時の再試行、通知
+- **監視**: CloudWatch Metricsでパフォーマンス監視
+
+#### ディレクトリ構造設計
+\\\
+source-bucket/
+  uploads/user123/profile.jpg
+  uploads/user456/cover.jpg
+
+processed-bucket/
+  resized/uploads/user123/profile.jpg
+  thumbnails/uploads/user123/profile.jpg
+\\\
+
+### 🎯 成果物
+
+#### デプロイされたリソース
+- **CloudFormation Stack**: day19-s3-event-processing
+- **S3 Buckets**: 
+  - day19-source-images-294659522793
+  - day19-processed-images-294659522793
+- **Lambda Function**: ImageProcessorFunction-Hq1IerE2l1Ld
+- **S3 Event Notification**: all-files-upload
+
+#### テスト結果
+- ✅ 画像アップロード成功
+- ✅ Lambda自動起動確認
+- ✅ リサイズ画像生成（800px幅）
+- ✅ サムネイル生成（200x200）
+- ✅ 処理後バケットへの保存完了
+
+### 🔗 関連Day
+- Day 13: Amplify Storage（ファイルアップロード基礎）
+- Day 15: AWS SAM入門
+- Day 16-17: Lambda + API Gateway + DynamoDB
+
+### 📝 次のステップ
+- Day 20-21: IAM/認証システム深掘り
+- 実務応用: SNS通知統合、DynamoDBメタデータ保存
+- Week 4（Day 22-28）: Java + Spring Boot + RDS
+
+### 🌟 Day 19のハイライト
+エラー対応が大変だったが、その分深く学べた！
+- ネイティブモジュールの仕組み理解
+- 開発環境と本番環境の違い
+- トラブルシューティングスキル向上
+- 実務レベルの設計思考を習得
+
+**完全に動作するサーバーレス画像処理パイプラインを構築！** 🎉
+

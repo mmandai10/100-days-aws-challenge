@@ -1,0 +1,11 @@
+version = 0.1
+
+[default.deploy.parameters]
+stack_name = "day19-s3-event-processing"
+resolve_s3 = true
+s3_prefix = "day19-s3-event-processing"
+capabilities = "CAPABILITY_IAM"
+image_repositories = []
+
+[default.global.parameters]
+region = "ap-northeast-1"

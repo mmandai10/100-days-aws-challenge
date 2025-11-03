@@ -1,0 +1,32 @@
+﻿{
+  "LambdaFunctionConfigurations": [
+    {
+      "LambdaFunctionArn": "arn:aws:lambda:ap-northeast-1:294659522793:function:day19-s3-event-processing-ImageProcessorFunction-Hq1IerE2l1Ld",
+      "Events": ["s3:ObjectCreated:*"],
+      "Filter": {
+        "Key": {
+          "FilterRules": [
+            {
+              "Name": "suffix",
+              "Value": ".jpg"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "LambdaFunctionArn": "arn:aws:lambda:ap-northeast-1:294659522793:function:day19-s3-event-processing-ImageProcessorFunction-Hq1IerE2l1Ld",
+      "Events": ["s3:ObjectCreated:*"],
+      "Filter": {
+        "Key": {
+          "FilterRules": [
+            {
+              "Name": "suffix",
+              "Value": ".png"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

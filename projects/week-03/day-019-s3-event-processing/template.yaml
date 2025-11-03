@@ -1,0 +1,51 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Day 19 - S3 Event Processing with Image Resize
+
+Globals:
+  Function:
+    Timeout: 30
+    Runtime: nodejs22.x
+    Architectures:
+      - x86_64
+
+Resources:
+  # 元画像を保存するS3バケット
+  SourceBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub 'day19-source-images-${AWS::AccountId}'
+
+  # 処理後の画像を保存するS3バケット
+  ProcessedBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub 'day19-processed-images-${AWS::AccountId}'
+
+  # 画像処理Lambda関数
+  ImageProcessorFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/handlers/
+      Handler: imageProcessor.handler
+      Environment:
+        Variables:
+          PROCESSED_BUCKET: !Ref ProcessedBucket
+      Policies:
+        - S3ReadPolicy:
+            BucketName: !Ref SourceBucket
+        - S3CrudPolicy:
+            BucketName: !Ref ProcessedBucket
+
+Outputs:
+  SourceBucketName:
+    Description: "Source S3 Bucket for uploading images"
+    Value: !Ref SourceBucket
+  
+  ProcessedBucketName:
+    Description: "Processed S3 Bucket for resized images"
+    Value: !Ref ProcessedBucket
+  
+  ImageProcessorFunctionArn:
+    Description: "Image Processor Lambda Function ARN"
+    Value: !GetAtt ImageProcessorFunction.Arn
