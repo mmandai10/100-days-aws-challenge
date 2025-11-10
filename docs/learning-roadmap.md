@@ -6,14 +6,18 @@
 3. 完了したら ✅ をつける
 4. 新しい学習項目が見つかったら「追加学習」に記録
 
-## 📊 現在の進捗状況（2025年10月時点）
+## 📊 現在の進捗状況（2025年11月時点）
 - ✅ Day 2: Weather App - 完了・デプロイ済み
 - ✅ Day 3: ToDo App - 完了・デプロイ済み  
 - ✅ Day 4: Weather Dashboard - 完了・デプロイ済み
 - ✅ Day 15: AWS SAM - 完了
 - ✅ Day 16: API Gateway + Lambda - 完了
+- ✅ Day 17: DynamoDB CRUD - 完了
+- ✅ Day 18: Cognito Integration - 完了
+- ✅ Day 19: S3 Event Processing - 完了
+- ✅ Day 20: IAM/認証システム深掘り（概念編）- 完了
 - 🔄 Day 1,5,6,7: 開始済み（要完成）
-- ⏳ Day 17以降: 未着手
+- ⏳ Day 21以降: 未着手
 
 ---
 
@@ -141,34 +145,59 @@
 - CORS設定
 - HTTPメソッド理解
 
-### Day 17: DynamoDB CRUD
+### Day 17: DynamoDB CRUD ✅ 完了
 **作成物**: NoSQLデータベース操作
 - テーブル設計
 - パーティションキー/ソートキー
 - CRUD操作実装
 - Day 16のAPIにDynamoDB統合
 
-### Day 18: Cognito Integration
+### Day 18: Cognito Integration ✅ 完了
 **作成物**: セキュアAPI
 - JWTトークン検証
 - 認可設定
 - ユーザープール連携
 - カスタム属性
 
-### Day 19: S3 Event Processing
+### Day 19: S3 Event Processing ✅ 完了
 **作成物**: ファイル処理パイプライン
 - S3イベントトリガー
 - 画像リサイズ
 - メタデータ抽出
 - 非同期処理
 
-### Day 20-21: IAM/認証システム深掘り
-**作成物**: エンタープライズ認証
-- IAMロール詳細
-- ポリシー設計
-- クロスアカウントアクセス
-- STS/AssumeRole
-- 監査ログ
+### Day 20: IAM/認証システム深掘り（概念編）✅ 完了
+**実施内容**: IAM理解とSTS/AssumeRoleの仕組み
+- ✅ これまでのIAM経験の整理（Day 6, 13, 18）
+- ✅ IAMの4要素と認証 vs 認可の理解
+- ✅ STSが必要な理由とセキュリティの多層防御
+- ✅ AssumeRoleの概念理解（一時的な役割の引き受け）
+- ✅ template.yamlの深掘り（SAMの自動生成の仕組み）
+- ✅ 実際のAWS環境でIAMロール確認
+  - Trust Policy（lambda.amazonaws.comのみAssumeRole可能）
+  - Attached Policy（AWSLambdaBasicExecutionRole）
+  - Inline Policy（DynamoDB CRUD権限）
+- 💡 **重要**: 「作る」ではなく「理解する」深掘り学習期間
+
+### Day 21: IAM/認証システム深掘り（実践編）
+**実施内容**: クロスアカウントアクセスと監査
+- クロスアカウントAssumeRole実装
+- CloudTrail設定と監査ログ分析
+- Day 18プロジェクトの権限最適化
+- IAMベストプラクティスの実装
+- Day 20で学んだ概念を実践で復習
+
+---
+
+### 📚 Week 3 振り返り（Day 21終了後に実施）
+**目的**: サーバーレスアーキテクチャとIAMの理解を定着
+- Day 15-21の重要概念の復習
+  - AWS SAMの仕組み
+  - API Gateway + Lambda + DynamoDB連携
+  - Cognito認証とAuthorizer
+  - IAM・STS・AssumeRoleの理解
+- 学習ログの見直しと不明点の洗い出し
+- 次週（Java + Spring Boot）への準備
 
 ---
 
@@ -438,55 +467,45 @@ public class TaskService {
     @Autowired
     private TaskRepository taskRepository;
     
-    public List<Task> getOverdueTasks() {
-        // 複雑なクエリ - RDSが得意
-        return taskRepository.findOverdueTasksWithUserInfo();
-    }
-    
-    @Transactional
-    public void completeTaskAndNotify(String taskId) {
-        // トランザクション - RDSが必要
-        Task task = taskRepository.findById(taskId);
-        task.setStatus(COMPLETED);
-        taskRepository.save(task);
-        notificationService.send(task.getUserId());
+    // 複雑なクエリが可能
+    public List<Task> findOverdueTasks() {
+        return taskRepository.findByDueDateBeforeAndStatusNot(
+            LocalDateTime.now(), 
+            TaskStatus.COMPLETED
+        );
     }
 }
 
 // User Service (DynamoDB)
 @Service
 public class UserService {
-    @Autowired
-    private DynamoDBMapper dynamoDBMapper;
+    private final DynamoDbClient dynamoDb;
     
+    // シンプルで高速なアクセス
     public User getUser(String userId) {
-        // 高速な単純取得 - DynamoDBが得意
-        return dynamoDBMapper.load(User.class, userId);
+        return dynamoDb.getItem(GetItemRequest.builder()
+            .tableName("users")
+            .key(Map.of("userId", AttributeValue.builder().s(userId).build()))
+            .build());
     }
 }
 ```
 
 **学習ポイント**:
-- **データベース選択の判断基準**
-- サービス間通信（REST API / メッセージング）
-- データ整合性の管理
-- 分散システムの課題
+- データベース選択の実践的判断基準
+- マイクロサービス間通信
+- API Gatewayでの統合
+- トレーシング・ログ管理
 
 ---
 
-### Day 28: Docker + ECS/Fargate（RDS接続）
-**作成物**: コンテナ化アプリケーション＋本番デプロイ
+### Day 28: Docker + ECS/Fargate
+**作成物**: コンテナ化 + ECS/Fargateデプロイ
 
 **Dockerfile**:
 ```dockerfile
 FROM openjdk:17-jdk-slim
-WORKDIR /app
-COPY target/task-api-1.0.0.jar app.jar
-
-# ヘルスチェック
-HEALTHCHECK --interval=30s --timeout=3s \
-  CMD curl -f http://localhost:8080/health || exit 1
-
+COPY target/task-api.jar /app.jar
 EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "/app.jar"]
 ```
@@ -546,6 +565,19 @@ RDS/Aurora (VPC内)
 
 ---
 
+### 📚 Week 4 振り返り（Day 28終了後に実施）
+**目的**: Java + Spring Boot + RDSの理解とNode.jsとの比較を定着
+- Day 22-28の重要概念の復習
+  - Java開発環境とSpring Bootの理解
+  - JPA/Hibernateとデータベース操作
+  - Spring Securityと認証
+  - RDS vs DynamoDBの違い
+- IAM概念の復習（Day 20の内容を再確認）
+- Node.js週との比較分析を見直し
+- Day 29のパフォーマンス比較に向けた準備
+
+---
+
 ## 📊 Node.js週 vs Java週 - 徹底比較
 
 ### Week 3 (Node.js + DynamoDB) vs Week 4 (Java + RDS)
@@ -588,7 +620,6 @@ RDS/Aurora (VPC内)
 ## 📝 Java週の学習記録テンプレート
 
 各Day完了時に以下を daily-log.md に記録：
-
 ```markdown
 ## Day 24: JPA + RDS統合
 
@@ -658,13 +689,31 @@ RDS/Aurora (VPC内)
 
 ## 📅 Week 5: Advanced Topics (Day 29-35)
 
-### Day 29: Performance比較
-**実施内容**: Node.js vs Java 徹底比較
-- ベンチマークテスト
-- メモリ使用量
-- レスポンスタイム
-- スケーラビリティ
-- コスト分析
+### Day 29: Performance比較 ⭐ 深掘り学習日
+**実施内容**: Node.js vs Java 徹底比較と分析
+- 📊 ベンチマークテスト実施
+  - API Gateway + Lambda (Node.js + DynamoDB)
+  - ECS/Fargate (Java + Spring Boot + RDS)
+  - 同一ワークロードでの比較
+- 📈 メトリクス測定
+  - レスポンスタイム（p50, p95, p99）
+  - メモリ使用量
+  - コールドスタート時間
+  - スループット
+- 💰 コスト分析
+  - 小規模トラフィック時
+  - 中規模トラフィック時
+  - 大規模トラフィック時
+- 📝 選択基準のドキュメント化
+  - どのような場合にNode.js + Lambdaを選ぶか
+  - どのような場合にJava + ECSを選ぶか
+  - それぞれの長所・短所の整理
+- 💡 **重要**: Week 3-4の学習を振り返り、実践的な選択基準を確立
+
+**Day 29の目的：**
+- 単なるベンチマークではなく、「どちらを選ぶべきか」の判断基準を学ぶ
+- Week 3（Node.js）とWeek 4（Java）の復習を兼ねる
+- 実務で技術選定する際の考え方を習得
 
 ### Day 30: ElastiCache
 **作成物**: キャッシュシステム
@@ -707,6 +756,19 @@ RDS/Aurora (VPC内)
 - Reserved Instances
 - Spot Instances
 - Savings Plans
+
+---
+
+### 📚 Week 5 振り返り（Day 35終了後に実施）
+**目的**: 高度なAWSサービスの理解を定着
+- Day 29-35の重要概念の復習
+  - パフォーマンス比較結果の分析
+  - ElastiCache、SQS/SNS、EventBridgeの理解
+  - Auto Scalingとマルチリージョン構成
+- これまでの学習内容の総復習
+  - IAM・認証の理解（Day 20-21）
+  - サーバーレス vs コンテナ（Day 15-28）
+- Week 6以降の大規模プロジェクトへの準備
 
 ---
 
@@ -883,9 +945,6 @@ RDS/Aurora (VPC内)
 
 ---
 
-**このロードマップで100日後には「フルスタック + クラウドエンジニア」になれる！** 🚀
-```
-
 ## 🎯 学習目標設定
 
 ### JavaScript開発者がJavaを学ぶメリット
@@ -935,5 +994,103 @@ RDS/Aurora (VPC内)
 
 ---
 
-このロードマップにより、**Node.js → Java → 両方の長所を理解した**  
-**フルスタック開発者**になることができます！🚀
+## 📚 復習タスクスケジュール（エビングハウスの忘却曲線対策）
+
+### 🎯 復習の重要性
+
+一度学んだだけでは定着しません。以下のスケジュールで計画的に復習します。
+
+### 📅 復習タイミング
+
+| 学習日 | 復習1（翌日） | 復習2（1週間後） | 復習3（2週間後） | 復習4（1ヶ月後） |
+|--------|--------------|-----------------|-----------------|-----------------|
+| Day 20-21 | Day 21で実践 | Day 28振り返り | Day 35振り返り | Day 50中間振り返り |
+| Day 22-28 | 毎日の実装 | Day 35振り返り | Day 50中間振り返り | Day 65 |
+| Day 29-35 | 各Day実践 | Day 43 | Day 50中間振り返り | Day 65 |
+
+### 📝 復習すべき重要概念
+
+#### IAM/認証システム（Day 20-21）
+**復習タイミング**: Day 28, Day 35, Day 50
+- Trust Policyの仕組み
+- AssumeRoleのプロセス
+- STSが必要な理由
+- 最小権限の原則
+- セキュリティの多層防御
+
+#### Node.js vs Java比較（Day 22-29）
+**復習タイミング**: Day 35, Day 50, Day 65
+- データベース選択基準（DynamoDB vs RDS）
+- デプロイモデルの違い（Lambda vs ECS）
+- コスト構造の違い
+- 適用領域の判断基準
+
+#### サーバーレスアーキテクチャ（Day 15-19）
+**復習タイミング**: Day 28, Day 35, Day 50
+- AWS SAMの仕組み
+- Lambda + API Gateway + DynamoDB連携
+- S3イベントトリガー
+- Cognito認証統合
+
+### 🔄 各Week終了後の振り返り日
+
+- **Week 3終了後**（Day 21後）: サーバーレス + IAM復習
+- **Week 4終了後**（Day 28後）: Java + RDS復習 + IAM再確認
+- **Week 5終了後**（Day 35後）: 高度なサービス + 総復習
+- **Week 8終了後**（Day 50）: 中間振り返り（全体総復習）
+- **Week 11終了後**（Day 65）: SNSアプリ完成後の振り返り
+- **Week 14終了後**（Day 80）: IoT完成後の振り返り
+- **Week 16終了後**（Day 95）: SaaS完成後の振り返り
+
+### 💡 復習の進め方
+
+#### 1. 概念の再確認（15分）
+- daily-log.mdの該当Dayを読み返す
+- 重要な学びを3つ挙げる
+- 不明点をリストアップ
+
+#### 2. コードの見直し（15分）
+- 該当プロジェクトのコードを開く
+- template.yamlやコア機能を確認
+- 改善点を考える
+
+#### 3. 実践問題（30分）
+- 類似のシステムを1から設計してみる
+- 「もし〜だったら？」のシナリオを考える
+- 別の技術スタックで実装するならどうするか考える
+
+### 📊 復習効果の測定
+
+各復習時に以下を確認：
+- ✅ 概念を自分の言葉で説明できるか
+- ✅ なぜその技術/設計を選んだか説明できるか
+- ✅ エラーが起きた時に原因を推測できるか
+- ✅ 別のプロジェクトで応用できそうか
+
+---
+
+## 🎯 深掘り学習日の特徴
+
+### 定期的な「理解の日」を設定
+
+実装に追われると、「なぜ動くのか」を理解せずに進んでしまいます。
+以下の日は**深掘り学習日**として、実装ではなく理解に集中します：
+
+- **Day 20-21**: IAM/認証システム深掘り ✅
+- **Day 29**: Performance比較・技術選定基準
+- **各Week終了後**: 振り返り・復習
+- **Day 50**: 中間振り返り（全体総復習）
+- **Day 100**: 最終振り返り・次の100日計画
+
+### 深掘り学習日の効果
+
+1. **理解の定着**: 表面的な知識から深い理解へ
+2. **エラー対応力**: 根本原因を推測できる
+3. **設計力**: なぜその選択をしたか説明できる
+4. **応用力**: 別のシナリオで使える
+
+---
+
+**このロードマップで100日後には「フルスタック + クラウドエンジニア」になれる！** 🚀
+
+**復習を習慣化することで、知識が確実に定着します！** 📚

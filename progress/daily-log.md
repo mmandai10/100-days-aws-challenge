@@ -753,3 +753,445 @@ processed-bucket/
 
 **完全に動作するサーバーレス画像処理パイプラインを構築！** 🎉
 
+---
+
+## Day 20 - IAM/認証システム深掘り（概念編）(2025-11-08)
+- ✅ **Status**: Completed
+- 📁 **Focus**: IAM理解、STS/AssumeRole、Trust Policy、実践確認
+- ⏱️ **Time**: 約5時間
+- 🎯 **Learning Approach**: 「深掘り学習期間」- 実装ではなく概念と仕組みの理解に集中
+
+### 📚 学習内容
+
+#### 1. これまでのIAM経験の整理
+- Day 6: IAMユーザー・カスタムポリシー作成の基礎
+- Day 13: IAM権限エラー対応（S3 PutObject AccessDenied）
+- Day 18: Cognito認証とAPI Gateway Authorizer統合
+- **気づき**: 断片的な知識を体系的に整理する必要性
+
+#### 2. IAMの全体像理解
+
+**IAMの4要素：**
+- **ユーザー**: 人間または長期的な認証情報
+- **グループ**: 複数ユーザーの管理
+- **ロール**: AWSサービスや一時的なアクセス（今日のメイン）
+- **ポリシー**: アクセス許可の定義
+
+**認証 vs 認可：**
+- **認証（Authentication）**: 「あなたは誰ですか？」
+  - Cognito User Pool
+  - IAM User（アクセスキー）
+  - STS（一時的な認証情報）
+- **認可（Authorization）**: 「何をすることができますか？」
+  - IAMポリシー
+  - リソースベースポリシー
+  - Lambda関数内のロジック
+
+#### 3. STSが必要な理由（重要な理解）
+
+**理由1: セキュリティ - 長期的な認証情報を避ける**
+- 永続的なアクセスキーのリスク（漏洩時に永続的に悪用される）
+- 一時的な認証情報（15分〜12時間で自動失効）
+- コードに認証情報を書かなくて良い
+
+**理由2: 最小権限の原則**
+- 必要な時だけ権限を付与
+- 実行終了後は権限を剥奪
+- Lambda実行時のみDynamoDBアクセス可能
+
+**理由3: 柔軟性 - 動的に権限を付与**
+- ユーザーごとに異なる権限を一時的に発行
+- マルチテナントアプリケーションに最適
+
+**理由4: 監査とコンプライアンス**
+- CloudTrailで完全に追跡可能
+- 短時間で自動的に無効化
+
+#### 4. AssumeRoleの概念
+
+**AssumeRole = 「役割を一時的に引き受ける」**
+
+比喩で理解：
+- 俳優が役を演じる（撮影中だけ刑事の権限を持つ）
+- 図書館の一時パス（1時間だけ書庫にアクセス）
+- 来客バッジ（訪問時間中だけ社内にアクセス）
+
+**プロセス：**
+```
+1. リクエスト: 「このロールを引き受けたい」
+2. チェック: Trust Policy確認
+3. 許可: STSが一時認証情報を発行
+4. 使用: その認証情報でAWSリソースにアクセス
+5. 失効: 有効期限が切れると自動的に無効化
+```
+
+#### 5. セキュリティの多層防御
+
+**疑問**: 「一時的にでもS3アクセス権限を取得できるなら、そこが脆弱になるのでは？」
+
+**答え**: 二重の防御構造
+- **防御層1**: Trust Policy（誰がAssumeRoleできるか）
+- **防御層2**: AssumeRole自体にも権限が必要
+- **防御層3**: 条件付きAssumeRole（MFA、IP制限、特定リソース）
+- **防御層4**: Lambda内部ロジック（userIdでフィルタリング）
+
+#### 6. template.yamlの深掘り
+
+**全体構造：**
+- ヘッダー（CloudFormationバージョン、SAM宣言）
+- Globals（全Lambda関数の共通設定）
+- Resources（メインセクション - 8個のAWSリソース）
+- Outputs（デプロイ後の表示情報）
+
+**Policiesセクションの魔法：**
+```yaml
+Policies:
+  - DynamoDBCrudPolicy:
+      TableName: !Ref TasksTable
+```
+
+たった3行で、SAMが自動的に：
+1. IAMロール作成
+2. Trust Policy設定
+3. DynamoDB権限のポリシー作成
+4. CloudWatch Logs権限追加
+5. Lambda関数への割り当て
+
+#### 7. 実際のAWS環境で確認（Day 18プロジェクト）
+
+**確認したリソース：**
+- Lambda関数: `day18-cognito-integration-GetTasksFunction-0emm3Ya20D2s`
+- IAMロール: `day18-cognito-integration-GetTasksFunctionRole-l7z5tkmzszeV`
+
+**Trust Policy（信頼関係）：**
+```json
+{
+  "Principal": { "Service": "lambda.amazonaws.com" },
+  "Action": "sts:AssumeRole"
+}
+```
+→ AWSのLambdaサービスだけがAssumeRole可能
+
+**アタッチされたポリシー：**
+- `AWSLambdaBasicExecutionRole`: CloudWatch Logs権限
+
+**インラインポリシー：**
+- `GetTasksFunctionRolePolicy0`: DynamoDB CRUD権限
+  - Action: GetItem, PutItem, Query, Scan, UpdateItem, DeleteItem, BatchWriteItem, BatchGetItem, DescribeTable, ConditionCheckItem
+  - Resource: `arn:aws:dynamodb:ap-northeast-1:294659522793:table/tasks-day18`のみ
+  - 最小権限の原則を実装
+
+### 💡 重要な学び
+
+#### template.yaml vs 実際のAWS
+**書いたコード（3行）：**
+```yaml
+Policies:
+  - DynamoDBCrudPolicy:
+      TableName: !Ref TasksTable
+```
+
+**SAMが自動生成したもの：**
+- IAMロール × 1
+- Trust Policy × 1
+- Inline Policy × 1（10個のDynamoDB Action）
+- Attached Policy × 1（CloudWatch Logs）
+
+#### Lambda実行時の完全な流れ
+```
+API Gateway呼び出し
+  ↓
+Trust Policyチェック（lambda.amazonaws.com?）
+  ↓
+STS.AssumeRole実行
+  ↓
+一時認証情報発行（15分間有効）
+  ↓
+Lambda関数実行（DynamoDB + CloudWatch Logs）
+  ↓
+関数終了 → 認証情報破棄
+```
+
+#### Infrastructure as Code（IaC）の威力
+- 手動設定: 2-3時間
+- template.yaml: 30分で書く + 3分でデプロイ = 33分
+- さらに: 再現可能、Gitで管理、削除も一発
+
+### 🎯 Day 20の成果
+
+**概念の完全理解：**
+- ✅ IAMの4要素と役割
+- ✅ 認証 vs 認可の違い
+- ✅ STSとAssumeRoleの仕組み
+- ✅ Trust Policyの意味
+- ✅ 最小権限の原則の実装方法
+
+**実践的スキル：**
+- ✅ AWS CLIでIAMロールの確認方法
+- ✅ Trust Policy、Attached Policy、Inline Policyの違い
+- ✅ SAMがどのようにIAMロールを自動生成するか
+- ✅ template.yamlと実際のAWSリソースの対応関係
+
+**セキュリティ理解：**
+- ✅ 多層防御の仕組み
+- ✅ 一時的な認証情報の利点
+- ✅ Resource制限による最小権限の実装
+
+### 📝 復習タスク
+
+**Day 21（明日）**: 実践で復習しながら理解を深める
+**Day 28（1週間後）**: Week 4終了後の振り返りでIAM概念を確認
+**Day 35（2週間後）**: Week 5終了後の全体復習
+**Day 50（1ヶ月後）**: 中間振り返りで重要概念の総復習
+
+### 🔗 関連Day
+- Day 6: IAM基礎（ユーザー・ポリシー作成）
+- Day 13: IAM権限トラブルシューティング
+- Day 18: Cognito統合・認証実装
+- Day 21: IAM深掘り実践編（予定）
+
+### 🌟 Day 20のハイライト
+
+**「作る」だけでなく「理解する」時間の重要性**
+
+これまでは「動けばOK」だったが、今日は「なぜ動くのか」を深掘り。
+- エラーの根本原因を理解できるようになった
+- セキュリティ設計の思想が分かった
+- template.yamlの裏側で何が起きているか理解できた
+
+**Day 18で苦労したIAM権限エラーの原因が完全に理解できた！**
+
+次は Day 21 でクロスアカウントアクセスと CloudTrail を実践します 🚀
+
+
+## Day 15 - AWS SAM入門 (2025-10-26)
+- ✅ **Status**: Completed
+- 📁 **Project**: day15-hello-world (SAM Serverless API)
+- 🛠️ **Tech Stack**: AWS SAM, Lambda (Node.js 22), API Gateway, DynamoDB
+- ⏱️ **Time**: 約4時間
+- 🎯 **Goal**: Infrastructure as Code による自動構築を学ぶ
+
+### 📚 学んだこと
+
+#### 1. AWS SAM (Serverless Application Model)
+- **Infrastructure as Code の威力**
+  - template.yaml だけで Lambda + API Gateway + DynamoDB + IAM が自動構築
+  - 手動 Console 操作（10-15ステップ）が YAML 数行で完結
+- **sam build と sam deploy の違い**
+  - sam build: ローカルでパッケージング、依存関係解決
+  - sam deploy: S3 にアップロード → CloudFormation でリソース作成
+
+#### 2. API Gateway の本質理解
+- **役割**: 外部ネットワークと Lambda をつなぐ HTTPS エンドポイント
+- **提供機能**: ルーティング、認証、リクエスト/レスポンス変換、CORS
+- **リクエストフロー**: 
+`
+  インターネット → API Gateway → Lambda → DynamoDB
+`
+
+#### 3. Lambda 関数の構造
+- **event パラメータ**: API Gateway から渡される情報すべて
+  - httpMethod, path, headers, body, pathParameters など
+- **レスポンス形式**: statusCode, headers, body を返す
+- **環境変数**: SAM が自動設定（process.env.SAMPLE_TABLE）
+
+#### 4. DynamoDB 操作
+- **scan**: テーブル全体を取得（遅い、コスト高）
+- **get**: 主キー指定で1件取得（速い、コスト安）
+- **put**: アイテム追加/更新
+- **AWS SDK**: Lambda 関数内でデータ操作
+
+#### 5. IAM ロールとポリシー
+- **Role**: 誰が（どのサービスが）使えるか
+- **Policy**: 何ができるか（具体的な操作）
+- **SAM の自動作成**: DynamoDBCrudPolicy で必要な権限を自動付与
+
+#### 6. CloudFormation 組み込み関数
+- **!Ref**: リソースを参照して実際の値に置き換える
+- **!Sub**: 変数を展開して文字列を作成
+
+### 🐛 トラブルシューティング
+
+#### 問題1: DNS 解決エラー
+- **現象**: API Gateway エンドポイントに到達できない
+- **原因**: CloudFormation Outputs の URL が実際と異なる（z1low vs z11ow）
+- **解決**: Console から正しい URL を確認
+
+#### 問題2: API Gateway にメソッドが表示されない
+- **原因**: デプロイメントが正しく作成されていなかった
+- **解決**: リソースメニューから「API をデプロイ」を手動実行
+
+#### 問題3: AWS Academy 権限制限
+- **現象**: day6-test-user では CloudFormation 権限不足
+- **解決**: challenge-user プロファイルに切り替え
+
+### ✅ 成果物
+
+#### デプロイされたリソース
+- **CloudFormation スタック**: day15-hello-world (UPDATE_COMPLETE)
+- **API Gateway**: z11ow7z6e6 (REGIONAL)
+- **Lambda 関数**: 3つ
+  - getAllItemsFunction (GET /)
+  - getByIdFunction (GET /{id})
+  - putItemFunction (POST /)
+- **DynamoDB テーブル**: SampleTable (id: String)
+- **IAM Roles**: 各 Lambda 用に自動作成
+
+#### API エンドポイント
+- **URL**: https://z11ow7z6e6.execute-api.ap-northeast-1.amazonaws.com/Prod/
+- **テスト結果**: 
+  - ✅ GET / → 全アイテム取得成功
+  - ✅ POST / → アイテム追加成功
+  - ✅ GET /{id} → 特定アイテム取得成功
+
+### 💡 重要な学び
+
+1. **SAM vs AWS SDK の違い**
+   - SAM = インフラ構築（建物を建てる）
+   - AWS SDK = データ操作（建物の中で作業）
+
+2. **Console テストの重要性**
+   - API Gateway Console から直接テスト可能
+   - DNS 問題時の代替手段として有効
+
+3. **URL 確認の重要性**
+   - CloudFormation Outputs を鵜呑みにしない
+   - Console で実際の URL を必ず確認
+
+4. **Infrastructure as Code のメリット**
+   - 再現性: 同じ構成を何度でも作れる
+   - 効率性: 手動作業の大幅削減
+   - 一貫性: 設定ミスの防止
+
+### 📝 次回への課題
+- ❌ **Day 12**: Lambda/DynamoDB エラーが未解決（502 エラー継続）
+- ✅ **Day 15**: 完全成功
+
+### 🔗 関連リソース
+- CloudFormation スタック: day15-hello-world
+- プロファイル: challenge-user
+- リージョン: ap-northeast-1
+
+## Day 21 - IAM/認証システム深掘り（実践編）(2025-11-09)
+- ✅ **Status**: Completed
+- 📁 **Focus**: CloudTrail設定、IAM実践確認、Day 20概念の復習
+- ⏱️ **Time**: 約5時間
+- 🎯 **Learning Approach**: 「深掘り学習期間」第2日 - 実践で理解を深める
+
+### 📚 学習内容
+
+#### Phase 1: CloudTrail設定（監査ログ）
+- **S3バケット作成**: day21-cloudtrail-logs-294659522793
+- **バケットポリシー設定**: CloudTrailがログを書き込めるように権限付与
+- **CloudTrail証跡作成**: day21-iam-audit-trail
+  - AWS Console経由で作成（CLI権限制限のため）
+  - SSE-KMS暗号化を無効化（AWS Academy制限対応）
+- **ログ記録開始**: 全AWS操作が記録されるように設定完了
+
+#### Phase 2: Day 18プロジェクトのIAM実践確認
+
+**確認したリソース**:
+- Lambda関数: GetTasksFunction
+- IAMロール: day18-cognito-integration-GetTasksFunctionRole-l7z5tkmzszeV
+
+**1. Trust Policy（信頼ポリシー）確認** ✅
+```json
+{
+  "Principal": { "Service": "lambda.amazonaws.com" },
+  "Action": "sts:AssumeRole"
+}
+```
+→ **理解**: lambda.amazonaws.comだけがAssumeRole可能（EC2やユーザーは不可）
+
+**2. Attached Policy確認** ✅
+- **AWSLambdaBasicExecutionRole**: CloudWatch Logsへの書き込み権限
+
+**3. Inline Policy確認** ✅
+- **GetTasksFunctionRolePolicy0**: DynamoDB CRUD権限
+  - Action: GetItem, DeleteItem, PutItem, Scan, Query, UpdateItem等（10個）
+  - Resource: rn:aws:dynamodb:ap-northeast-1:294659522793:table/tasks-day18 のみ
+  - **最小権限の原則を実装**
+
+#### Day 20概念の実践復習
+
+**ARN（Amazon Resource Name）**:
+- AWSリソースの一意な識別子（住所のようなもの）
+- 構造: rn:aws:サービス::アカウントID:リソースタイプ/リソース名
+
+**スタック（Stack）**:
+- CloudFormationで管理されるAWSリソースのまとまり
+- Day 18スタックには20個以上のリソースが含まれる
+
+**最小権限の原則の実装確認**:
+- ✅ DynamoDB操作のみ許可（S3は不可）
+- ✅ tasks-day18テーブルのみアクセス可能（他のテーブルは不可）
+- ✅ 必要な操作だけを許可
+
+### 💡 重要な学び
+
+#### 1. Trust PolicyとInline Policyの違い
+- **Trust Policy**: 「誰が」このロールを使えるか
+- **Inline Policy**: 「何を」できるか
+
+#### 2. セキュリティの多層防御
+```
+防御層1: Trust Policy（lambda.amazonaws.comのみ）
+防御層2: Inline Policy（tasks-day18のみ）
+防御層3: Lambda内部ロジック（userIdフィルタリング）
+```
+
+#### 3. Infrastructure as Codeの威力
+**template.yaml（3行）**:
+```yaml
+Policies:
+  - DynamoDBCrudPolicy:
+      TableName: !Ref TasksTable
+```
+
+**SAMが自動生成**:
+- IAMロール
+- Trust Policy
+- Inline Policy（10個のAction）
+- CloudWatch Logs権限
+
+#### 4. 理解度チェック（全問正解）
+- Q1: Lambda関数はS3にアクセスできる？ → **NO** ✅
+- Q2: 別のDynamoDBテーブルにアクセスできる？ → **NO** ✅
+- Q3: なぜ制限が必要？ → **セキュリティ向上** ✅
+
+### 🎯 Day 21の成果
+
+**実践的スキル習得**:
+- ✅ AWS CLIでIAMロール/ポリシーの確認方法
+- ✅ Trust Policy、Attached Policy、Inline Policyの違いを実物で確認
+- ✅ 最小権限の原則の実装方法を理解
+- ✅ CloudFormation/SAMの自動生成の仕組みを理解
+
+**Day 20との違い**:
+- Day 20: 概念理解（読んで学ぶ）
+- Day 21: 実践確認（手を動かして学ぶ）
+
+### 🔗 関連Day
+- Day 6: IAM基礎（ユーザー・ポリシー作成）
+- Day 13: IAM権限トラブルシューティング
+- Day 18: Cognito統合・認証実装
+- Day 20: IAM/認証システム深掘り（概念編）
+
+### 📝 復習タスク
+- **Day 28（1週間後）**: Week 4終了後の振り返りでIAM概念を確認
+- **Day 35（2週間後）**: Week 5終了後の全体復習
+- **Day 50（1ヶ月後）**: 中間振り返りで重要概念の総復習
+
+### 🌟 Day 21のハイライト
+
+**「理解する」ことの重要性を再確認**
+
+Day 20で学んだ概念を、実際のAWSリソースで確認することで：
+- エラーの根本原因を推測できるようになった
+- なぜその設計になっているか説明できるようになった
+- template.yamlの裏側で何が起きているか完全に理解できた
+
+**最小権限の原則が、実際にどう実装されているか体験できた！**
+
+次は Day 22 から Java + Spring Boot + RDS の学習を開始します 🚀
+
