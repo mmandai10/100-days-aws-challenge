@@ -772,6 +772,234 @@ RDS/Aurora (VPC内)
 
 ---
 
+
+---
+
+## 🚀 発展的学習トピック（オプション）
+
+**対象**: Week 5完了後、より高度な開発手法を学びたい方向け  
+**前提知識**: AWS基礎、IaC（CDK/Terraform）、サーバーレスアーキテクチャ
+
+### AWS MCP統合とKiro活用
+
+#### 📋 概要
+
+**MCP (Model Context Protocol)** と **Kiro** を使った次世代のAWS開発手法。従来の手動操作やコード記述から、自然言語による指示で：
+- AWSリソースの直接構築
+- IaC（CDK/Terraform）の自動生成  
+- スペック駆動開発の実現
+- セキュリティベストプラクティスの自動適用
+
+#### 🎯 実現可能性
+
+| 項目 | 実現可能性 | 成熟度 | 注意点 |
+|-----|----------|-------|--------|
+| AWSリソース直接構築 | ✅ 完全 | GA | IAM権限管理必須 |
+| IaC自動化（CDK） | ✅ 完全 | GA | cdk-nag違反対応必要 |
+| IaC自動化（Terraform） | ✅ 完全 | GA | HCP認証設定必要 |
+| Kiroワークフロー | ✅ 高度 | Preview | 英語環境推奨 |
+
+#### 🛠️ 主要ツール
+
+**1. MCP Proxy for AWS**
+- AWS SigV4認証の自動処理
+- Read-onlyモードによる安全性確保
+- 30以上のAWSサービス対応
+
+**2. Kiro（Agentic IDE）**
+- VS Code OSS上に構築
+- スペック駆動開発
+- Agent Hooks（自動実行タスク）
+- 自然言語によるコード生成
+
+**3. AWS MCPサーバー**
+- AWS CDK: CDKコード自動生成、cdk-nag統合
+- Terraform: Registry統合、ワークスペース管理
+- CloudFormation: 既存リソースからのIaC生成
+
+#### 📚 学習ステップ
+
+##### Phase 1: 基礎構築（1-2週間）
+
+**Week 1**
+- IAM環境準備（最小権限）
+- MCP Proxy for AWSセットアップ
+- 基本MCPサーバー設定
+
+\\\ash
+# インストール
+uvx mcp-proxy-for-aws@latest
+
+# Read-onlyモードで動作確認
+export MCP_READ_ONLY=true
+\\\
+
+**Week 2**
+- Kiroインストール
+- MCP設定ファイル作成
+- 初期テストと動作確認
+
+##### Phase 2: IaC統合（2-3週間）
+
+**CDK MCPサーバー導入**
+\\\ash
+uvx awslabs-cdk
+\\\
+
+**自然言語での指示例**:
+\\\
+「AWS CDK MCPサーバーを使用して、
+以下を含む3層アーキテクチャを構築:
+- VPC（パブリック×2、プライベート×4サブネット）
+- ALB
+- ECS Fargate（Auto Scaling有効）
+- RDS PostgreSQL（Multi-AZ）
+- 全てのベストプラクティス適用」
+\\\
+
+##### Phase 3: Kiro本格活用（2-4週間）
+
+**スペック駆動開発**
+
+3つのマークダウンファイルで開発を管理:
+
+1. **requirements.md**（要件定義）
+\\\markdown
+## 機能要件
+WHEN ユーザーがログインボタンをクリックする
+THEN システムは認証プロセスを開始する
+\\\
+
+2. **design.md**（設計ドキュメント）
+\\\markdown
+## アーキテクチャ
+- Frontend: React + TypeScript
+- Backend: Node.js + Express
+- Infrastructure: AWS (ECS Fargate)
+\\\
+
+3. **tasks.md**（実装タスク）
+\\\markdown
+- [ ] VPC setup
+- [ ] Database schema
+- [ ] API endpoints
+\\\
+
+**Agent Hooks**（自動実行タスク）
+\\\markdown
+# .kiro/hooks/test-generation.md
+
+WHEN ファイルが保存される
+THEN
+- 対応するユニットテストを自動生成
+- テストカバレッジを確認
+\\\
+
+#### 🔒 セキュリティベストプラクティス
+
+**必須設定**:
+1. IAM最小権限の原則
+2. MFA有効化
+3. CloudTrail監査ログ
+4. Read-onlyモードから開始
+5. mcp.jsonをGitにコミットしない
+
+**IAMポリシー例（Read-Only）**:
+\\\json
+{
+  "Version": "2012-10-17",
+  "Statement": [{
+    "Effect": "Allow",
+    "Action": [
+      "ec2:Describe*",
+      "s3:List*",
+      "s3:Get*",
+      "rds:Describe*",
+      "lambda:List*",
+      "lambda:Get*"
+    ],
+    "Resource": "*"
+  }]
+}
+\\\
+
+#### 💰 コスト
+
+**Kiro料金（プレビュー後）**:
+- Free: \（50インタラクション/月）
+- Pro: \（1,000インタラクション/月）
+- Pro+: \（3,000インタラクション/月）
+
+**AWS利用料金**:
+- 開発環境: 月\-200程度
+- 本番環境: ワークロードによる
+
+#### 🎯 ユースケース例
+
+**マイクロサービスの完全自動構築**:
+\\\
+「AWS CDK MCPサーバーを使用して、
+E-commerceのマイクロサービスアーキテクチャを構築:
+
+- User Service（認証・認可）
+- Product Service（商品管理）
+- Order Service（注文処理）
+- Payment Service（決済）
+
+共通インフラ:
+- VPC、ALB、CloudFront、WAF
+- CloudWatch + X-Ray
+- CI/CD（CodePipeline）
+
+セキュリティ:
+- 全てのデータ暗号化
+- IAM最小権限
+- cdk-nagで検証
+
+コスト: 月額\,000以内に最適化」
+\\\
+
+#### 📖 参考リソース
+
+**公式ドキュメント**:
+- Kiro: https://kiro.dev/docs/
+- AWS MCP: https://awslabs.github.io/mcp/
+- MCP仕様: https://modelcontextprotocol.io/
+
+**GitHubリポジトリ**:
+- AWS MCP Servers: https://github.com/awslabs/mcp
+- MCP Proxy: https://github.com/aws/mcp-proxy-for-aws
+- Terraform MCP: https://github.com/hashicorp/terraform-mcp-server
+
+#### ⚠️ 注意事項
+
+**現時点（2025年11月）の状態**:
+- Kiro: プレビュー段階（本番使用は慎重に）
+- MCP Proxy: GA（一般提供）
+- AWS MCPサーバー: 一部GA、一部プレビュー
+
+**推奨アプローチ**:
+1. 開発環境で十分にテスト
+2. ステージング環境で検証
+3. 小規模な本番ワークロードから開始
+4. 段階的に拡大
+
+#### 🎓 学習曲線
+
+- **基本操作**: 1-2日
+- **実用レベル**: 1-2週間
+- **上級レベル**: 1-2ヶ月
+
+**前提知識**:
+- AWS基礎知識（必須）
+- IaC経験（CDK/Terraform）（推奨）
+- 英語読解力（必須）
+
+---
+
+**この発展的トピックは、Week 5完了後に興味がある方向けのオプション学習です。100 Days Challengeのメインパスには含まれませんが、最新のAI駆動開発手法を学びたい方には強く推奨します。**
+
+---
 ## 📅 Week 6-8: E-commerce Platform (Day 36-50)
 
 ### フルスタックECサイト構築
@@ -1094,3 +1322,230 @@ RDS/Aurora (VPC内)
 **このロードマップで100日後には「フルスタック + クラウドエンジニア」になれる！** 🚀
 
 **復習を習慣化することで、知識が確実に定着します！** 📚
+---
+
+## 🚀 発展的学習トピック（オプション）
+
+**対象**: Week 5完了後、より高度な開発手法を学びたい方向け  
+**前提知識**: AWS基礎、IaC（CDK/Terraform）、サーバーレスアーキテクチャ
+
+### AWS MCP統合とKiro活用
+
+#### 📋 概要
+
+**MCP (Model Context Protocol)** と **Kiro** を使った次世代のAWS開発手法。従来の手動操作やコード記述から、自然言語による指示で：
+- AWSリソースの直接構築
+- IaC（CDK/Terraform）の自動生成
+- スペック駆動開発の実現
+- セキュリティベストプラクティスの自動適用
+
+#### 🎯 実現可能性
+
+| 項目 | 実現可能性 | 成熟度 | 注意点 |
+|-----|----------|-------|--------|
+| AWSリソース直接構築 | ✅ 完全 | GA | IAM権限管理必須 |
+| IaC自動化（CDK） | ✅ 完全 | GA | cdk-nag違反対応必要 |
+| IaC自動化（Terraform） | ✅ 完全 | GA | HCP認証設定必要 |
+| Kiroワークフロー | ✅ 高度 | Preview | 英語環境推奨 |
+
+#### 🛠️ 主要ツール
+
+**1. MCP Proxy for AWS**
+- AWS SigV4認証の自動処理
+- Read-onlyモードによる安全性確保
+- 30以上のAWSサービス対応
+
+**2. Kiro（Agentic IDE）**
+- VS Code OSS上に構築
+- スペック駆動開発
+- Agent Hooks（自動実行タスク）
+- 自然言語によるコード生成
+
+**3. AWS MCPサーバー**
+- AWS CDK: CDKコード自動生成、cdk-nag統合
+- Terraform: Registry統合、ワークスペース管理
+- CloudFormation: 既存リソースからのIaC生成
+
+#### 📚 学習ステップ
+
+##### Phase 1: 基礎構築（1-2週間）
+
+**Week 1**
+- IAM環境準備（最小権限）
+- MCP Proxy for AWSセットアップ
+- 基本MCPサーバー設定
+
+\\\ash
+# インストール
+uvx mcp-proxy-for-aws@latest
+
+# Read-onlyモードで動作確認
+export MCP_READ_ONLY=true
+\\\
+
+**Week 2**
+- Kiroインストール
+- MCP設定ファイル作成
+- 初期テストと動作確認
+
+##### Phase 2: IaC統合（2-3週間）
+
+**CDK MCPサーバー導入**
+\\\ash
+uvx awslabs-cdk
+\\\
+
+**自然言語での指示例**:
+\\\
+「AWS CDK MCPサーバーを使用して、
+以下を含む3層アーキテクチャを構築:
+- VPC（パブリック×2、プライベート×4サブネット）
+- ALB
+- ECS Fargate（Auto Scaling有効）
+- RDS PostgreSQL（Multi-AZ）
+- 全てのベストプラクティス適用」
+\\\
+
+##### Phase 3: Kiro本格活用（2-4週間）
+
+**スペック駆動開発**
+
+3つのマークダウンファイルで開発を管理:
+
+1. **requirements.md**（要件定義）
+\\\markdown
+## 機能要件
+WHEN ユーザーがログインボタンをクリックする
+THEN システムは認証プロセスを開始する
+\\\
+
+2. **design.md**（設計ドキュメント）
+\\\markdown
+## アーキテクチャ
+- Frontend: React + TypeScript
+- Backend: Node.js + Express
+- Infrastructure: AWS (ECS Fargate)
+\\\
+
+3. **tasks.md**（実装タスク）
+\\\markdown
+- [ ] VPC setup
+- [ ] Database schema
+- [ ] API endpoints
+\\\
+
+**Agent Hooks**（自動実行タスク）
+\\\markdown
+# .kiro/hooks/test-generation.md
+
+WHEN ファイルが保存される
+THEN
+- 対応するユニットテストを自動生成
+- テストカバレッジを確認
+\\\
+
+#### 🔒 セキュリティベストプラクティス
+
+**必須設定**:
+1. IAM最小権限の原則
+2. MFA有効化
+3. CloudTrail監査ログ
+4. Read-onlyモードから開始
+5. mcp.jsonをGitにコミットしない
+
+**IAMポリシー例（Read-Only）**:
+\\\json
+{
+  "Version": "2012-10-17",
+  "Statement": [{
+    "Effect": "Allow",
+    "Action": [
+      "ec2:Describe*",
+      "s3:List*",
+      "s3:Get*",
+      "rds:Describe*",
+      "lambda:List*",
+      "lambda:Get*"
+    ],
+    "Resource": "*"
+  }]
+}
+\\\
+
+#### 💰 コスト
+
+**Kiro料金（プレビュー後）**:
+- Free: \（50インタラクション/月）
+- Pro: \（1,000インタラクション/月）
+- Pro+: \（3,000インタラクション/月）
+
+**AWS利用料金**:
+- 開発環境: 月\-200程度
+- 本番環境: ワークロードによる
+
+#### 🎯 ユースケース例
+
+**マイクロサービスの完全自動構築**:
+\\\
+「AWS CDK MCPサーバーを使用して、
+E-commerceのマイクロサービスアーキテクチャを構築:
+
+- User Service（認証・認可）
+- Product Service（商品管理）
+- Order Service（注文処理）
+- Payment Service（決済）
+
+共通インフラ:
+- VPC、ALB、CloudFront、WAF
+- CloudWatch + X-Ray
+- CI/CD（CodePipeline）
+
+セキュリティ:
+- 全てのデータ暗号化
+- IAM最小権限
+- cdk-nagで検証
+
+コスト: 月額\,000以内に最適化」
+\\\
+
+#### 📖 参考リソース
+
+**公式ドキュメント**:
+- Kiro: https://kiro.dev/docs/
+- AWS MCP: https://awslabs.github.io/mcp/
+- MCP仕様: https://modelcontextprotocol.io/
+
+**GitHubリポジトリ**:
+- AWS MCP Servers: https://github.com/awslabs/mcp
+- MCP Proxy: https://github.com/aws/mcp-proxy-for-aws
+- Terraform MCP: https://github.com/hashicorp/terraform-mcp-server
+
+#### ⚠️ 注意事項
+
+**現時点（2025年11月）の状態**:
+- Kiro: プレビュー段階（本番使用は慎重に）
+- MCP Proxy: GA（一般提供）
+- AWS MCPサーバー: 一部GA、一部プレビュー
+
+**推奨アプローチ**:
+1. 開発環境で十分にテスト
+2. ステージング環境で検証
+3. 小規模な本番ワークロードから開始
+4. 段階的に拡大
+
+#### 🎓 学習曲線
+
+- **基本操作**: 1-2日
+- **実用レベル**: 1-2週間
+- **上級レベル**: 1-2ヶ月
+
+**前提知識**:
+- AWS基礎知識（必須）
+- IaC経験（CDK/Terraform）（推奨）
+- 英語読解力（必須）
+
+---
+
+**この発展的トピックは、Week 5完了後に興味がある方向けのオプション学習です。100 Days Challengeのメインパスには含まれませんが、最新のAI駆動開発手法を学びたい方には強く推奨します。**
+
+---
