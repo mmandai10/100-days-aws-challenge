@@ -1195,3 +1195,277 @@ Day 20で学んだ概念を、実際のAWSリソースで確認することで�
 
 次は Day 22 から Java + Spring Boot + RDS の学習を開始します 🚀
 
+
+---
+
+## Day 22: Spring Boot基礎 + Elastic Beanstalk初回デプロイ（2025年11月15日）
+
+### 🎯 今日の目標
+- Java 17インストール
+- Spring Boot Starter Project作成
+- REST APIコントローラー実装
+- Elastic Beanstalk初回デプロイ成功
+
+### ✅ 達成内容
+
+#### 1. Java 17インストール（Chocolatey経由）
+```powershell
+# Chocolateyでインストール
+choco install openjdk17 -y
+
+# バージョン確認
+java -version
+# openjdk version "17.0.17" 2025-01-16
+```
+
+#### 2. Spring Boot Starter Project作成
+- Spring Initializr使用
+- 設定:
+  - Project: Maven
+  - Language: Java 17
+  - Spring Boot: 3.5.7
+  - Dependencies: Spring Web, Spring Boot DevTools
+
+#### 3. REST APIコントローラー実装
+3つのエンドポイントを実装：
+```java
+@RestController
+public class HelloController {
+    @GetMapping("/")
+    public Map<String, String> root() {
+        Map<String, String> response = new HashMap<>();
+        response.put("status", "running");
+        response.put("message", "Welcome to Spring Boot!");
+        response.put("framework", "Spring Boot 3.5.7");
+        return response;
+    }
+
+    @GetMapping("/hello")
+    public Map<String, String> hello() {
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Hello from Spring Boot!");
+        response.put("day", "Day 22");
+        response.put("technology", "Java 17 + Spring Boot");
+        return response;
+    }
+
+    @GetMapping("/api/info")
+    public Map<String, Object> apiInfo() {
+        Map<String, Object> response = new HashMap<>();
+        response.put("topic", "Spring Boot Basics");
+        response.put("application", "100 Days AWS Challenge");
+        
+        Map<String, String> comparison = new HashMap<>();
+        comparison.put("previous", "Node.js + Express");
+        comparison.put("current", "Java + Spring Boot");
+        response.put("comparison", comparison);
+        response.put("day", 22);
+        
+        return response;
+    }
+}
+```
+
+#### 4. ローカルでの動作確認
+```powershell
+# アプリケーション起動
+.\mvnw.cmd spring-boot:run
+
+# 動作確認
+curl http://localhost:8080/
+curl http://localhost:8080/hello
+curl http://localhost:8080/api/info
+```
+
+**結果**: 全てのエンドポイントが正常に動作 ✅
+
+#### 5. AWS SDK for Java設定
+pom.xmlに以下を追加：
+```xml
+<dependency>
+    <groupId>software.amazon.awssdk</groupId>
+    <artifactId>bom</artifactId>
+    <version>2.20.0</version>
+    <type>pom</type>
+    <scope>import</scope>
+</dependency>
+<dependency>
+    <groupId>software.amazon.awssdk</groupId>
+    <artifactId>s3</artifactId>
+</dependency>
+<dependency>
+    <groupId>software.amazon.awssdk</groupId>
+    <artifactId>dynamodb</artifactId>
+</dependency>
+```
+
+#### 6. JARファイルのビルド
+```powershell
+# ビルド
+.\mvnw.cmd clean package
+
+# ファイルサイズ確認
+ls target/*.jar
+# day22-springboot-hello-0.0.1-SNAPSHOT.jar (36.7 MB)
+```
+
+#### 7. IAMロール作成（最大の学び）
+Elastic Beanstalkデプロイに必要な2つのロールを作成：
+
+**サービスロール** (`aws-elasticbeanstalk-service-role`):
+- Elastic Beanstalk自身がAWSリソースを管理するための権限
+- ポリシー:
+  - `AWSElasticBeanstalkEnhancedHealth`
+  - `AWSElasticBeanstalkManagedUpdatesCustomerRolePolicy`
+
+**EC2インスタンスプロファイル** (`aws-elasticbeanstalk-ec2-role`):
+- EC2インスタンス上のアプリがAWSリソースにアクセスするための権限
+- ポリシー: Elastic Beanstalk - Compute
+
+**学び**: AWS Academyでは自動作成されないため、手動で作成が必要
+
+#### 8. Elastic Beanstalk環境作成
+**設定内容**:
+- アプリケーション名: `day22-springboot-app`
+- 環境名: `Day22-springboot-app-env`
+- プラットフォーム: Corretto 17 running on 64bit Amazon Linux 2023/4.7.1
+- プリセット: 単一インスタンス（無料利用枠の対象）
+
+**重要な学び - ポート設定**:
+- Elastic Beanstalkのデフォルトポート: 5000
+- Spring Bootのデフォルトポート: 8080
+- **解決**: `application.properties`に`server.port=5000`を追加
+```powershell
+# application.propertiesを作成
+Set-Content -Path "src\main\resources\application.properties" -Value "server.port=5000" -Encoding UTF8
+
+# 再ビルド
+.\mvnw.cmd clean package -DskipTests
+```
+
+#### 9. デプロイ成功！
+**公開URL**: 
+```
+http://day22-springboot-app-env.eba-3pjjgxap.ap-northeast-1.elasticbeanstalk.com
+```
+
+**動作確認**:
+- `/` → ✅ アプリケーション情報表示
+- `/hello` → ✅ Hello World表示
+- `/api/info` → ✅ 詳細情報（Node.js比較含む）表示
+
+---
+
+### 📊 Node.js（Day 16）との比較
+
+| 項目 | Node.js + Express | Java + Spring Boot |
+|------|-------------------|-------------------|
+| **セットアップ時間** | 5分 | 30分 |
+| **言語の学習曲線** | 緩やか | 急 |
+| **型安全性** | なし（実行時エラー） | あり（コンパイル時） |
+| **IDEサポート** | 普通 | 非常に強力 |
+| **コード量** | 少ない | 多い（ボイラープレート） |
+| **起動時間** | 数秒 | 10秒以上 |
+| **JARファイルサイズ** | - | 36.7 MB |
+| **ホットリロード** | nodemon（簡単） | DevTools（やや複雑） |
+| **デプロイ** | Lambda（SAM） | Elastic Beanstalk |
+
+### 🔍 Elastic Beanstalkの学び
+
+#### メリット
+- ✅ EC2の複雑な設定を隠蔽
+- ✅ Auto Scaling自動設定
+- ✅ Load Balancer統合可能
+- ✅ 環境変数管理が簡単
+
+#### デメリット
+- ❌ セットアップが複雑（IAMロール手動作成）
+- ❌ AWS Academyでは制限が多い
+- ❌ デプロイに時間がかかる（5-10分）
+- ❌ Lambda（SAM）より学習コストが高い
+
+### 💰 コスト見積もり
+
+**Elastic Beanstalk環境**:
+- EC2 (t3.micro): 無料枠内（750時間/月）
+- 無料枠超過後: 約$7.50/月
+
+**比較（Lambda）**:
+- Day 16のNode.js API: ほぼ無料（100万リクエストまで無料）
+
+### 🤔 今日の感想
+
+**良かった点**:
+- Javaの型安全性を実感（コンパイル時にエラーが見つかる）
+- Spring Bootの自動設定が便利
+- IDEのサポートが強力（IntelliJ IDEA / VSCode）
+
+**難しかった点**:
+- IAMロールの手動作成（Node.js/SAMでは自動だった）
+- ポート設定のトラブルシューティング（502 Bad Gateway）
+- Elastic Beanstalkの複雑な設定画面
+
+**Node.jsと比較して**:
+- **開発速度**: Node.jsの方が圧倒的に速い
+- **型安全性**: Javaの方が安心感がある
+- **デプロイ**: Lambdaの方が簡単だった
+- **用途**: 大規模・エンタープライズならJava、スタートアップならNode.js
+
+### 🎯 次回（Day 23）の予定
+- RDS MySQL / Aurora Serverless v2 作成
+- Spring Boot REST API実装（メモリ内データ）
+- JPA設定準備
+- DynamoDBとの違いを理解
+
+### 📝 学習時間
+- Java環境構築: 30分
+- Spring Boot学習: 1時間
+- Elastic Beanstalk設定: 2時間（IAMロール作成含む）
+- トラブルシューティング: 1時間
+- ドキュメント作成: 30分
+- **合計**: 約5時間
+
+### 🔗 関連リソース
+- [Spring Boot公式ドキュメント](https://spring.io/projects/spring-boot)
+- [AWS Elastic Beanstalk Java Guide](https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/create_deploy_Java.html)
+- プロジェクトディレクトリ: `projects/week-04/day22-springboot-hello`
+
+---
+## Day 22 - Spring Boot環境構築 + AWS RDS準備 (2025-11-23)
+- ✅ **Status**: Completed
+- 📁 **Project**: day-022-spring-boot-hello
+- 🛠️ **Tech Stack**: Java 17, Spring Boot 3.5.8, Maven, AWS RDS MySQL
+- ⏱️ **Time**: 約3時間
+
+### 📚 実施内容
+
+#### 環境構築
+- Java 17確認（既にインストール済み）
+- Spring Initializr でプロジェクト作成
+- Maven Wrapper使用（Maven手動インストール不要）
+
+#### Hello World REST API実装
+- HelloController作成
+- エンドポイント実装：
+  - GET / → "Task API is running!"
+  - GET /hello → "Hello from Spring Boot + RDS!"
+- ローカル起動成功（localhost:8080）
+
+#### AWS RDS MySQL作成
+- DBインスタンス識別子: day22-taskdb
+- インスタンスクラス: db.t3.micro（サンドボックステンプレート）
+- ストレージ: 20 GiB
+- パブリックアクセス: 有効
+- 初期データベース名: taskdb
+- エンドポイント: day22-taskdb.cx6ymy8083qh.ap-northeast-1.rds.amazonaws.com
+- ポート: 3306
+
+### 💡 学習ポイント
+- Spring Bootの起動速度（1.8秒）- Node.jsより遅いが許容範囲
+- Maven Wrapperの便利さ
+- AWS Academyでの制限（サンドボックステンプレート必須）
+- RDSパブリックアクセス設定の重要性
+
+### 🎯 次のステップ
+- Day 23: Spring Boot REST API（メモリ内データ）でCRUD実装
+- Day 24: JPA + RDS統合（今日作成したRDSに接続）
