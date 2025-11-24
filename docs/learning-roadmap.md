@@ -1000,6 +1000,119 @@ E-commerceのマイクロサービスアーキテクチャを構築:
 **この発展的トピックは、Week 5完了後に興味がある方向けのオプション学習です。100 Days Challengeのメインパスには含まれませんが、最新のAI駆動開発手法を学びたい方には強く推奨します。**
 
 ---
+
+
+---
+
+## 🚀 発展的学習トピック（オプション）
+
+### AWS MCP統合とKiro活用
+
+**対象**: Week 5完了後、より高度な開発手法を学びたい方向け  
+**前提知識**: AWS基礎、IaC（CDK/Terraform）、サーバーレスアーキテクチャ
+
+#### 📋 概要
+
+**MCP (Model Context Protocol)** と **Kiro** による次世代AWS開発：
+- 自然言語指示でAWSリソース構築
+- IaC（CDK/Terraform）の自動生成
+- スペック駆動開発
+- セキュリティベストプラクティスの自動適用
+
+#### 🎯 実現可能性（2025年11月時点）
+
+| 機能 | 状態 | 注意点 |
+|-----|------|--------|
+| AWSリソース直接構築 | ✅ GA | IAM権限管理必須 |
+| IaC自動化（CDK） | ✅ GA | cdk-nag統合 |
+| IaC自動化（Terraform） | ✅ GA | HCP認証必要 |
+| Kiroワークフロー | 🔶 Preview | 英語環境推奨 |
+
+#### 🛠️ 主要ツール
+
+**1. MCP Proxy for AWS**
+\\\ash
+uvx mcp-proxy-for-aws@latest
+export MCP_READ_ONLY=true  # 安全な開始
+\\\
+
+**2. Kiro（Agentic IDE）**
+- スペック駆動開発（requirements.md, design.md, tasks.md）
+- Agent Hooks（自動テスト生成、セキュリティスキャン）
+- 自然言語によるコード生成
+
+**3. AWS MCPサーバー**
+- AWS CDK: CDKコード自動生成 + cdk-nag
+- Terraform: Registry統合
+- CloudFormation: 既存リソースのIaC化
+
+#### 📚 学習ステップ
+
+**Phase 1: 基礎構築（1-2週間）**
+- IAM環境準備（最小権限）
+- MCP Proxy for AWSセットアップ
+- Kiroインストールと初期設定
+
+**Phase 2: IaC統合（2-3週間）**
+- CDK/Terraform MCPサーバー導入
+- 自然言語によるインフラ構築テスト
+- セキュリティ検証フロー確立
+
+**Phase 3: 本格活用（2-4週間）**
+- スペック駆動開発の実践
+- Agent Hooks設定
+- チーム向けワークフロー確立
+
+#### 🎯 ユースケース例
+
+\\\
+「AWS CDK MCPサーバーを使用して、
+3層アーキテクチャを構築:
+- VPC（パブリック×2、プライベート×4）
+- ALB + ECS Fargate（Auto Scaling）
+- RDS PostgreSQL（Multi-AZ）
+- 全てのベストプラクティス適用
+- cdk-nagでセキュリティ検証」
+\\\
+
+#### 💰 コスト
+
+**Kiro**（プレビュー後）:
+- Free: \（50インタラクション/月）
+- Pro: \（1,000インタラクション/月）
+- Pro+: \（3,000インタラクション/月）
+
+**AWS**: 開発環境 \-200/月
+
+#### 🔒 セキュリティ
+
+**必須設定**:
+- IAM最小権限の原則
+- MFA有効化
+- CloudTrail監査ログ
+- Read-onlyモードから開始
+- mcp.jsonをGitにコミットしない
+
+#### 📖 参考リソース
+
+- Kiro: https://kiro.dev/docs/
+- AWS MCP: https://awslabs.github.io/mcp/
+- MCP仕様: https://modelcontextprotocol.io/
+
+#### ⚠️ 注意事項
+
+**現時点（2025年11月）**:
+- Kiro: プレビュー段階（本番は慎重に）
+- MCP Proxy: GA（本番利用可）
+- 開発環境で十分にテスト後、段階的に展開
+
+---
+
+**この発展的トピックは、Week 5完了後のオプション学習です。100 Days Challengeのメインパスには含まれませんが、最新のAI駆動開発手法を学びたい方には推奨します。**
+
+詳細な実装ガイドは、プロジェクトリポジトリの docs/ フォルダに別途保存されています。
+
+---
 ## 📅 Week 6-8: E-commerce Platform (Day 36-50)
 
 ### フルスタックECサイト構築
