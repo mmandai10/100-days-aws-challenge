@@ -34,3 +34,4 @@ projects/week-01/day-004-weather-dashboard/src/frontend/config.js
 
 # S3 bucket policies (optional)
 **/bucket-policy.json
+target/

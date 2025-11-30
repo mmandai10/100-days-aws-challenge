@@ -1544,3 +1544,50 @@ day23-task-api/
 ### 次回（Day 25）の予定
 - Spring Security + JWT認証
 - Day 18（Cognito）との比較
+
+@"
+
+## Day 25 (2025-11-30) - Spring Security + JWT認証 ⭐
+
+### 実施内容
+- ✅ Spring Security + JWT プロジェクト作成
+- ✅ SecurityConfig（認証ルール設定）
+- ✅ JwtUtil（トークン生成・検証）
+- ✅ JwtAuthenticationFilter（リクエスト検証）
+- ✅ User エンティティ + Repository
+- ✅ AuthService（登録・ログイン処理）
+- ✅ AuthController（/api/auth/register, /api/auth/login）
+- ✅ 保護されたAPI動作確認（トークンなし→403、トークンあり→成功）
+
+### トラブル対応
+- RDS接続：CloudShell IP をセキュリティグループに追加
+- Maven：Chocolatey でインストール済みだがパス認識されず → VSCode の Run 機能で代替
+- JAVA_HOME：17 → 21 に変更
+- application.properties：エンコーディング問題 → JwtUtil に値を直接記述
+- Port 8080 重複：Stop-Process で解決
+
+### Day 18（Cognito）との比較
+
+| 項目 | Cognito (Day 18) | Spring Security + JWT (Day 25) |
+|------|------------------|-------------------------------|
+| ユーザー保存 | AWS管理 | 自前DB (RDS) |
+| パスワード処理 | Cognito自動 | BCryptで自前実装 |
+| トークン発行 | Cognito SDK | JwtUtil |
+| トークン検証 | Cognito SDK | JwtAuthenticationFilter |
+| コード量 | 少ない | 多い（12ファイル） |
+| 柔軟性 | 限定的 | 完全自由 |
+| 運用負荷 | 低い | 高い |
+
+### 学んだこと
+- **JWT構造**: ヘッダー.ペイロード.署名（Base64エンコード）
+- **Spring Security**: 全リクエストを検問するフィルターチェーン
+- **STATELESS**: サーバーがセッション保持しない → スケールしやすい
+- **認証の選択肢**: Cognito（クラウド）、AD（エンタープライズ）、Spring Security（独自実装）
+
+### 感想
+トラブル対応が多かったが、認証の仕組みを「中身から」理解できた。
+Cognito を使う場合も、裏で何が起きているか分かるようになった価値は大きい。
+
+### 次回（Day 26）の予定
+- 学習ロードマップ確認
+"@ | Add-Content -Path C:\100-days-aws-challenge\progress\daily-log.md -Encoding UTF8
