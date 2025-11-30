@@ -1591,3 +1591,44 @@ Cognito を使う場合も、裏で何が起きているか分かるようにな
 ### 次回（Day 26）の予定
 - 学習ロードマップ確認
 "@ | Add-Content -Path C:\100-days-aws-challenge\progress\daily-log.md -Encoding UTF8
+
+
+# daily-log.mdに追記
+Add-Content -Path "C:\100-days-aws-challenge\progress\daily-log.md" -Value @"
+
+## Day 26 - AWS SDK for Java + S3統合 ($(Get-Date -Format "yyyy-MM-dd"))
+- ✅ **Status**: Completed
+- 📁 **Project**: day26-aws-integration
+- 🛠️ **Tech Stack**: Spring Boot, AWS Secrets Manager, S3, RDS
+
+### 実装内容
+1. **Secrets Manager統合**
+   - RDS認証情報をSecrets Managerに保存
+   - Spring BootからSecrets Manager経由でDB接続
+   - プロファイル切り替え（local/aws）
+
+2. **S3統合**
+   - ファイルアップロードAPI実装
+   - S3Service作成（アップロード/削除/URL取得）
+   - FileController作成
+
+### 作成したAWSリソース
+- Secrets Manager: day26/rds/taskdb-credentials
+- S3 Bucket: day26-task-attachments-20251130-mitsu
+
+### 学習ポイント
+- **Secrets Managerの用途**: DB認証情報だけでなく、APIキー、JWTシークレット、OAuth情報など全ての秘密情報を安全に管理
+- **Spring Profiles**: local/awsで環境ごとに設定切り替え
+- **Maven**: Javaのビルドツール（npmに相当）
+- **AWS SDK for Java v2**: S3操作の実装方法
+
+### Day 17（DynamoDB）との比較
+- DynamoDB: AWS SDK直接操作、サーバーレス向き
+- RDS + Secrets Manager: エンタープライズ向き、認証情報管理が重要
+
+### 復習で理解したこと
+- Secrets Managerは「秘密情報の金庫」
+- コードに秘密情報を書かないのがエンタープライズの基本
+"@ -Encoding UTF8
+
+Write-Host "✅ daily-log.md updated!" -ForegroundColor Green
