@@ -6,7 +6,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/tasks")
@@ -25,13 +24,15 @@ public class TaskController {
     // GET /api/tasks/{id} - 特定タスク取得
     @GetMapping("/{id}")
     public ResponseEntity<Task> getTaskById(@PathVariable String id) {
-        Optional<Task> task = taskService.getTaskById(id);
-        
-        if (task.isPresent()) {
-            return ResponseEntity.ok(task.get());
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        return taskService.getTaskById(id)
+            .map(task -> ResponseEntity.ok(task))
+            .orElse(ResponseEntity.notFound().build());
+    }
+
+    // GET /api/tasks/status/{status} - ステータスで検索
+    @GetMapping("/status/{status}")
+    public List<Task> getTasksByStatus(@PathVariable String status) {
+        return taskService.getTasksByStatus(status);
     }
 
     // POST /api/tasks - タスク作成
@@ -44,11 +45,10 @@ public class TaskController {
     // PUT /api/tasks/{id} - タスク更新
     @PutMapping("/{id}")
     public ResponseEntity<Task> updateTask(@PathVariable String id, @RequestBody Task task) {
-        Optional<Task> updatedTask = taskService.updateTask(id, task);
-        
-        if (updatedTask.isPresent()) {
-            return ResponseEntity.ok(updatedTask.get());
-        } else {
+        try {
+            Task updatedTask = taskService.updateTask(id, task);
+            return ResponseEntity.ok(updatedTask);
+        } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }
     }
@@ -56,18 +56,7 @@ public class TaskController {
     // DELETE /api/tasks/{id} - タスク削除
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTask(@PathVariable String id) {
-        boolean deleted = taskService.deleteTask(id);
-        
-        if (deleted) {
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
-
-    // GET /api/tasks?status=TODO - ステータスでフィルター
-    @GetMapping(params = "status")
-    public List<Task> getTasksByStatus(@RequestParam String status) {
-        return taskService.getTasksByStatus(status);
+        taskService.deleteTask(id);
+        return ResponseEntity.noContent().build();
     }
 }

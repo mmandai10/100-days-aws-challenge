@@ -1497,3 +1497,50 @@ day23-task-api/
 
 ### 🔗 次のステップ
 - Day 24: JPA + RDS MySQL統合（Javaの本当の強み）-
+## Day 24 (2025-11-30) - JPA + RDS MySQL統合 ⭐
+
+### 実施内容
+- ✅ Spring Data JPA導入（pom.xml依存関係追加）
+- ✅ RDS MySQL接続設定（application.properties）
+- ✅ Task.javaをJPAエンティティに変換（@Entity, @Table, @Id, @Column）
+- ✅ TaskRepository作成（JpaRepository継承）
+- ✅ TaskService更新（ArrayList → Repository）
+- ✅ Flywayマイグレーション設定
+- ✅ セキュリティグループ設定（ローカルPCからRDS接続許可）
+- ✅ CRUD API動作確認（POST/GET成功）
+
+### 環境構築
+- AWS CLI再インストール（SSD交換のため）
+- JAVA_HOME設定修正（Eclipse Adoptium JDK 21）
+- mvnw.cmd修正
+
+### 技術スタック
+- Java 21 + Spring Boot 3.5.8
+- Spring Data JPA
+- MySQL Connector
+- Flyway（DBマイグレーション）
+- RDS MySQL（day22-taskdb）
+
+### Day 17（Node.js + DynamoDB）との比較
+
+| 項目 | Node.js + DynamoDB | Java + JPA + RDS |
+|-----|-------------------|-----------------|
+| セットアップ時間 | 30分 | 2-3時間 |
+| コード量 | 少ない | 多い |
+| クエリ柔軟性 | 低い（PK必須） | 高い（SQL自由） |
+| 適用領域 | シンプルAPI、MVP | 複雑なビジネスロジック |
+
+### 学んだこと
+- **JPA**: JavaオブジェクトとDBテーブルを自動マッピング
+- **Repository**: interfaceだけでCRUD操作が自動生成される
+- **Flyway**: アプリ起動時にテーブル自動作成
+- **適材適所**: シンプルなAPIならNode.js、複雑なシステムならJava
+
+### 感想
+「JavaでAPI作るより、Node.js + Lambdaの方が速い」は正しい。
+ただしエンタープライズ・複雑なビジネスロジック・大規模チーム開発ではJavaの価値が出る。
+両方を体験して「いつどちらを選ぶか」判断できるようになったのが収穫。
+
+### 次回（Day 25）の予定
+- Spring Security + JWT認証
+- Day 18（Cognito）との比較
