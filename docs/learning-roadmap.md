@@ -1,1664 +1,461 @@
-﻿# 100 Days AWS Challenge - 完全版学習ロードマップ（改訂版）
+# 100 Days AWS Challenge - Day 28以降 修正版ロードマップ
 
-## 🎯 このファイルの使い方
-1. 各Dayを始める時に「Day Xを始めたい」と伝える
-2. このファイルで何を作るか確認
-3. 完了したら ✅ をつける
-4. 新しい学習項目が見つかったら「追加学習」に記録
-
-## 📊 現在の進捗状況（2025年11月時点）
-- ✅ Day 2: Weather App - 完了・デプロイ済み
-- ✅ Day 3: ToDo App - 完了・デプロイ済み  
-- ✅ Day 4: Weather Dashboard - 完了・デプロイ済み
-- ✅ Day 15: AWS SAM - 完了
-- ✅ Day 16: API Gateway + Lambda - 完了
-- ✅ Day 17: DynamoDB CRUD - 完了
-- ✅ Day 18: Cognito Integration - 完了
-- ✅ Day 19: S3 Event Processing - 完了
-- ✅ Day 20: IAM/認証システム深掘り（概念編）- 完了
-- 🔄 Day 1,5,6,7: 開始済み（要完成）
-- ⏳ Day 21以降: 未着手
+## 📅 Week 4 後半〜Week 5: マイクロサービス深掘り + コンテナ化
 
 ---
 
-## 📅 Week 1: Static Web Apps Foundation (Day 1-7)
+### Day 28: Docker + ECS/Fargate ⭐ 優先実施
+**作成物**: Day 27のマイクロサービスをコンテナ化 + ECS/Fargateデプロイ
 
-### Day 1: Hello World ✅ S3デプロイ基礎
-**作成物**: シンプルな静的サイト
-- HTML/CSS/JavaScript基礎
-- S3バケット作成
-- 静的ウェブホスティング設定
-- パブリックアクセス設定
+**目的**: Dockerを早めに片付けて、本番デプロイの基礎を固める
 
-### Day 2: Weather App ✅ 完了
-**作成物**: 天気予報アプリ
-- OpenWeatherMap API連携
-- 非同期処理（async/await）
-- 動的DOM操作
-- エラーハンドリング
-
-### Day 3: ToDo App ✅ 完了  
-**作成物**: タスク管理アプリ
-- LocalStorage活用
-- CRUD操作
-- フィルタリング機能
-- データ永続化
-
-### Day 4: Weather Dashboard ✅ 完了
-**作成物**: 複数都市天気ダッシュボード
-- Chart.jsでデータ可視化
-- 複数API呼び出し
-- レスポンシブデザイン
-- お気に入り機能
-
-### Day 5: Task Manager 🔄
-**作成物**: 高度なタスク管理アプリ
-- ドラッグ&ドロップ
-- カテゴリ分け
-- 優先度設定
-- 期限管理
-
-### Day 6: User Auth UI 🔄
-**作成物**: 認証画面（フロントエンドのみ）
-- ログイン/サインアップフォーム
-- バリデーション
-- パスワード強度チェック
-- Remember Me機能
-
-### Day 7: Blog System 🔄
-**作成物**: 静的ブログサイト
-- 記事一覧
-- 記事詳細
-- カテゴリ/タグ
-- 検索機能
-
----
-
-## 📅 Week 2: Interactive & Modern Web (Day 8-14)
-
-### Day 8: E-commerce Site
-**作成物**: ショッピングカート機能付きECサイト
-- 商品カタログ
-- カート機能（追加/削除/数量変更）
-- 合計金額計算
-- チェックアウト画面
-
-### Day 9: Portfolio Site  
-**作成物**: モダンなポートフォリオ
-- スムーススクロール
-- パララックス効果
-- アニメーション（AOS/GSAP）
-- お問い合わせフォーム
-
-### Day 10: Canvas Game
-**作成物**: ブラウザゲーム
-- Canvas API
-- ゲームループ
-- 衝突判定
-- スコアシステム
-
-### Day 11: AWS Amplify Auth
-**作成物**: Amplify認証アプリ
-**必須実装**:
-- Amplify CLI初期化
-- Cognito User Pool作成
-- サインアップ/サインイン
-- MFA設定
-- パスワードリセット
-
-### Day 12: Amplify + API
-**作成物**: サーバーレスCRUD API
-- API Gateway設定
-- Lambda関数作成
-- DynamoDB統合
-- 認証付きAPI
-
-### Day 13: Amplify Storage
-**作成物**: ファイルストレージアプリ
-- S3バケット連携
-- ファイルアップロード
-- プログレスバー
-- ファイル一覧/削除
-
-### Day 14: CloudFront CDN
-**作成物**: 高速配信サイト
-- CloudFront設定
-- キャッシュ戦略
-- 圧縮設定
-- カスタムドメイン
-
----
-
-## 📅 Week 3: Serverless Backend (Day 15-21)
-
-### Day 15: AWS SAM ✅ 完了
-**作成物**: SAMで作る初めてのサーバーレスアプリ
-- AWS SAM CLI使用
-- Lambda関数作成
-- テンプレート理解
-- デプロイ自動化
-
-### Day 16: API Gateway + Lambda ✅ 完了
-**作成物**: REST API構築
-- APIエンドポイント設計
-- リクエスト/レスポンス変換
-- CORS設定
-- HTTPメソッド理解
-
-### Day 17: DynamoDB CRUD ✅ 完了
-**作成物**: NoSQLデータベース操作
-- テーブル設計
-- パーティションキー/ソートキー
-- CRUD操作実装
-- Day 16のAPIにDynamoDB統合
-
-### Day 18: Cognito Integration ✅ 完了
-**作成物**: セキュアAPI
-- JWTトークン検証
-- 認可設定
-- ユーザープール連携
-- カスタム属性
-
-### Day 19: S3 Event Processing ✅ 完了
-**作成物**: ファイル処理パイプライン
-- S3イベントトリガー
-- 画像リサイズ
-- メタデータ抽出
-- 非同期処理
-
-### Day 20: IAM/認証システム深掘り（概念編）✅ 完了
-**実施内容**: IAM理解とSTS/AssumeRoleの仕組み
-- ✅ これまでのIAM経験の整理（Day 6, 13, 18）
-- ✅ IAMの4要素と認証 vs 認可の理解
-- ✅ STSが必要な理由とセキュリティの多層防御
-- ✅ AssumeRoleの概念理解（一時的な役割の引き受け）
-- ✅ template.yamlの深掘り（SAMの自動生成の仕組み）
-- ✅ 実際のAWS環境でIAMロール確認
-  - Trust Policy（lambda.amazonaws.comのみAssumeRole可能）
-  - Attached Policy（AWSLambdaBasicExecutionRole）
-  - Inline Policy（DynamoDB CRUD権限）
-- 💡 **重要**: 「作る」ではなく「理解する」深掘り学習期間
-
-### Day 21: IAM/認証システム深掘り（実践編）
-**実施内容**: クロスアカウントアクセスと監査
-- クロスアカウントAssumeRole実装
-- CloudTrail設定と監査ログ分析
-- Day 18プロジェクトの権限最適化
-- IAMベストプラクティスの実装
-- Day 20で学んだ概念を実践で復習
-
----
-
-### 📚 Week 3 振り返り（Day 21終了後に実施）
-**目的**: サーバーレスアーキテクチャとIAMの理解を定着
-- Day 15-21の重要概念の復習
-  - AWS SAMの仕組み
-  - API Gateway + Lambda + DynamoDB連携
-  - Cognito認証とAuthorizer
-  - IAM・STS・AssumeRoleの理解
-- 学習ログの見直しと不明点の洗い出し
-- 次週（Java + Spring Boot）への準備
-
----
-
-## 📅 Week 4: Java + Spring Boot + RDS (Day 22-28) 🆕
-
-### Day 22: Java環境構築 + AWS RDS準備
-**作成物**: Hello World REST API + RDS環境構築
-
-**必須セットアップ**:
-```
-✅ Java 17+ インストール
-✅ Maven/Gradle設定
-✅ Spring Initializr
-✅ IDE設定（IntelliJ/Eclipse）
-✅ AWS RDS Aurora Serverless v2 作成（または MySQL）
-```
-
-**RDS vs Aurora Serverless 選択ガイド**:
-- **RDS MySQL（db.t3.micro）**: 初学者向け、無料枠あり、予測可能な料金
-- **Aurora Serverless v2**: 使用量課金、自動スケーリング、より高性能
-
-**作成内容**:
-```java
-@RestController
-public class HelloController {
-    @GetMapping("/hello")
-    public String hello() {
-        return "Hello from Spring Boot + RDS!";
-    }
-}
-```
-
-**重要な学習ポイント**:
-- VPC設定（RDSはVPC内に配置）
-- セキュリティグループ設定
-- RDS エンドポイント取得
-
----
-
-### Day 23: Spring Boot REST API（RDS接続なし）
-**作成物**: タスク管理API（メモリ内データ）
-
-**目的**: Day 16のNode.js版と同じことをJavaで実装して比較
-
-**実装内容**:
-```java
-@RestController
-@RequestMapping("/api/tasks")
-public class TaskController {
-    private List<Task> tasks = new ArrayList<>();
-    
-    @GetMapping
-    public List<Task> getAllTasks() { }
-    
-    @PostMapping
-    public Task createTask(@RequestBody Task task) { }
-    
-    @PutMapping("/{id}")
-    public Task updateTask(@PathVariable String id, 
-                           @RequestBody Task task) { }
-    
-    @DeleteMapping("/{id}")
-    public void deleteTask(@PathVariable String id) { }
-}
-```
-
-**Node.js（Day 16）との比較記録**:
-- コード量の違い
-- 型安全性の恩恵
-- 開発速度
-- エラーハンドリングの違い
-- IDEサポート
-
----
-
-### Day 24: JPA + RDS MySQL統合 ⭐ **最重要**
-**作成物**: データベース連携タスク管理API
-
-**技術スタック**:
-- Spring Data JPA
-- RDS MySQL / Aurora Serverless
-- Flyway（マイグレーション）
-
-**Entity設計**:
-```java
-@Entity
-@Table(name = "tasks")
-public class Task {
-    @Id
-    @GeneratedValue(generator = "uuid")
-    @GenericGenerator(name = "uuid", strategy = "uuid2")
-    private String id;
-    
-    @Column(nullable = false)
-    private String title;
-    
-    private String description;
-    
-    @Enumerated(EnumType.STRING)
-    private TaskStatus status;
-    
-    @CreatedDate
-    private LocalDateTime createdAt;
-    
-    @LastModifiedDate
-    private LocalDateTime updatedAt;
-}
-```
-
-**Repository作成**:
-```java
-public interface TaskRepository extends JpaRepository<Task, String> {
-    List<Task> findByStatus(TaskStatus status);
-    
-    @Query("SELECT t FROM Task t WHERE t.title LIKE %:keyword%")
-    List<Task> searchByKeyword(@Param("keyword") String keyword);
-}
-```
-
-**Flyway マイグレーション**:
-```sql
--- V1__create_tasks_table.sql
-CREATE TABLE tasks (
-    id VARCHAR(36) PRIMARY KEY,
-    title VARCHAR(255) NOT NULL,
-    description TEXT,
-    status VARCHAR(20) NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP 
-                ON UPDATE CURRENT_TIMESTAMP
-);
-
-CREATE INDEX idx_status ON tasks(status);
-```
-
-**重要な学習ポイント**:
-- **JPA（Java）vs AWS SDK（Node.js）の違い**
-- **RDS（リレーショナル）vs DynamoDB（NoSQL）の違い**
-- トランザクション管理
-- コネクションプール
-- N+1問題の理解と対策
-
-**Day 17（DynamoDB）との比較**:
-- データモデリングの違い
-- クエリの柔軟性
-- パフォーマンス特性
-- コスト構造
-
----
-
-### Day 25: Spring Security + JWT
-**作成物**: セキュアAPI
-
-**実装内容**:
-```java
-@Configuration
-@EnableWebSecurity
-public class SecurityConfig {
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) 
-        throws Exception {
-        http
-            .csrf().disable()
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/auth/**").permitAll()
-                .anyRequest().authenticated()
-            )
-            .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        return http.build();
-    }
-}
-```
-
-**Day 18（Cognito + Lambda）との比較**:
-- 認証の実装方法の違い
-- トークン管理
-- 複雑さ vs 柔軟性
-- AWS管理 vs 自前実装
-
----
-
-### Day 26: AWS SDK for Java + RDS最適化
-**作成物**: AWS統合アプリ + パフォーマンス最適化
-
-**実装内容**:
-
-**1. Secrets Manager統合** - RDS認証情報の安全管理
-```java
-@Configuration
-public class RDSConfig {
-    @Bean
-    public DataSource dataSource(SecretsManagerService secrets) {
-        String password = secrets.getRDSPassword();
-        // DataSource設定
-    }
-}
-```
-
-**2. RDS Proxy利用** - Lambda接続最適化
-```
-Lambda → RDS Proxy → RDS/Aurora
-（コネクションプール管理・コールドスタート対策）
-```
-
-**3. S3統合** - タスクに添付ファイル機能追加
-```java
-@Service
-public class TaskAttachmentService {
-    private final AmazonS3 s3Client;
-    private final TaskRepository taskRepository;
-    
-    public String uploadAttachment(MultipartFile file, 
-                                   String taskId) {
-        // S3にアップロード
-        String s3Url = s3Client.putObject(...);
-        
-        // RDSにURL保存
-        Task task = taskRepository.findById(taskId);
-        task.setAttachmentUrl(s3Url);
-        taskRepository.save(task);
-        
-        return s3Url;
-    }
-}
-```
-
-**学習ポイント**:
-- Lambda + RDS の接続管理（Day 17のDynamoDBとの違い）
-- VPC Lambda設定
-- コールドスタート問題と対策
-- マルチAWSサービス統合
-
----
-
-### Day 27: Microservices（RDS + DynamoDB混在）
-**作成物**: マイクロサービスアーキテクチャ
-
-**アーキテクチャ設計**:
-```
-┌─────────────────────┐      ┌──────────────────────┐
-│ Task Service        │      │ User Service         │
-│ (Spring Boot + RDS) │      │ (Spring Boot +       │
-│                     │      │  DynamoDB)           │
-│ - 複雑なクエリ      │      │ - 高速アクセス       │
-│ - JOIN処理          │      │ - シンプルな構造     │
-│ - トランザクション  │      │ - スケーラビリティ   │
-└─────────────────────┘      └──────────────────────┘
-         │                            │
-         └──────────┬─────────────────┘
-                    │
-         ┌──────────▼──────────┐
-         │   API Gateway       │
-         │   (統合エンドポイント)│
-         └─────────────────────┘
-```
-
-**なぜこの構成？適材適所のデータベース選択**:
-- **タスクデータ → RDS**: 複雑な検索（期限切れタスク検索、集計レポート）
-- **ユーザーデータ → DynamoDB**: 高速ログイン、プロフィール取得
-
-**実装例**:
-```java
-// Task Service (RDS)
-@Service
-public class TaskService {
-    @Autowired
-    private TaskRepository taskRepository;
-    
-    // 複雑なクエリが可能
-    public List<Task> findOverdueTasks() {
-        return taskRepository.findByDueDateBeforeAndStatusNot(
-            LocalDateTime.now(), 
-            TaskStatus.COMPLETED
-        );
-    }
-}
-
-// User Service (DynamoDB)
-@Service
-public class UserService {
-    private final DynamoDbClient dynamoDb;
-    
-    // シンプルで高速なアクセス
-    public User getUser(String userId) {
-        return dynamoDb.getItem(GetItemRequest.builder()
-            .tableName("users")
-            .key(Map.of("userId", AttributeValue.builder().s(userId).build()))
-            .build());
-    }
-}
-```
-
-**学習ポイント**:
-- データベース選択の実践的判断基準
-- マイクロサービス間通信
-- API Gatewayでの統合
-- トレーシング・ログ管理
-
----
-
-### Day 28: Docker + ECS/Fargate
-**作成物**: コンテナ化 + ECS/Fargateデプロイ
-
-**Dockerfile**:
+**Dockerfile (Task Service)**:
 ```dockerfile
-FROM openjdk:17-jdk-slim
-COPY target/task-api.jar /app.jar
-EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "/app.jar"]
+FROM eclipse-temurin:21-jdk-alpine
+WORKDIR /app
+COPY target/task-service-0.0.1-SNAPSHOT.jar app.jar
+EXPOSE 8081
+ENTRYPOINT ["java", "-jar", "app.jar"]
 ```
 
-**ECS Task Definition**:
-```json
-{
-  "family": "task-api",
-  "containerDefinitions": [{
-    "name": "task-api",
-    "image": "123456789.dkr.ecr.ap-northeast-1.amazonaws.com/task-api:latest",
-    "memory": 512,
-    "cpu": 256,
-    "environment": [
-      {"name": "SPRING_PROFILES_ACTIVE", "value": "prod"}
-    ],
-    "secrets": [
-      {
-        "name": "DB_PASSWORD",
-        "valueFrom": "arn:aws:secretsmanager:..."
-      }
-    ],
-    "logConfiguration": {
-      "logDriver": "awslogs",
-      "options": {
-        "awslogs-group": "/ecs/task-api",
-        "awslogs-region": "ap-northeast-1"
-      }
-    }
-  }]
-}
+**Dockerfile (User Service)**:
+```dockerfile
+FROM eclipse-temurin:21-jdk-alpine
+WORKDIR /app
+COPY target/user-service-0.0.1-SNAPSHOT.jar app.jar
+EXPOSE 8082
+ENTRYPOINT ["java", "-jar", "app.jar"]
 ```
+
+**実装ステップ**:
+1. 各サービスのDockerイメージ作成
+2. ECR (Elastic Container Registry) にプッシュ
+3. ECS クラスター作成
+4. Task Definition 定義
+5. ECS Service 作成（Fargate起動タイプ）
+6. ALB (Application Load Balancer) 設定
 
 **デプロイ構成**:
 ```
 Internet
     ↓
-Application Load Balancer
-    ↓
-ECS Service (Fargate)
-    ├── Task 1 (Container)
-    ├── Task 2 (Container)
-    └── Task 3 (Container)
-    ↓
-RDS/Aurora (VPC内)
+Application Load Balancer (ALB)
+    ├── /tasks/* → Task Service (ECS Fargate)
+    └── /users/* → User Service (ECS Fargate)
+              ↓
+    ┌─────────┴─────────┐
+    ↓                   ↓
+  RDS MySQL         DynamoDB
 ```
 
 **学習ポイント**:
-- ECS/FargateからRDS接続
-- VPC・セキュリティグループ設定
-- ALB設定（ヘルスチェック、ターゲットグループ）
-- **Day 15（SAM + Lambda）との比較**:
-  - デプロイモデルの違い
-  - スケーリング方式
-  - コスト構造
-  - 運用の複雑さ
+- Dockerの基本概念（イメージ、コンテナ、レイヤー）
+- ECS vs EKS の違い
+- Fargate vs EC2 起動タイプの違い
+- コンテナオーケストレーションの基礎
+- Day 15（SAM + Lambda）との比較
+
+**完了条件**:
+- [ ] Task Service Dockerイメージ作成
+- [ ] User Service Dockerイメージ作成
+- [ ] ECRにプッシュ成功
+- [ ] ECS/Fargateでデプロイ成功
+- [ ] ALB経由でアクセス確認
+- [ ] RDS/DynamoDB接続動作確認
 
 ---
 
-### 📚 Week 4 振り返り（Day 28終了後に実施）
-**目的**: Java + Spring Boot + RDSの理解とNode.jsとの比較を定着
-- Day 22-28の重要概念の復習
-  - Java開発環境とSpring Bootの理解
-  - JPA/Hibernateとデータベース操作
-  - Spring Securityと認証
-  - RDS vs DynamoDBの違い
-- IAM概念の復習（Day 20の内容を再確認）
-- Node.js週との比較分析を見直し
-- Day 29のパフォーマンス比較に向けた準備
+### Day 29: マイクロサービス深掘り①（サービス間通信）⭐ 重要
+**作成物**: Task ServiceからUser Serviceを呼び出す実装
+
+**なぜ重要？**:
+Day 27では「別々のアプリ」を作っただけ。本当のマイクロサービスは**サービス同士が連携**する。
+
+**実装内容**:
+
+**シナリオ**: タスク詳細を取得する時、担当者の名前も一緒に返したい
+
+```
+クライアント: GET /tasks/1
+    ↓
+Task Service: 
+    1. RDSからタスク情報取得（assignedUserId = "user-001"）
+    2. User Serviceに問い合わせ（GET /users/user-001）
+    3. ユーザー情報を取得（name = "田中太郎"）
+    4. 統合して返す
+    ↓
+レスポンス:
+{
+  "id": 1,
+  "title": "レポート作成",
+  "assignedUserId": "user-001",
+  "assignedUserName": "田中太郎"  ← User Serviceから取得
+}
+```
+
+**Task Service に追加するコード**:
+```java
+@Service
+public class TaskService {
+    
+    private final TaskRepository taskRepository;
+    private final RestTemplate restTemplate;
+    
+    // User Serviceを呼び出してユーザー名を取得
+    public TaskWithUserDTO getTaskWithUser(Long taskId) {
+        Task task = taskRepository.findById(taskId)
+            .orElseThrow(() -> new TaskNotFoundException(taskId));
+        
+        // User Serviceを呼び出し
+        String userServiceUrl = "http://user-service:8082/users/" + task.getAssignedUserId();
+        UserDTO user = restTemplate.getForObject(userServiceUrl, UserDTO.class);
+        
+        return new TaskWithUserDTO(task, user.getName());
+    }
+}
+```
+
+**学習ポイント**:
+- RestTemplate / WebClient の使い方
+- サービス間通信のパターン（同期 vs 非同期）
+- サービスのURL管理（ハードコード vs Service Discovery）
+- タイムアウト設定の重要性
+
+**完了条件**:
+- [ ] Task ServiceからUser Serviceを呼び出す実装
+- [ ] 統合レスポンス（タスク + ユーザー名）が返る
+- [ ] User Serviceが遅い場合のタイムアウト設定
+- [ ] サービス間通信の概念を理解
 
 ---
 
-## 📊 Node.js週 vs Java週 - 徹底比較
+### Day 30: マイクロサービス深掘り②（障害対応パターン）⭐ 重要
+**作成物**: サーキットブレーカーとフォールバック実装
 
-### Week 3 (Node.js + DynamoDB) vs Week 4 (Java + RDS)
+**なぜ重要？**:
+User Serviceが落ちた時、Task Serviceまで落ちてしまうのは問題。
 
-| 観点 | Node.js週（Day 15-21） | Java週（Day 22-28） |
-|------|------------------------|---------------------|
-| **言語** | JavaScript/Node.js | Java 17 |
-| **フレームワーク** | Express（軽量） | Spring Boot（重厚） |
-| **データベース** | DynamoDB（NoSQL） | RDS/Aurora（SQL） |
-| **データモデル** | 柔軟なJSON | 構造化テーブル |
-| **ORマッパー** | AWS SDK（直接操作） | JPA/Hibernate |
-| **クエリ** | 単純（GetItem, Query） | 複雑（JOIN, GROUP BY） |
-| **型安全性** | 弱い（実行時エラー） | 強い（コンパイル時） |
-| **開発速度** | 速い | 遅い（ボイラープレート多） |
-| **デプロイ** | Lambda（SAM） | ECS/Fargate |
-| **起動時間** | 超高速（数ms） | やや遅い（数秒） |
-| **スケーリング** | 自動・即座 | 自動だが時間かかる |
-| **コスト（小規模）** | ほぼ無料 | $10-50/月 |
-| **学習曲線** | 緩やか | 急 |
-| **適用領域** | スタートアップ、新規 | 大企業、既存システム |
+**問題のシナリオ**:
+```
+User Service がダウン
+    ↓
+Task Service が User Service を呼ぶ
+    ↓
+タイムアウト待ち（30秒）
+    ↓
+Task Service のスレッドが枯渇
+    ↓
+Task Service も応答不能に！（連鎖障害）
+```
 
-### データベース選択基準
+**解決策: サーキットブレーカー**:
+```
+User Service がダウン
+    ↓
+Task Service が User Service を呼ぶ
+    ↓
+サーキットブレーカーが「開く」（呼び出しを遮断）
+    ↓
+フォールバック値を返す（"Unknown User"）
+    ↓
+Task Service は正常に動き続ける！
+```
 
-**DynamoDBを選ぶべき場合**:
-- ✅ 高速アクセスが最優先（ミリ秒レベル）
-- ✅ シンプルなデータ構造（キー・バリュー）
-- ✅ 柔軟なスキーマが必要
-- ✅ サーバーレス環境
-- ✅ 予測不可能なトラフィック
+**実装（Resilience4j使用）**:
+```java
+@Service
+public class UserServiceClient {
+    
+    @CircuitBreaker(name = "userService", fallbackMethod = "getUserFallback")
+    public UserDTO getUser(String userId) {
+        return restTemplate.getForObject(
+            "http://user-service:8082/users/" + userId, 
+            UserDTO.class
+        );
+    }
+    
+    // User Serviceが落ちている時のフォールバック
+    public UserDTO getUserFallback(String userId, Exception ex) {
+        return new UserDTO(userId, "Unknown User", null);
+    }
+}
+```
 
-**RDS/Auroraを選ぶべき場合**:
-- ✅ 複雑なクエリが必要（JOIN、集計）
-- ✅ トランザクションが重要
-- ✅ 既存のSQLアプリ移行
-- ✅ レポート・分析機能
-- ✅ データ整合性が最重要
+**学習ポイント**:
+- サーキットブレーカーパターンの概念
+- Resilience4j の使い方
+- フォールバック戦略
+- 障害の連鎖を防ぐ設計思想
+- マイクロサービスの「部分的障害耐性」
+
+**完了条件**:
+- [ ] Resilience4j 導入
+- [ ] サーキットブレーカー設定
+- [ ] フォールバック実装
+- [ ] User Service停止時もTask Serviceが動くことを確認
+- [ ] 障害対応パターンの概念を理解
 
 ---
 
-## 📝 Java週の学習記録テンプレート
+### Day 31: マイクロサービス深掘り③（分散トレーシング）
+**作成物**: AWS X-Ray によるリクエスト追跡
 
-各Day完了時に以下を daily-log.md に記録：
+**なぜ重要？**:
+リクエストが複数サービスを跨ぐと、どこで遅延が発生しているか分からなくなる。
+
+**トレーシングの可視化**:
+```
+クライアント → API Gateway → Task Service → User Service
+                    ↓              ↓            ↓
+                  10ms          150ms         50ms
+                    
+「Task Serviceで150msかかってるな」← X-Rayで可視化
+```
+
+**実装内容**:
+- AWS X-Ray SDK 導入
+- 各サービスにトレーシング設定
+- サービス間呼び出しの追跡
+- X-Rayコンソールでの可視化
+
+**学習ポイント**:
+- 分散トレーシングの概念
+- トレースID、セグメント、サブセグメント
+- パフォーマンスボトルネックの特定
+- X-Ray サービスマップの読み方
+
+**完了条件**:
+- [ ] X-Ray SDK 導入
+- [ ] 各サービスでトレーシング有効化
+- [ ] サービス間呼び出しが可視化される
+- [ ] X-Rayコンソールでサービスマップ確認
+
+---
+
+### Day 32: マイクロサービス深掘り④（共通認証）
+**作成物**: API Gateway + JWT による統合認証
+
+**なぜ重要？**:
+各サービスで別々に認証すると、管理が煩雑になる。
+
+**現状の問題**:
+```
+クライアント
+    ├── Task Service に認証
+    └── User Service に認証
+    
+→ 2回認証が必要（ユーザー体験が悪い）
+→ サービスごとに認証ロジックが重複
+```
+
+**解決策: API Gatewayで一元認証**:
+```
+クライアント
+    ↓ （JWTトークン付きリクエスト）
+API Gateway
+    ↓ （トークン検証 → OK）
+    ├── Task Service（認証済みとして処理）
+    └── User Service（認証済みとして処理）
+```
+
+**実装内容**:
+- Spring Cloud Gateway に JWT 検証フィルター追加
+- 各サービスはヘッダーからユーザー情報を取得
+- Cognito または 自前JWT との統合
+
+**学習ポイント**:
+- API Gatewayでの認証一元化
+- JWTトークンの伝播
+- Day 18（Cognito）、Day 25（Spring Security）との統合
+- マイクロサービスにおける認証パターン
+
+**完了条件**:
+- [ ] API Gatewayで JWT 検証
+- [ ] 認証済みリクエストが各サービスに到達
+- [ ] 未認証リクエストは401を返す
+- [ ] 認証の一元化の概念を理解
+
+---
+
+### Day 33: SQS/SNS（非同期通信）
+**作成物**: メッセージングによるサービス間非同期通信
+
+**なぜ重要？**:
+Day 29の同期通信では、User Serviceが遅いとTask Serviceも遅くなる。
+非同期通信なら、待たずに処理を進められる。
+
+**ユースケース**:
+```
+タスク作成時に、担当者にメール通知を送りたい
+
+【同期】
+Task Service → User Service → Email Service → 完了まで待つ
+（遅い、Email Serviceが落ちると全体が落ちる）
+
+【非同期】
+Task Service → SQS → 即座に完了
+               ↓
+    Notification Worker が後で処理
+（速い、Workerが落ちてもTask Serviceは影響なし）
+```
+
+**実装内容**:
+- SQS キュー作成
+- Task Serviceからメッセージ送信
+- Notification Worker（Lambda）でメッセージ処理
+- SNS によるファンアウト（複数サービスへ通知）
+
+**学習ポイント**:
+- 同期 vs 非同期通信の使い分け
+- SQS の概念（キュー、メッセージ、可視性タイムアウト）
+- SNS の概念（トピック、サブスクリプション）
+- イベント駆動アーキテクチャの入口
+
+**完了条件**:
+- [ ] SQS キュー作成
+- [ ] Task Serviceからメッセージ送信
+- [ ] Lambda でメッセージ処理
+- [ ] 同期 vs 非同期の使い分けを理解
+
+---
+
+### Day 34: EventBridge（イベント駆動アーキテクチャ）
+**作成物**: イベントバスによるサービス連携
+
+**なぜ重要？**:
+SQS/SNSは「誰に送るか」を送信側が知っている必要がある。
+EventBridgeは「何が起きたか」だけ発信し、受信側が自分で購読する。
+
+**SQS/SNS vs EventBridge**:
+```
+【SQS/SNS】
+Task Service が「User Serviceに送る」「Email Serviceに送る」を知っている
+→ 送信側が受信側を知る必要がある
+
+【EventBridge】
+Task Service が「タスクが作成された」というイベントを発信
+→ 誰が購読するかは知らなくていい
+→ User Service、Email Service、Analytics Serviceが各自購読
+```
+
+**実装内容**:
+- EventBridge イベントバス作成
+- Task Serviceからイベント発行
+- 複数サービスがルールで購読
+- イベントスキーマ設計
+
+**学習ポイント**:
+- イベント駆動アーキテクチャの概念
+- 疎結合の実現方法
+- EventBridge ルールとターゲット
+- マイクロサービスの進化形
+
+**完了条件**:
+- [ ] EventBridge イベントバス作成
+- [ ] Task Serviceからイベント発行
+- [ ] 複数ターゲットでイベント受信
+- [ ] イベント駆動の概念を理解
+
+---
+
+### Day 35: Performance比較 + Week 5 振り返り ⭐ 深掘り学習日
+**実施内容**: これまでの学習の統合と比較分析
+
+**比較対象**:
+1. **Day 15-19** (Node.js + Lambda + DynamoDB) - サーバーレス
+2. **Day 22-34** (Java + ECS + RDS + マイクロサービス) - コンテナ
+
+**測定項目**:
+- レスポンスタイム（p50, p95, p99）
+- コールドスタート時間
+- スループット
+- コスト（月額概算）
+
+**選択基準の確立**:
+```
+【サーバーレス（Lambda + DynamoDB）を選ぶ場合】
+- 開発速度重視
+- トラフィックが予測不能
+- シンプルなデータ構造
+- コスト最小化（小規模時）
+
+【コンテナ（ECS + RDS）を選ぶ場合】
+- 複雑なビジネスロジック
+- 複雑なクエリが必要
+- 既存のJavaチームがいる
+- 長時間実行処理がある
+```
+
+**完了条件**:
+- [ ] ベンチマーク実施
+- [ ] 比較レポート作成
+- [ ] 技術選定基準を文書化
+- [ ] Day 29-34の復習完了
+
+---
+
+## 📊 修正版 Week 4-5 まとめ
+
+| Day | 内容 | カテゴリ |
+|-----|------|---------|
+| Day 27 | マイクロサービス基盤（RDS + DynamoDB）| 基盤構築 ✅ |
+| Day 28 | Docker + ECS/Fargate | コンテナ化 |
+| Day 29 | サービス間通信 | マイクロサービス深掘り |
+| Day 30 | 障害対応パターン（サーキットブレーカー）| マイクロサービス深掘り |
+| Day 31 | 分散トレーシング（X-Ray）| マイクロサービス深掘り |
+| Day 32 | 共通認証（JWT統合）| マイクロサービス深掘り |
+| Day 33 | SQS/SNS（非同期通信）| メッセージング |
+| Day 34 | EventBridge（イベント駆動）| イベント駆動 |
+| Day 35 | Performance比較 + 振り返り | 深掘り学習日 |
+
+---
+
+## 🎯 マイクロサービス習得のマイルストーン
+
+### Day 27完了時点（今日）
+- ✅ 複数サービスの独立起動
+- ✅ API Gatewayでのルーティング
+- ✅ 適材適所のDB選択（RDS vs DynamoDB）
+
+### Day 30完了時点
+- ✅ サービス間通信の実装
+- ✅ 障害の連鎖を防ぐ設計
+- ✅ 分散システムの課題を理解
+
+### Day 35完了時点
+- ✅ 本番レベルのマイクロサービス構築
+- ✅ 認証・トレーシング・メッセージングの統合
+- ✅ 技術選定の判断基準を習得
+
+---
+
+## 📝 daily-log.md 記録テンプレート（マイクロサービス深掘り用）
+
 ```markdown
-## Day 24: JPA + RDS統合
+## Day XX: [タイトル]
 
 ### 実装内容
-- Entity設計
-- Repository作成
-- RDS接続設定
-- マイグレーション実装
+- 
 
-### Node.js（Day 17 DynamoDB）との比較
-| 項目 | Node.js + DynamoDB | Java + RDS |
-|------|-------------------|-----------|
-| 開発速度 | ◯ 速い | △ 遅い |
-| 型安全性 | △ なし | ◯ あり |
-| クエリ柔軟性 | △ 制限あり | ◯ JOIN可能 |
-| パフォーマンス | ◯ 数ms | △ 数十ms |
-| コスト | ◯ 無料枠内 | △ $20/月 |
+### 新しく学んだ概念
+- **[概念名]**: [自分の言葉で説明]
 
-### 選択基準の理解
-- **タスク管理アプリの場合**:
-  - シンプル版 → DynamoDB
-  - 高度な検索・レポート → RDS
-  
-### 学習時間
-- 実装: X時間
-- 比較検証: Y時間
-- ドキュメント: Z時間
+### Day 27との比較
+- Day 27時点: [状態]
+- 今日の進化: [何が追加されたか]
 
-### トラブルシューティング
-- 発生した問題
-- 解決方法
-- 学んだこと
+### なぜこの設計が必要か
+- [問題]: 
+- [解決策]: 
+- [メリット]: 
+
+### 実務での適用場面
+- 
+
+### 疑問点・次回深掘りたいこと
+- 
 ```
 
 ---
 
-## 🎯 Java週チェックリスト
-
-### Day 22 完了条件
-- [ ] Java 17+ インストール完了
-- [ ] Spring Boot Starter Project作成
-- [ ] RDS/Aurora作成・接続確認
-- [ ] Hello World APIデプロイ成功
-
-### Day 24 完了条件（最重要）
-- [ ] JPA Entity定義
-- [ ] Repository実装
-- [ ] RDS接続成功
-- [ ] CRUD操作すべて動作
-- [ ] Flywayマイグレーション実行
-- [ ] DynamoDBとの違いを文書化
-
-### Day 27 完了条件
-- [ ] Task Service（RDS）実装
-- [ ] User Service（DynamoDB）実装
-- [ ] 両サービスのAPI統合
-- [ ] データベース選択基準を理解
-
-### Day 28 完了条件
-- [ ] Dockerイメージ作成
-- [ ] ECRプッシュ成功
-- [ ] ECS/Fargateデプロイ
-- [ ] ALB経由でアクセス確認
-- [ ] RDS接続動作確認
-
----
-
-## 📅 Week 5: Advanced Topics (Day 29-35)
-
-### Day 29: Performance比較 ⭐ 深掘り学習日
-**実施内容**: Node.js vs Java 徹底比較と分析
-- 📊 ベンチマークテスト実施
-  - API Gateway + Lambda (Node.js + DynamoDB)
-  - ECS/Fargate (Java + Spring Boot + RDS)
-  - 同一ワークロードでの比較
-- 📈 メトリクス測定
-  - レスポンスタイム（p50, p95, p99）
-  - メモリ使用量
-  - コールドスタート時間
-  - スループット
-- 💰 コスト分析
-  - 小規模トラフィック時
-  - 中規模トラフィック時
-  - 大規模トラフィック時
-- 📝 選択基準のドキュメント化
-  - どのような場合にNode.js + Lambdaを選ぶか
-  - どのような場合にJava + ECSを選ぶか
-  - それぞれの長所・短所の整理
-- 💡 **重要**: Week 3-4の学習を振り返り、実践的な選択基準を確立
-
-**Day 29の目的：**
-- 単なるベンチマークではなく、「どちらを選ぶべきか」の判断基準を学ぶ
-- Week 3（Node.js）とWeek 4（Java）の復習を兼ねる
-- 実務で技術選定する際の考え方を習得
-
-### Day 30: ElastiCache
-**作成物**: キャッシュシステム
-- Redis/Memcached
-- セッション管理
-- キャッシュ戦略
-- TTL設定
-
-### Day 31: SQS/SNS
-**作成物**: メッセージングシステム
-- キュー設計
-- Pub/Subパターン
-- DLQ設定
-- ファンアウト
-
-### Day 32: EventBridge
-**作成物**: イベント駆動アーキテクチャ
-- イベントバス
-- ルール設定
-- ターゲット連携
-- スケジュール実行
-
-### Day 33: Auto Scaling
-**作成物**: 自動スケーリング設定
-- メトリクス設定
-- スケーリングポリシー
-- ターゲット追跡
-- 予測スケーリング
-
-### Day 34: Multi-Region
-**作成物**: マルチリージョン構成
-- Route 53設定
-- レプリケーション
-- フェイルオーバー
-- レイテンシールーティング
-
-### Day 35: Cost Optimization
-**実施内容**: コスト最適化
-- Cost Explorer分析
-- Reserved Instances
-- Spot Instances
-- Savings Plans
-
----
-
-### 📚 Week 5 振り返り（Day 35終了後に実施）
-**目的**: 高度なAWSサービスの理解を定着
-- Day 29-35の重要概念の復習
-  - パフォーマンス比較結果の分析
-  - ElastiCache、SQS/SNS、EventBridgeの理解
-  - Auto Scalingとマルチリージョン構成
-- これまでの学習内容の総復習
-  - IAM・認証の理解（Day 20-21）
-  - サーバーレス vs コンテナ（Day 15-28）
-- Week 6以降の大規模プロジェクトへの準備
-
----
-
-
----
-
-## 🚀 発展的学習トピック（オプション）
-
-**対象**: Week 5完了後、より高度な開発手法を学びたい方向け  
-**前提知識**: AWS基礎、IaC（CDK/Terraform）、サーバーレスアーキテクチャ
-
-### AWS MCP統合とKiro活用
-
-#### 📋 概要
-
-**MCP (Model Context Protocol)** と **Kiro** を使った次世代のAWS開発手法。従来の手動操作やコード記述から、自然言語による指示で：
-- AWSリソースの直接構築
-- IaC（CDK/Terraform）の自動生成  
-- スペック駆動開発の実現
-- セキュリティベストプラクティスの自動適用
-
-#### 🎯 実現可能性
-
-| 項目 | 実現可能性 | 成熟度 | 注意点 |
-|-----|----------|-------|--------|
-| AWSリソース直接構築 | ✅ 完全 | GA | IAM権限管理必須 |
-| IaC自動化（CDK） | ✅ 完全 | GA | cdk-nag違反対応必要 |
-| IaC自動化（Terraform） | ✅ 完全 | GA | HCP認証設定必要 |
-| Kiroワークフロー | ✅ 高度 | Preview | 英語環境推奨 |
-
-#### 🛠️ 主要ツール
-
-**1. MCP Proxy for AWS**
-- AWS SigV4認証の自動処理
-- Read-onlyモードによる安全性確保
-- 30以上のAWSサービス対応
-
-**2. Kiro（Agentic IDE）**
-- VS Code OSS上に構築
-- スペック駆動開発
-- Agent Hooks（自動実行タスク）
-- 自然言語によるコード生成
-
-**3. AWS MCPサーバー**
-- AWS CDK: CDKコード自動生成、cdk-nag統合
-- Terraform: Registry統合、ワークスペース管理
-- CloudFormation: 既存リソースからのIaC生成
-
-#### 📚 学習ステップ
-
-##### Phase 1: 基礎構築（1-2週間）
-
-**Week 1**
-- IAM環境準備（最小権限）
-- MCP Proxy for AWSセットアップ
-- 基本MCPサーバー設定
-
-\\\ash
-# インストール
-uvx mcp-proxy-for-aws@latest
-
-# Read-onlyモードで動作確認
-export MCP_READ_ONLY=true
-\\\
-
-**Week 2**
-- Kiroインストール
-- MCP設定ファイル作成
-- 初期テストと動作確認
-
-##### Phase 2: IaC統合（2-3週間）
-
-**CDK MCPサーバー導入**
-\\\ash
-uvx awslabs-cdk
-\\\
-
-**自然言語での指示例**:
-\\\
-「AWS CDK MCPサーバーを使用して、
-以下を含む3層アーキテクチャを構築:
-- VPC（パブリック×2、プライベート×4サブネット）
-- ALB
-- ECS Fargate（Auto Scaling有効）
-- RDS PostgreSQL（Multi-AZ）
-- 全てのベストプラクティス適用」
-\\\
-
-##### Phase 3: Kiro本格活用（2-4週間）
-
-**スペック駆動開発**
-
-3つのマークダウンファイルで開発を管理:
-
-1. **requirements.md**（要件定義）
-\\\markdown
-## 機能要件
-WHEN ユーザーがログインボタンをクリックする
-THEN システムは認証プロセスを開始する
-\\\
-
-2. **design.md**（設計ドキュメント）
-\\\markdown
-## アーキテクチャ
-- Frontend: React + TypeScript
-- Backend: Node.js + Express
-- Infrastructure: AWS (ECS Fargate)
-\\\
-
-3. **tasks.md**（実装タスク）
-\\\markdown
-- [ ] VPC setup
-- [ ] Database schema
-- [ ] API endpoints
-\\\
-
-**Agent Hooks**（自動実行タスク）
-\\\markdown
-# .kiro/hooks/test-generation.md
-
-WHEN ファイルが保存される
-THEN
-- 対応するユニットテストを自動生成
-- テストカバレッジを確認
-\\\
-
-#### 🔒 セキュリティベストプラクティス
-
-**必須設定**:
-1. IAM最小権限の原則
-2. MFA有効化
-3. CloudTrail監査ログ
-4. Read-onlyモードから開始
-5. mcp.jsonをGitにコミットしない
-
-**IAMポリシー例（Read-Only）**:
-\\\json
-{
-  "Version": "2012-10-17",
-  "Statement": [{
-    "Effect": "Allow",
-    "Action": [
-      "ec2:Describe*",
-      "s3:List*",
-      "s3:Get*",
-      "rds:Describe*",
-      "lambda:List*",
-      "lambda:Get*"
-    ],
-    "Resource": "*"
-  }]
-}
-\\\
-
-#### 💰 コスト
-
-**Kiro料金（プレビュー後）**:
-- Free: \（50インタラクション/月）
-- Pro: \（1,000インタラクション/月）
-- Pro+: \（3,000インタラクション/月）
-
-**AWS利用料金**:
-- 開発環境: 月\-200程度
-- 本番環境: ワークロードによる
-
-#### 🎯 ユースケース例
-
-**マイクロサービスの完全自動構築**:
-\\\
-「AWS CDK MCPサーバーを使用して、
-E-commerceのマイクロサービスアーキテクチャを構築:
-
-- User Service（認証・認可）
-- Product Service（商品管理）
-- Order Service（注文処理）
-- Payment Service（決済）
-
-共通インフラ:
-- VPC、ALB、CloudFront、WAF
-- CloudWatch + X-Ray
-- CI/CD（CodePipeline）
-
-セキュリティ:
-- 全てのデータ暗号化
-- IAM最小権限
-- cdk-nagで検証
-
-コスト: 月額\,000以内に最適化」
-\\\
-
-#### 📖 参考リソース
-
-**公式ドキュメント**:
-- Kiro: https://kiro.dev/docs/
-- AWS MCP: https://awslabs.github.io/mcp/
-- MCP仕様: https://modelcontextprotocol.io/
-
-**GitHubリポジトリ**:
-- AWS MCP Servers: https://github.com/awslabs/mcp
-- MCP Proxy: https://github.com/aws/mcp-proxy-for-aws
-- Terraform MCP: https://github.com/hashicorp/terraform-mcp-server
-
-#### ⚠️ 注意事項
-
-**現時点（2025年11月）の状態**:
-- Kiro: プレビュー段階（本番使用は慎重に）
-- MCP Proxy: GA（一般提供）
-- AWS MCPサーバー: 一部GA、一部プレビュー
-
-**推奨アプローチ**:
-1. 開発環境で十分にテスト
-2. ステージング環境で検証
-3. 小規模な本番ワークロードから開始
-4. 段階的に拡大
-
-#### 🎓 学習曲線
-
-- **基本操作**: 1-2日
-- **実用レベル**: 1-2週間
-- **上級レベル**: 1-2ヶ月
-
-**前提知識**:
-- AWS基礎知識（必須）
-- IaC経験（CDK/Terraform）（推奨）
-- 英語読解力（必須）
-
----
-
-**この発展的トピックは、Week 5完了後に興味がある方向けのオプション学習です。100 Days Challengeのメインパスには含まれませんが、最新のAI駆動開発手法を学びたい方には強く推奨します。**
-
----
-
-
----
-
-## 🚀 発展的学習トピック（オプション）
-
-### AWS MCP統合とKiro活用
-
-**対象**: Week 5完了後、より高度な開発手法を学びたい方向け  
-**前提知識**: AWS基礎、IaC（CDK/Terraform）、サーバーレスアーキテクチャ
-
-#### 📋 概要
-
-**MCP (Model Context Protocol)** と **Kiro** による次世代AWS開発：
-- 自然言語指示でAWSリソース構築
-- IaC（CDK/Terraform）の自動生成
-- スペック駆動開発
-- セキュリティベストプラクティスの自動適用
-
-#### 🎯 実現可能性（2025年11月時点）
-
-| 機能 | 状態 | 注意点 |
-|-----|------|--------|
-| AWSリソース直接構築 | ✅ GA | IAM権限管理必須 |
-| IaC自動化（CDK） | ✅ GA | cdk-nag統合 |
-| IaC自動化（Terraform） | ✅ GA | HCP認証必要 |
-| Kiroワークフロー | 🔶 Preview | 英語環境推奨 |
-
-#### 🛠️ 主要ツール
-
-**1. MCP Proxy for AWS**
-\\\ash
-uvx mcp-proxy-for-aws@latest
-export MCP_READ_ONLY=true  # 安全な開始
-\\\
-
-**2. Kiro（Agentic IDE）**
-- スペック駆動開発（requirements.md, design.md, tasks.md）
-- Agent Hooks（自動テスト生成、セキュリティスキャン）
-- 自然言語によるコード生成
-
-**3. AWS MCPサーバー**
-- AWS CDK: CDKコード自動生成 + cdk-nag
-- Terraform: Registry統合
-- CloudFormation: 既存リソースのIaC化
-
-#### 📚 学習ステップ
-
-**Phase 1: 基礎構築（1-2週間）**
-- IAM環境準備（最小権限）
-- MCP Proxy for AWSセットアップ
-- Kiroインストールと初期設定
-
-**Phase 2: IaC統合（2-3週間）**
-- CDK/Terraform MCPサーバー導入
-- 自然言語によるインフラ構築テスト
-- セキュリティ検証フロー確立
-
-**Phase 3: 本格活用（2-4週間）**
-- スペック駆動開発の実践
-- Agent Hooks設定
-- チーム向けワークフロー確立
-
-#### 🎯 ユースケース例
-
-\\\
-「AWS CDK MCPサーバーを使用して、
-3層アーキテクチャを構築:
-- VPC（パブリック×2、プライベート×4）
-- ALB + ECS Fargate（Auto Scaling）
-- RDS PostgreSQL（Multi-AZ）
-- 全てのベストプラクティス適用
-- cdk-nagでセキュリティ検証」
-\\\
-
-#### 💰 コスト
-
-**Kiro**（プレビュー後）:
-- Free: \（50インタラクション/月）
-- Pro: \（1,000インタラクション/月）
-- Pro+: \（3,000インタラクション/月）
-
-**AWS**: 開発環境 \-200/月
-
-#### 🔒 セキュリティ
-
-**必須設定**:
-- IAM最小権限の原則
-- MFA有効化
-- CloudTrail監査ログ
-- Read-onlyモードから開始
-- mcp.jsonをGitにコミットしない
-
-#### 📖 参考リソース
-
-- Kiro: https://kiro.dev/docs/
-- AWS MCP: https://awslabs.github.io/mcp/
-- MCP仕様: https://modelcontextprotocol.io/
-
-#### ⚠️ 注意事項
-
-**現時点（2025年11月）**:
-- Kiro: プレビュー段階（本番は慎重に）
-- MCP Proxy: GA（本番利用可）
-- 開発環境で十分にテスト後、段階的に展開
-
----
-
-**この発展的トピックは、Week 5完了後のオプション学習です。100 Days Challengeのメインパスには含まれませんが、最新のAI駆動開発手法を学びたい方には推奨します。**
-
-詳細な実装ガイドは、プロジェクトリポジトリの docs/ フォルダに別途保存されています。
-
----
-## 📅 Week 6-8: E-commerce Platform (Day 36-50)
-
-### フルスタックECサイト構築
-**技術スタック**: React + Java/Node.js + AWS
-
-#### Phase 1: 基盤構築 (Day 36-40)
-- 商品管理システム
-- ユーザー管理
-- 注文処理
-- 在庫管理
-
-#### Phase 2: 決済/配送 (Day 41-45)
-- Stripe決済統合
-- 配送料計算
-- 注文追跡
-- メール通知
-
-#### Phase 3: 高度な機能 (Day 46-50)
-- レコメンデーション
-- レビューシステム
-- クーポン/割引
-- 分析ダッシュボード
-
----
-
-## 📅 Week 9-11: Social Media App (Day 51-65)
-
-### SNSプラットフォーム構築
-**技術スタック**: Next.js + GraphQL + AWS
-
-#### Phase 1: コア機能 (Day 51-55)
-- ユーザープロフィール
-- 投稿機能
-- いいね/コメント
-- フォロー機能
-
-#### Phase 2: リアルタイム (Day 56-60)
-- WebSocket通信
-- リアルタイムチャット
-- 通知システム
-- ライブストリーミング
-
-#### Phase 3: 拡張機能 (Day 61-65)
-- 画像/動画処理
-- ストーリー機能
-- ハッシュタグ
-- 検索/探索
-
----
-
-## 📅 Week 12-13: IoT Dashboard (Day 66-80)
-
-### IoTダッシュボード構築
-**技術スタック**: React + IoT Core + TimeStream
-
-#### Phase 1: データ収集 (Day 66-70)
-- IoT Core設定
-- デバイス登録
-- MQTT通信
-- データ収集
-
-#### Phase 2: 可視化 (Day 71-75)
-- リアルタイムグラフ
-- ヒートマップ
-- アラート設定
-- レポート生成
-
-#### Phase 3: 機械学習 (Day 76-80)
-- 異常検知
-- 予測分析
-- SageMaker統合
-- 自動化
-
----
-
-## 📅 Week 14-15: Enterprise SaaS (Day 81-95)
-
-### マルチテナントSaaS構築
-**技術スタック**: フルスタック + マイクロサービス
-
-#### Phase 1: 基盤 (Day 81-85)
-- テナント管理
-- 認証/認可
-- 課金システム
-- Admin機能
-
-#### Phase 2: 拡張性 (Day 86-90)
-- API設計
-- Webhook
-- 統合機能
-- カスタマイズ
-
-#### Phase 3: 運用 (Day 91-95)
-- モニタリング
-- ログ管理
-- バックアップ
-- DR対策
-
----
-
-## 📅 Week 16: Portfolio & Career (Day 96-100)
-
-### Day 96: ポートフォリオサイト完成
-- 全プロジェクト掲載
-- 技術スタック説明
-- 成果物デモ
-
-### Day 97: 技術ブログ作成
-- 学習内容まとめ
-- ベストプラクティス
-- トラブルシューティング
-
-### Day 98: GitHub整理
-- README充実
-- ドキュメント整備
-- CI/CD設定
-
-### Day 99: Resume更新
-- AWS認定準備
-- スキルマトリックス
-- 実績数値化
-
-### Day 100: 振り返り&次の100日計画
-- 学習成果分析
-- 改善点抽出
-- 次期目標設定
-
----
-
-## 🎯 マイルストーン
-
-### 30日目: フロントエンド完成
-- HTML/CSS/JavaScript習得
-- React基礎理解
-- AWS S3/CloudFront活用
-
-### 60日目: フルスタック開発者
-- バックエンド構築可能
-- データベース設計（NoSQL + SQL）
-- API開発（Node.js + Java）
-
-### 90日目: クラウドアーキテクト
-- AWS主要サービス習得
-- スケーラブル設計
-- セキュリティ実装
-
-### 100日目: プロダクション対応
-- 本番運用可能
-- パフォーマンス最適化
-- コスト最適化
-
----
-
-## 📚 継続的学習
-
-### 認定資格目標
-- AWS Certified Cloud Practitioner (Day 30)
-- AWS Certified Developer (Day 60)
-- AWS Certified Solutions Architect (Day 90)
-- AWS Certified DevOps Engineer (Day 100+)
-
-### 追加学習項目記録欄
-- [ ] Terraform/IaC
-- [ ] Kubernetes/EKS
-- [ ] GraphQL
-- [ ] gRPC
-- [ ] WebAssembly
-- [ ] Aurora Serverless深掘り
-- [ ] RDS Proxy詳細
-- [ ] その他：＿＿＿＿＿
-
----
-
-## 🎯 学習目標設定
-
-### JavaScript開発者がJavaを学ぶメリット
-1. **型安全性** - コンパイル時エラー検出
-2. **エンタープライズ開発** - 大規模システム構築
-3. **パフォーマンス** - 高速処理とメモリ効率
-4. **Java生態系** - Spring、Maven、JUnit等
-
-### Java学習後の比較理解
-- **Node.js**: 高速開発、リアルタイム処理
-- **Java**: 堅牢性、スケーラビリティ、保守性
-
-## 📚 推奨学習リソース
-
-### Java基礎
-- Oracle Java Documentation
-- Spring Boot Reference Guide
-- Baeldung (Java/Spring tutorials)
-
-### AWS + Java
-- AWS SDK for Java Developer Guide
-- AWS Elastic Beanstalk Java Guide
-- Spring Cloud AWS
-
-## 🔄 継続的な比較学習
-
-各Javaプロジェクト完了後、同等のNode.jsバージョンと比較：
-- 開発速度
-- パフォーマンス  
-- コード可読性
-- 保守性
-- AWS統合の違い
-
-## 📋 Java Week チェックリスト
-
-### Day 22 チェック項目
-- [ ] Java 17+ インストール完了
-- [ ] Spring Boot Starter Project作成
-- [ ] AWS SDK for Java設定
-- [ ] Elastic Beanstalk初回デプロイ成功
-
-### Day 23-28 継続項目
-- [ ] 毎日Gitコミット
-- [ ] Node.jsとの違いを記録
-- [ ] AWS費用モニタリング
-- [ ] 学習時間記録
-
----
-
-## 📚 復習タスクスケジュール（エビングハウスの忘却曲線対策）
-
-### 🎯 復習の重要性
-
-一度学んだだけでは定着しません。以下のスケジュールで計画的に復習します。
-
-### 📅 復習タイミング
-
-| 学習日 | 復習1（翌日） | 復習2（1週間後） | 復習3（2週間後） | 復習4（1ヶ月後） |
-|--------|--------------|-----------------|-----------------|-----------------|
-| Day 20-21 | Day 21で実践 | Day 28振り返り | Day 35振り返り | Day 50中間振り返り |
-| Day 22-28 | 毎日の実装 | Day 35振り返り | Day 50中間振り返り | Day 65 |
-| Day 29-35 | 各Day実践 | Day 43 | Day 50中間振り返り | Day 65 |
-
-### 📝 復習すべき重要概念
-
-#### IAM/認証システム（Day 20-21）
-**復習タイミング**: Day 28, Day 35, Day 50
-- Trust Policyの仕組み
-- AssumeRoleのプロセス
-- STSが必要な理由
-- 最小権限の原則
-- セキュリティの多層防御
-
-#### Node.js vs Java比較（Day 22-29）
-**復習タイミング**: Day 35, Day 50, Day 65
-- データベース選択基準（DynamoDB vs RDS）
-- デプロイモデルの違い（Lambda vs ECS）
-- コスト構造の違い
-- 適用領域の判断基準
-
-#### サーバーレスアーキテクチャ（Day 15-19）
-**復習タイミング**: Day 28, Day 35, Day 50
-- AWS SAMの仕組み
-- Lambda + API Gateway + DynamoDB連携
-- S3イベントトリガー
-- Cognito認証統合
-
-### 🔄 各Week終了後の振り返り日
-
-- **Week 3終了後**（Day 21後）: サーバーレス + IAM復習
-- **Week 4終了後**（Day 28後）: Java + RDS復習 + IAM再確認
-- **Week 5終了後**（Day 35後）: 高度なサービス + 総復習
-- **Week 8終了後**（Day 50）: 中間振り返り（全体総復習）
-- **Week 11終了後**（Day 65）: SNSアプリ完成後の振り返り
-- **Week 14終了後**（Day 80）: IoT完成後の振り返り
-- **Week 16終了後**（Day 95）: SaaS完成後の振り返り
-
-### 💡 復習の進め方
-
-#### 1. 概念の再確認（15分）
-- daily-log.mdの該当Dayを読み返す
-- 重要な学びを3つ挙げる
-- 不明点をリストアップ
-
-#### 2. コードの見直し（15分）
-- 該当プロジェクトのコードを開く
-- template.yamlやコア機能を確認
-- 改善点を考える
-
-#### 3. 実践問題（30分）
-- 類似のシステムを1から設計してみる
-- 「もし〜だったら？」のシナリオを考える
-- 別の技術スタックで実装するならどうするか考える
-
-### 📊 復習効果の測定
-
-各復習時に以下を確認：
-- ✅ 概念を自分の言葉で説明できるか
-- ✅ なぜその技術/設計を選んだか説明できるか
-- ✅ エラーが起きた時に原因を推測できるか
-- ✅ 別のプロジェクトで応用できそうか
-
----
-
-## 🎯 深掘り学習日の特徴
-
-### 定期的な「理解の日」を設定
-
-実装に追われると、「なぜ動くのか」を理解せずに進んでしまいます。
-以下の日は**深掘り学習日**として、実装ではなく理解に集中します：
-
-- **Day 20-21**: IAM/認証システム深掘り ✅
-- **Day 29**: Performance比較・技術選定基準
-- **各Week終了後**: 振り返り・復習
-- **Day 50**: 中間振り返り（全体総復習）
-- **Day 100**: 最終振り返り・次の100日計画
-
-### 深掘り学習日の効果
-
-1. **理解の定着**: 表面的な知識から深い理解へ
-2. **エラー対応力**: 根本原因を推測できる
-3. **設計力**: なぜその選択をしたか説明できる
-4. **応用力**: 別のシナリオで使える
-
----
-
-**このロードマップで100日後には「フルスタック + クラウドエンジニア」になれる！** 🚀
-
-**復習を習慣化することで、知識が確実に定着します！** 📚
----
-
-## 🚀 発展的学習トピック（オプション）
-
-**対象**: Week 5完了後、より高度な開発手法を学びたい方向け  
-**前提知識**: AWS基礎、IaC（CDK/Terraform）、サーバーレスアーキテクチャ
-
-### AWS MCP統合とKiro活用
-
-#### 📋 概要
-
-**MCP (Model Context Protocol)** と **Kiro** を使った次世代のAWS開発手法。従来の手動操作やコード記述から、自然言語による指示で：
-- AWSリソースの直接構築
-- IaC（CDK/Terraform）の自動生成
-- スペック駆動開発の実現
-- セキュリティベストプラクティスの自動適用
-
-#### 🎯 実現可能性
-
-| 項目 | 実現可能性 | 成熟度 | 注意点 |
-|-----|----------|-------|--------|
-| AWSリソース直接構築 | ✅ 完全 | GA | IAM権限管理必須 |
-| IaC自動化（CDK） | ✅ 完全 | GA | cdk-nag違反対応必要 |
-| IaC自動化（Terraform） | ✅ 完全 | GA | HCP認証設定必要 |
-| Kiroワークフロー | ✅ 高度 | Preview | 英語環境推奨 |
-
-#### 🛠️ 主要ツール
-
-**1. MCP Proxy for AWS**
-- AWS SigV4認証の自動処理
-- Read-onlyモードによる安全性確保
-- 30以上のAWSサービス対応
-
-**2. Kiro（Agentic IDE）**
-- VS Code OSS上に構築
-- スペック駆動開発
-- Agent Hooks（自動実行タスク）
-- 自然言語によるコード生成
-
-**3. AWS MCPサーバー**
-- AWS CDK: CDKコード自動生成、cdk-nag統合
-- Terraform: Registry統合、ワークスペース管理
-- CloudFormation: 既存リソースからのIaC生成
-
-#### 📚 学習ステップ
-
-##### Phase 1: 基礎構築（1-2週間）
-
-**Week 1**
-- IAM環境準備（最小権限）
-- MCP Proxy for AWSセットアップ
-- 基本MCPサーバー設定
-
-\\\ash
-# インストール
-uvx mcp-proxy-for-aws@latest
-
-# Read-onlyモードで動作確認
-export MCP_READ_ONLY=true
-\\\
-
-**Week 2**
-- Kiroインストール
-- MCP設定ファイル作成
-- 初期テストと動作確認
-
-##### Phase 2: IaC統合（2-3週間）
-
-**CDK MCPサーバー導入**
-\\\ash
-uvx awslabs-cdk
-\\\
-
-**自然言語での指示例**:
-\\\
-「AWS CDK MCPサーバーを使用して、
-以下を含む3層アーキテクチャを構築:
-- VPC（パブリック×2、プライベート×4サブネット）
-- ALB
-- ECS Fargate（Auto Scaling有効）
-- RDS PostgreSQL（Multi-AZ）
-- 全てのベストプラクティス適用」
-\\\
-
-##### Phase 3: Kiro本格活用（2-4週間）
-
-**スペック駆動開発**
-
-3つのマークダウンファイルで開発を管理:
-
-1. **requirements.md**（要件定義）
-\\\markdown
-## 機能要件
-WHEN ユーザーがログインボタンをクリックする
-THEN システムは認証プロセスを開始する
-\\\
-
-2. **design.md**（設計ドキュメント）
-\\\markdown
-## アーキテクチャ
-- Frontend: React + TypeScript
-- Backend: Node.js + Express
-- Infrastructure: AWS (ECS Fargate)
-\\\
-
-3. **tasks.md**（実装タスク）
-\\\markdown
-- [ ] VPC setup
-- [ ] Database schema
-- [ ] API endpoints
-\\\
-
-**Agent Hooks**（自動実行タスク）
-\\\markdown
-# .kiro/hooks/test-generation.md
-
-WHEN ファイルが保存される
-THEN
-- 対応するユニットテストを自動生成
-- テストカバレッジを確認
-\\\
-
-#### 🔒 セキュリティベストプラクティス
-
-**必須設定**:
-1. IAM最小権限の原則
-2. MFA有効化
-3. CloudTrail監査ログ
-4. Read-onlyモードから開始
-5. mcp.jsonをGitにコミットしない
-
-**IAMポリシー例（Read-Only）**:
-\\\json
-{
-  "Version": "2012-10-17",
-  "Statement": [{
-    "Effect": "Allow",
-    "Action": [
-      "ec2:Describe*",
-      "s3:List*",
-      "s3:Get*",
-      "rds:Describe*",
-      "lambda:List*",
-      "lambda:Get*"
-    ],
-    "Resource": "*"
-  }]
-}
-\\\
-
-#### 💰 コスト
-
-**Kiro料金（プレビュー後）**:
-- Free: \（50インタラクション/月）
-- Pro: \（1,000インタラクション/月）
-- Pro+: \（3,000インタラクション/月）
-
-**AWS利用料金**:
-- 開発環境: 月\-200程度
-- 本番環境: ワークロードによる
-
-#### 🎯 ユースケース例
-
-**マイクロサービスの完全自動構築**:
-\\\
-「AWS CDK MCPサーバーを使用して、
-E-commerceのマイクロサービスアーキテクチャを構築:
-
-- User Service（認証・認可）
-- Product Service（商品管理）
-- Order Service（注文処理）
-- Payment Service（決済）
-
-共通インフラ:
-- VPC、ALB、CloudFront、WAF
-- CloudWatch + X-Ray
-- CI/CD（CodePipeline）
-
-セキュリティ:
-- 全てのデータ暗号化
-- IAM最小権限
-- cdk-nagで検証
-
-コスト: 月額\,000以内に最適化」
-\\\
-
-#### 📖 参考リソース
-
-**公式ドキュメント**:
-- Kiro: https://kiro.dev/docs/
-- AWS MCP: https://awslabs.github.io/mcp/
-- MCP仕様: https://modelcontextprotocol.io/
-
-**GitHubリポジトリ**:
-- AWS MCP Servers: https://github.com/awslabs/mcp
-- MCP Proxy: https://github.com/aws/mcp-proxy-for-aws
-- Terraform MCP: https://github.com/hashicorp/terraform-mcp-server
-
-#### ⚠️ 注意事項
-
-**現時点（2025年11月）の状態**:
-- Kiro: プレビュー段階（本番使用は慎重に）
-- MCP Proxy: GA（一般提供）
-- AWS MCPサーバー: 一部GA、一部プレビュー
-
-**推奨アプローチ**:
-1. 開発環境で十分にテスト
-2. ステージング環境で検証
-3. 小規模な本番ワークロードから開始
-4. 段階的に拡大
-
-#### 🎓 学習曲線
-
-- **基本操作**: 1-2日
-- **実用レベル**: 1-2週間
-- **上級レベル**: 1-2ヶ月
-
-**前提知識**:
-- AWS基礎知識（必須）
-- IaC経験（CDK/Terraform）（推奨）
-- 英語読解力（必須）
-
----
-
-**この発展的トピックは、Week 5完了後に興味がある方向けのオプション学習です。100 Days Challengeのメインパスには含まれませんが、最新のAI駆動開発手法を学びたい方には強く推奨します。**
-
----
+**このロードマップで、Day 35終了時には「本格的なマイクロサービス」が理解できます！** 🚀
