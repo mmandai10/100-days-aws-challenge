@@ -1632,3 +1632,44 @@ Add-Content -Path "C:\100-days-aws-challenge\progress\daily-log.md" -Value @"
 "@ -Encoding UTF8
 
 Write-Host "✅ daily-log.md updated!" -ForegroundColor Green
+
+## Day 28: Docker + ECS/Fargate
+
+### 実装内容
+- task-service / user-service のDockerイメージ作成
+- ECRにプッシュ
+- ECSクラスター、Task Definition、Service作成
+- ALBでパスベースルーティング設定
+
+### 新しく学んだ概念
+- **Docker**: アプリ+環境を1つにまとめる「コンテナ化」ツール
+- **イメージ**: 完成品（冷凍食品）、コンテナ: 動いてる状態（解凍中）
+- **ECR**: Dockerイメージの保管場所（S3のイメージ版）
+- **ECS**: コンテナのオーケストレーション（管理）サービス
+- **Fargate**: サーバーレスでコンテナ実行（EC2管理不要）
+- **Task Definition**: 設計図（何を動かすか）
+- **Task**: 実際に動いてるコンテナ
+- **Service**: Taskの管理者（常に指定数を維持、自動復旧）
+- **ALB**: 1つのURLで複数サービスにルーティング
+- **ターゲットグループ**: ALBの振り分け先リスト
+
+### Day 27との比較
+- Day 27: ローカルで2つのサービスを別ポートで起動
+- Day 28: AWSのECS/Fargateにデプロイ、ALBで統合
+
+### 最終構成
+```
+http://day28-alb-xxx.elb.amazonaws.com
+    ├── /tasks/* → task-service (Fargate) → RDS
+    └── /users/* → user-service (Fargate) → DynamoDB
+```
+
+### 学んだコマンド
+- docker build -t [名前] .
+- docker tag [ローカル名] [ECR URL]
+- docker push [ECR URL]
+- aws ecr get-login-password | docker login
+
+### 疑問点・次回深掘りたいこと
+- サービス間通信（Day 29）
+- サーキットブレーカー（Day 30）
