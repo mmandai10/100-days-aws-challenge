@@ -1,0 +1,30 @@
+{
+  "family": "day30-user-service",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "256",
+  "memory": "512",
+  "executionRoleArn": "arn:aws:iam::294659522793:role/ecsTaskExecutionRole",
+  "taskRoleArn": "arn:aws:iam::294659522793:role/day30-user-service-task-role",
+  "containerDefinitions": [
+    {
+      "name": "user-service",
+      "image": "294659522793.dkr.ecr.ap-northeast-1.amazonaws.com/user-service:redis",
+      "portMappings": [{"containerPort": 8082, "protocol": "tcp"}],
+      "environment": [
+        {"name": "REDIS_HOST", "value": "day30-redis.zoi31i.0001.apne1.cache.amazonaws.com"},
+        {"name": "REDIS_PORT", "value": "6379"},
+        {"name": "AWS_REGION", "value": "ap-northeast-1"}
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/day30-user-service",
+          "awslogs-region": "ap-northeast-1",
+          "awslogs-stream-prefix": "ecs"
+        }
+      },
+      "essential": true
+    }
+  ]
+}

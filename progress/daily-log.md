@@ -1673,3 +1673,152 @@ http://day28-alb-xxx.elb.amazonaws.com
 ### 疑問点・次回深掘りたいこと
 - サービス間通信（Day 29）
 - サーキットブレーカー（Day 30）
+
+Add-Content -Path "C:\100-days-aws-challenge\progress\daily-log.md" -Value @"
+
+## Day 29: マイクロサービス深掘り①（サービス間通信）($(Get-Date -Format "yyyy-MM-dd"))
+
+### 実装内容
+- ✅ Task ServiceからUser Serviceを呼び出す実装
+- ✅ RestTemplate設定（タイムアウト5秒）
+- ✅ 統合レスポンス（タスク + ユーザー名）が返るエンドポイント作成
+- ✅ ローカル環境でサービス間通信テスト成功
+
+### 新しく学んだ概念
+- **RestTemplate**: JavaからHTTPリクエストを送るツール（Node.jsのaxiosに相当）
+- **DTO (Data Transfer Object)**: データ転送用オブジェクト。DBエンティティとは別に用意
+- **サービス間通信**: マイクロサービスが互いにHTTP通信で連携する仕組み
+- **タイムアウト設定**: 相手サービスが遅い時に無限に待たないための設定
+
+### Day 27-28との比較
+- Day 27-28: 2つの独立したサービス（お互い知らない）
+- Day 29: サービス同士が連携（タスク取得時にユーザー情報も取得）
+
+### 作成したファイル（task-service内）
+| ファイル | 役割 |
+|---------|------|
+| RestTemplateConfig.java | HTTP通信設定（タイムアウト5秒） |
+| UserDTO.java | User Serviceのレスポンス用 |
+| TaskWithUserDTO.java | タスク＋ユーザー統合データ |
+| TaskService.java | User Service呼び出しロジック |
+| TaskController.java | 新エンドポイント追加 |
+
+### 新しいエンドポイント
+| URL | 説明 |
+|-----|------|
+| GET /tasks/{id}/with-user | 特定タスク＋担当者情報 |
+| GET /tasks/with-users | 全タスク＋担当者情報 |
+
+### 通信の流れ
+``````
+GET /tasks/3/with-user
+    ↓
+Task Service → RDS（タスク取得、assignedUserId=user-001）
+    ↓
+Task Service → User Service（user-001の情報を問い合わせ）
+    ↓
+User Service → DynamoDB（ユーザー取得）
+    ↓
+Task Service: 統合してレスポンス
+``````
+
+### なぜこの設計が必要か
+- **問題**: タスクに担当者IDだけあっても、名前がわからない
+- **解決策**: Task ServiceがUser Serviceに問い合わせて名前を取得
+- **メリット**: データの責任を分離しつつ、必要な情報を統合できる
+
+### 疑問点・次回深掘りたいこと
+- User Serviceが落ちた時、Task Serviceも影響を受ける → Day 30でサーキットブレーカー実装
+"@ -Encoding UTF8
+
+Write-Host "✅ daily-log.md updated!" -ForegroundColor Green
+
+## Day 30: マイクロサービス深掘り②（障害対応 + キャッシュ）(2025-12-06)
+
+### 実施内容
+- ✅ Part A: サーキットブレーカー（Resilience4j）
+- ✅ Part B: ElastiCache（Redis）キャッシュ統合
+- ✅ ECSへのデプロイ・動作確認
+
+### 新しく学んだ概念
+
+#### サーキットブレーカー
+- **目的**: User Serviceが落ちても、Task Serviceが巻き添えにならない
+- **動作**: 障害検知 → 回路を「開く」 → フォールバック値を返す
+- **実装**: `@CircuitBreaker` アノテーション + `fallbackMethod`
+```
+【正常時】
+Task Service → User Service → "Tanaka Taro"
+
+【障害時】
+Task Service → User Service（応答なし）
+    ↓ サーキットブレーカー発動
+    → "Unknown (Service Unavailable)"
+```
+
+#### ElastiCache（Redis）キャッシュ
+- **目的**: User Serviceへの呼び出しを減らして高速化
+- **動作**: 1回目はUser Service呼び出し → Redisに保存、2回目以降はRedisから取得
+- **実装**: `@Cacheable` アノテーション + Spring Data Redis
+```
+【1回目】Cache MISS → User Service呼び出し → Redisに保存
+【2回目以降】Cache HIT → Redisから取得（User Service呼ばない）
+```
+
+#### サーキットブレーカー vs キャッシュ
+| | サーキットブレーカー | キャッシュ |
+|---|---|---|
+| 目的 | 障害耐性 | パフォーマンス向上 |
+| 動作タイミング | User Serviceが落ちた時 | 毎回のアクセス |
+| 返すデータ | フォールバック値（固定） | 本物のデータ（保存済み） |
+| 例 | `"Unknown"` | `"Tanaka Taro"` |
+
+#### ElastiCacheの主な用途
+| 用途 | 説明 | 頻度 |
+|------|------|------|
+| セッション管理 | ログイン状態の保持 | ⭐⭐⭐⭐⭐ 最も多い |
+| DBクエリキャッシュ | 今回やったこと | ⭐⭐⭐⭐ |
+| APIレスポンスキャッシュ | 外部API呼び出し結果 | ⭐⭐⭐ |
+
+### 作成・変更したファイル（task-service）
+| ファイル | 変更内容 |
+|----------|----------|
+| pom.xml | `spring-boot-starter-data-redis` 追加 |
+| application.properties | Redis接続設定追加 |
+| TaskServiceApplication.java | `@EnableCaching` 追加 |
+| UserServiceClient.java | `@Cacheable` 追加 |
+| UserDTO.java | `Serializable` 実装 |
+| task-def.json | ECSタスク定義（USER_SERVICE_URL修正） |
+
+### トラブルシューティング
+| 問題 | 原因 | 解決 |
+|------|------|------|
+| User Service接続失敗 | `localhost:8082`はECS内で無効 | ALBのURLに変更 |
+| タスク起動失敗 | `LabRole`が使えない | `ecsTaskExecutionRole`に修正 |
+| エンコーディングエラー | PowerShellのUTF-8 BOM | `[System.IO.File]::WriteAllText()`使用 |
+
+### Day 29との比較
+- Day 29: サービス間通信の実装（正常系のみ）
+- Day 30: 障害対応（サーキットブレーカー）+ パフォーマンス向上（キャッシュ）
+
+### 重要な学び
+- **キャッシュの配置**: アプリ内キャッシュ vs 前面キャッシュ（CDNパターン）
+- **適材適所**: 
+  - 前面キャッシュ: 誰が見ても同じデータ（CloudFront）
+  - アプリ内キャッシュ: ユーザー固有データ（@Cacheable）
+- **セッション管理**: ElastiCacheの最も一般的な用途（Day 31で実装予定）
+
+### 疑問点・次回深掘りたいこと
+- セッション管理（Spring Session + Redis）→ Day 31で実装
+- 分散トレーシング（X-Ray）→ Day 32で実装
+
+### 作成したAWSリソース
+- ElastiCache: day30-redis（cache.t3.micro）→ 削除済み（料金節約）
+- セキュリティグループ: ECS→ElastiCache間の通信許可
+
+### 学習時間
+- Part A（サーキットブレーカー復習）: 30分
+- Part B（ElastiCache実装）: 2時間
+- トラブルシューティング: 1.5時間
+- 振り返り・ドキュメント: 30分
+- **合計**: 約4.5時間

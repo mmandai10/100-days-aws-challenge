@@ -15,6 +15,9 @@ public class TaskController {
     @Autowired
     private TaskRepository taskRepository;
 
+    @Autowired
+    private TaskService taskService;  // ← 新規追加！
+
     // ヘルスチェック
     @GetMapping("/health")
     public Map<String, String> health() {
@@ -32,6 +35,12 @@ public class TaskController {
         return taskRepository.findAll();
     }
 
+    // ⭐ 全タスク取得（ユーザー情報付き）← 新規追加！
+    @GetMapping("/with-users")
+    public List<TaskWithUserDTO> getAllTasksWithUsers() {
+        return taskService.getAllTasksWithUsers();
+    }
+
     // タスク作成
     @PostMapping
     public Task createTask(@RequestBody Task task) {
@@ -46,23 +55,34 @@ public class TaskController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    // ステータスでフィルタ
+    // ⭐ ID指定でタスク取得（ユーザー情報付き）← 新規追加！
+    @GetMapping("/{id}/with-user")
+    public ResponseEntity<TaskWithUserDTO> getTaskWithUser(@PathVariable Long id) {
+        try {
+            TaskWithUserDTO taskWithUser = taskService.getTaskWithUser(id);
+            return ResponseEntity.ok(taskWithUser);
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    // ステータスで絞り込み
     @GetMapping("/status/{status}")
     public List<Task> getTasksByStatus(@PathVariable String status) {
         return taskRepository.findByStatus(status);
     }
 
-    // 担当者でフィルタ
+    // ユーザーIDで絞り込み
     @GetMapping("/user/{userId}")
     public List<Task> getTasksByUser(@PathVariable String userId) {
         return taskRepository.findByAssignedUserId(userId);
     }
 
-    // 期限切れタスク取得（RDSの強み！）
+    // 期限切れタスク取得
     @GetMapping("/overdue")
     public List<Task> getOverdueTasks() {
         return taskRepository.findByDueDateBeforeAndStatusNot(
-            LocalDateTime.now(), 
+            LocalDateTime.now(),
             "COMPLETED"
         );
     }
@@ -71,25 +91,25 @@ public class TaskController {
     @PutMapping("/{id}")
     public ResponseEntity<Task> updateTask(@PathVariable Long id, @RequestBody Task taskDetails) {
         return taskRepository.findById(id)
-                .map(task -> {
-                    task.setTitle(taskDetails.getTitle());
-                    task.setDescription(taskDetails.getDescription());
-                    task.setStatus(taskDetails.getStatus());
-                    task.setAssignedUserId(taskDetails.getAssignedUserId());
-                    task.setDueDate(taskDetails.getDueDate());
-                    return ResponseEntity.ok(taskRepository.save(task));
-                })
-                .orElse(ResponseEntity.notFound().build());
+            .map(task -> {
+                task.setTitle(taskDetails.getTitle());
+                task.setDescription(taskDetails.getDescription());
+                task.setStatus(taskDetails.getStatus());
+                task.setAssignedUserId(taskDetails.getAssignedUserId());
+                task.setDueDate(taskDetails.getDueDate());
+                return ResponseEntity.ok(taskRepository.save(task));
+            })
+            .orElse(ResponseEntity.notFound().build());
     }
 
     // タスク削除
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTask(@PathVariable Long id) {
         return taskRepository.findById(id)
-                .map(task -> {
-                    taskRepository.delete(task);
-                    return ResponseEntity.ok().<Void>build();
-                })
-                .orElse(ResponseEntity.notFound().build());
+            .map(task -> {
+                taskRepository.delete(task);
+                return ResponseEntity.ok().<Void>build();
+            })
+            .orElse(ResponseEntity.notFound().build());
     }
 }

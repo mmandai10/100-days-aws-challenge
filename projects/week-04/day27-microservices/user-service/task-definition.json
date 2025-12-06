@@ -1,0 +1,26 @@
+{
+  "family": "day30-task-service",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "256",
+  "memory": "512",
+  "executionRoleArn": "arn:aws:iam::294659522793:role/ecsTaskExecutionRole",
+  "containerDefinitions": [
+    {
+      "name": "task-service",
+      "image": "294659522793.dkr.ecr.ap-northeast-1.amazonaws.com/task-service:latest",
+      "portMappings": [{"containerPort": 8081, "protocol": "tcp"}],
+      "environment": [
+        {"name": "USER_SERVICE_URL", "value": "http://localhost:8082"}
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/day30",
+          "awslogs-region": "ap-northeast-1",
+          "awslogs-stream-prefix": "task-service"
+        }
+      }
+    }
+  ]
+}
