@@ -1822,3 +1822,47 @@ Task Service → User Service（応答なし）
 - トラブルシューティング: 1.5時間
 - 振り返り・ドキュメント: 30分
 - **合計**: 約4.5時間
+
+
+Add-Content -Path "C:\100-days-aws-challenge\progress\daily-log.md" -Value @"
+
+## Day 31: セッション管理（Spring Session + Redis）($(Get-Date -Format "yyyy-MM-dd"))
+
+### 実施内容
+- ✅ Spring Session + Redis によるセッション管理実装
+- ✅ オプションA: セッション保護されたタスクAPI（インターセプター）
+- ✅ オプションB: 複数サーバーでセッション共有（Docker Redis）
+- ✅ オプションC: ElastiCacheで本番テスト（ECS Fargate）
+
+### 新しく学んだ概念
+| 概念 | 説明 |
+|------|------|
+| セッション管理 | ログイン状態をサーバー側（Redis）で管理 |
+| JWT vs セッション | JWT=クライアント側保存、セッション=サーバー側保存 |
+| Spring Session | @EnableRedisHttpSession で自動的にRedisに保存 |
+| インターセプター | 全リクエストを検問（Redisにセッションあるか確認） |
+| 複数サーバー問題 | 大規模/高可用性ならRedis共有が有効 |
+| スティッキーセッション | 小〜中規模ならALBのスティッキーで十分 |
+| ElastiCache | AWSのマネージドRedis |
+
+### 作成したファイル
+| ファイル | 役割 |
+|---------|------|
+| SessionConfig.java | Spring Session有効化設定 |
+| UserSession.java | セッションに保存するユーザー情報 |
+| SessionAuthController.java | ログイン/ログアウトAPI |
+| SessionInterceptor.java | 認証チェックインターセプター |
+| WebConfig.java | インターセプター適用設定 |
+
+### AWSリソース
+- ElastiCache: day31-session-redis
+- ECS: day31-task-service
+- ALB: day30-alb
+
+### テスト結果
+- ✅ ローカル: Docker Redis でセッション管理動作確認
+- ✅ ローカル: 8081/8083 複数サーバーでセッション共有確認
+- ✅ AWS: ECS + ElastiCache でセッション管理動作確認
+"@ -Encoding UTF8
+
+Write-Host "daily-log.md updated!" -ForegroundColor Green
