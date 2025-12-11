@@ -1,0 +1,59 @@
+{
+  "family": "day32-task-service-xray",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "512",
+  "memory": "1024",
+  "executionRoleArn": "arn:aws:iam::294659522793:role/ecsTaskExecutionRole",
+  "taskRoleArn": "arn:aws:iam::294659522793:role/ecsTaskExecutionRole",
+  "containerDefinitions": [
+    {
+      "name": "task-service",
+      "image": "294659522793.dkr.ecr.ap-northeast-1.amazonaws.com/task-service:xray",
+      "essential": true,
+      "portMappings": [
+        {
+          "containerPort": 8081,
+          "protocol": "tcp"
+        }
+      ],
+      "environment": [
+        {"name": "SERVER_PORT", "value": "8081"},
+        {"name": "SPRING_DATASOURCE_URL", "value": "jdbc:mysql://day22-taskdb.cx6ymy8083qh.ap-northeast-1.rds.amazonaws.com:3306/taskdb"},
+        {"name": "SPRING_DATASOURCE_USERNAME", "value": "admin"},
+        {"name": "SPRING_DATASOURCE_PASSWORD", "value": "password123"},
+        {"name": "USER_SERVICE_URL", "value": "http://localhost:8082"},
+        {"name": "SPRING_DATA_REDIS_HOST", "value": "day31-session-redis.zoi31i.0001.apne1.cache.amazonaws.com"},
+        {"name": "SPRING_DATA_REDIS_PORT", "value": "6379"},
+        {"name": "AWS_XRAY_DAEMON_ADDRESS", "value": "localhost:2000"}
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/day32-xray",
+          "awslogs-region": "ap-northeast-1",
+          "awslogs-stream-prefix": "task-service"
+        }
+      }
+    },
+    {
+      "name": "xray-daemon",
+      "image": "amazon/aws-xray-daemon:latest",
+      "essential": true,
+      "portMappings": [
+        {
+          "containerPort": 2000,
+          "protocol": "udp"
+        }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/day32-xray",
+          "awslogs-region": "ap-northeast-1",
+          "awslogs-stream-prefix": "xray-daemon"
+        }
+      }
+    }
+  ]
+}

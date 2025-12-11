@@ -1,0 +1,64 @@
+{
+  "family": "day32-task-service-otel",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "512",
+  "memory": "1024",
+  "executionRoleArn": "arn:aws:iam::294659522793:role/ecsTaskExecutionRole",
+  "taskRoleArn": "arn:aws:iam::294659522793:role/ecsTaskExecutionRole",
+  "containerDefinitions": [
+    {
+      "name": "task-service",
+      "image": "294659522793.dkr.ecr.ap-northeast-1.amazonaws.com/task-service:otel",
+      "essential": true,
+      "portMappings": [
+        {
+          "containerPort": 8081,
+          "protocol": "tcp"
+        }
+      ],
+      "environment": [
+        {"name": "SERVER_PORT", "value": "8081"},
+        {"name": "SPRING_DATASOURCE_URL", "value": "jdbc:mysql://day22-taskdb.cx6ymy8083qh.ap-northeast-1.rds.amazonaws.com:3306/taskdb"},
+        {"name": "SPRING_DATASOURCE_USERNAME", "value": "admin"},
+        {"name": "SPRING_DATASOURCE_PASSWORD", "value": "Tbontbma1!!"},
+        {"name": "USER_SERVICE_URL", "value": "http://localhost:8082"},
+        {"name": "SPRING_DATA_REDIS_HOST", "value": "day31-session-redis.zoi31i.0001.apne1.cache.amazonaws.com"},
+        {"name": "SPRING_DATA_REDIS_PORT", "value": "6379"},
+        {"name": "OTEL_SERVICE_NAME", "value": "task-service"},
+        {"name": "OTEL_TRACES_EXPORTER", "value": "otlp"},
+        {"name": "OTEL_EXPORTER_OTLP_ENDPOINT", "value": "http://localhost:4317"},
+        {"name": "OTEL_PROPAGATORS", "value": "xray,tracecontext,baggage"},
+        {"name": "OTEL_RESOURCE_ATTRIBUTES", "value": "service.name=task-service"}
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/day32-xray",
+          "awslogs-region": "ap-northeast-1",
+          "awslogs-stream-prefix": "task-service"
+        }
+      }
+    },
+    {
+      "name": "aws-otel-collector",
+      "image": "public.ecr.aws/aws-observability/aws-otel-collector:latest",
+      "essential": true,
+      "command": ["--config=/etc/ecs/ecs-xray.yaml"],
+      "portMappings": [
+        {
+          "containerPort": 4317,
+          "protocol": "tcp"
+        }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/day32-xray",
+          "awslogs-region": "ap-northeast-1",
+          "awslogs-stream-prefix": "otel-collector"
+        }
+      }
+    }
+  ]
+}

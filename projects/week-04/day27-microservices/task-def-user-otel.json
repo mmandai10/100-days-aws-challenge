@@ -1,0 +1,62 @@
+{
+  "family": "day32-user-service-otel",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "512",
+  "memory": "1024",
+  "executionRoleArn": "arn:aws:iam::294659522793:role/ecsTaskExecutionRole",
+  "taskRoleArn": "arn:aws:iam::294659522793:role/ecsTaskExecutionRole",
+  "containerDefinitions": [
+    {
+      "name": "user-service",
+      "image": "294659522793.dkr.ecr.ap-northeast-1.amazonaws.com/user-service:otel",
+      "essential": true,
+      "portMappings": [
+        {
+          "containerPort": 8082,
+          "protocol": "tcp"
+        }
+      ],
+      "environment": [
+        {"name": "SERVER_PORT", "value": "8082"},
+        {"name": "AWS_REGION", "value": "ap-northeast-1"},
+        {"name": "DYNAMODB_TABLE_NAME", "value": "day27-users"},
+        {"name": "SPRING_DATA_REDIS_HOST", "value": "day31-session-redis.zoi31i.0001.apne1.cache.amazonaws.com"},
+        {"name": "SPRING_DATA_REDIS_PORT", "value": "6379"},
+        {"name": "OTEL_SERVICE_NAME", "value": "user-service"},
+        {"name": "OTEL_TRACES_EXPORTER", "value": "otlp"},
+        {"name": "OTEL_EXPORTER_OTLP_ENDPOINT", "value": "http://localhost:4317"},
+        {"name": "OTEL_PROPAGATORS", "value": "xray,tracecontext,baggage"},
+        {"name": "OTEL_RESOURCE_ATTRIBUTES", "value": "service.name=user-service"}
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/day32-xray",
+          "awslogs-region": "ap-northeast-1",
+          "awslogs-stream-prefix": "user-service"
+        }
+      }
+    },
+    {
+      "name": "aws-otel-collector",
+      "image": "public.ecr.aws/aws-observability/aws-otel-collector:latest",
+      "essential": true,
+      "command": ["--config=/etc/ecs/ecs-xray.yaml"],
+      "portMappings": [
+        {
+          "containerPort": 4317,
+          "protocol": "tcp"
+        }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/day32-xray",
+          "awslogs-region": "ap-northeast-1",
+          "awslogs-stream-prefix": "otel-collector"
+        }
+      }
+    }
+  ]
+}

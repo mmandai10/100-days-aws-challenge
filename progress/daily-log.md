@@ -1866,3 +1866,43 @@ Add-Content -Path "C:\100-days-aws-challenge\progress\daily-log.md" -Value @"
 "@ -Encoding UTF8
 
 Write-Host "daily-log.md updated!" -ForegroundColor Green
+
+Add-Content -Path "C:\100-days-aws-challenge\progress\daily-log.md" -Value @"
+
+## Day 32: 分散トレーシング（AWS X-Ray）($(Get-Date -Format "yyyy-MM-dd"))
+
+### 実施内容
+- ✅ X-Rayの概念理解（トレース、セグメント、サブセグメント）
+- ❌ X-Ray SDK実装 → Spring Boot 3.4.0とJackson互換性エラー
+- ❌ OpenTelemetry + ADOT実装 → otel-collectorシャットダウン問題
+- ✅ 分散トレーシングツールの全体像を理解
+
+### 学んだ概念
+| 概念 | 説明 |
+|------|------|
+| トレース | 1つのリクエストの全体像（旅行全体のルート） |
+| セグメント | 各サービスでの処理時間（各区間） |
+| サブセグメント | セグメント内の詳細（DB呼び出し等） |
+| トレースID | サービス間でリクエストを紐づける識別子 |
+| サイドカー | メインコンテナの横に置く補助コンテナ |
+
+### トラブルシューティング経験
+| 問題 | 原因 |
+|------|------|
+| X-Ray SDK エラー | Spring Boot 3.4.0のJackson 2.18.xとX-Ray SDK 2.14.0の互換性問題 |
+| ADOT otel-collector | ECS Fargateでサイドカーがシャットダウンする問題 |
+
+### 分散トレーシングツール比較
+| ツール | 種類 | 特徴 |
+|--------|------|------|
+| AWS X-Ray | AWS純正 | 安い、AWS最適化 |
+| Datadog/NewRelic | SaaS | 高機能、高額 |
+| Jaeger/Zipkin | OSS | 無料、運用必要 |
+
+### 重要な学び
+- Spring Boot 3.4.0は新しすぎてX-Ray SDKとの互換性問題がある
+- 実務ではライブラリのバージョン互換性確認が重要
+- 分散トレーシングの「概念」を理解することが最も重要
+"@ -Encoding UTF8
+
+Write-Host "daily-log.md updated!" -ForegroundColor Green
