@@ -1,268 +1,428 @@
-# AWS Challenge - Learning Roadmap（最新版）
-
-> 100日にこだわらず、理解を深めながら進める
-
----
-
-## 📊 進捗サマリー
-
-| フェーズ | 状態 | 内容 |
-|---------|------|------|
-| Phase 1: 基礎 | ✅ 完了 | Day 0-10（HTML/CSS/JS, S3, Lambda, DynamoDB） |
-| Phase 2: Amplify & CDN | ✅ 完了 | Day 11-14（Amplify, CloudFront） |
-| Phase 3: SAM & サーバーレス | ✅ 完了 | Day 15-19（SAM, API Gateway, Cognito, S3イベント） |
-| Phase 4: IAM深掘り | ✅ 完了 | Day 20-21（概念編 + 実践編） |
-| Phase 5: Java & Spring Boot | ✅ 完了 | Day 22-26（REST API, JPA, Security, AWS SDK） |
-| Phase 6: マイクロサービス基礎 | ✅ 完了 | Day 27-30（ECS, サービス間通信, サーキットブレーカー, ElastiCache） |
-| Phase 7: マイクロサービス応用 | 🔜 次 | 分散トレーシング, セッション管理, 非同期通信 |
-| Phase 8: 統合 & 振り返り | 📅 予定 | パフォーマンス比較, 総まとめ |
+# 100 Days AWS Challenge - Learning Roadmap v2.1
+## 🎯 EC系アプリ開発中心
 
 ---
 
-## ✅ 完了済み
+## コンセプト
 
-### Phase 1: Web基礎 + AWS入門（Day 0-10）
-| Day | 内容 | 技術スタック |
-|-----|------|-------------|
-| 0 | 環境構築 | Git, npm, PowerShell |
-| 1 | Hello World | HTML/CSS/JS |
-| 2 | Weather App | API連携, S3静的ホスティング |
-| 3 | ToDo App | LocalStorage, CRUD |
-| 4 | Weather Dashboard | Chart.js, CSS Grid |
-| 5 | Task Manager | フィルター機能 |
-| 6 | IAM基礎 | ユーザー, グループ, ポリシー |
-| 7 | Blog System | S3, JSON駆動 |
-| 8 | Serverless Blog | Lambda, API Gateway, DynamoDB |
-| 9 | CRUD API | Express → Lambda |
-| 10 | メモ管理API | フルスタックサーバーレス |
+> **「AWSはツール。ECアプリケーション開発が主役」**
 
-### Phase 2: Amplify & CDN（Day 11-14）
-| Day | 内容 | 技術スタック |
-|-----|------|-------------|
-| 11 | Amplify認証 | Cognito, React |
-| 12 | Amplify + API | Lambda, DynamoDB |
-| 13 | Photo Storage | S3, Amplify Storage |
-| 14 | CloudFront | CDN, HTTPS, キャッシュ |
+### 技術スタック
+- **フロントエンド**: React
+- **バックエンド**: Node.js（サーバーレス）+ Java/Spring Boot（コンテナ）
+- **作成物**: ECサイト（段階的に機能追加）
 
-### Phase 3: SAM & サーバーレス応用（Day 15-19）
-| Day | 内容 | 技術スタック |
-|-----|------|-------------|
-| 15 | AWS SAM入門 | IaC, CloudFormation |
-| 16 | API Gateway深掘り | REST API設計 |
-| 17 | DynamoDB CRUD | AWS SDK v3 |
-| 18 | Cognito統合 | JWT, Authorizer |
-| 19 | S3イベント処理 | 画像リサイズパイプライン |
-
-### Phase 4: IAM深掘り（Day 20-21）
-| Day | 内容 | 学習内容 |
-|-----|------|---------|
-| 20 | 概念編 | STS, AssumeRole, Trust Policy |
-| 21 | 実践編 | CloudTrail, 最小権限の原則 |
-
-### Phase 5: Java & Spring Boot（Day 22-26）
-| Day | 内容 | 技術スタック |
-|-----|------|-------------|
-| 22 | Spring Boot基礎 | Java 17, Elastic Beanstalk |
-| 23 | REST API（メモリ内） | Controller, Service, アノテーション |
-| 24 | JPA + RDS | MySQL, Flyway, Repository |
-| 25 | Spring Security + JWT | 認証, BCrypt |
-| 26 | AWS SDK for Java | S3, Secrets Manager |
-
-### Phase 6: マイクロサービス基礎（Day 27-30）
-| Day | 内容 | 技術スタック |
-|-----|------|-------------|
-| 27 | マイクロサービス基盤 | Task Service (RDS) + User Service (DynamoDB) |
-| 28 | Docker + ECS/Fargate | コンテナ化, ECR, ALB |
-| 29 | サービス間通信 | RestTemplate, タイムアウト |
-| 30 | 障害対応 + キャッシュ | サーキットブレーカー(Resilience4j), ElastiCache(Redis) |
+### 学習アプローチ
+1. **公式ワークショップ**で技術を学ぶ（フィージビリティ確保）
+2. **学んだ技術**でECアプリの機能を実装
+3. **両方のバックエンド**（Node.js / Java）を経験
 
 ---
 
-## 🔜 次にやること（Phase 7: マイクロサービス応用）
+## 📅 ロードマップ（12週間）
 
-### Day 31: セッション管理（Redis）⭐ 新規追加
-**作成物**: Spring Session + ElastiCache
+### 🟢 Phase 1: 基礎とサーバーレスEC（Week 1-4）
 
-**なぜ重要？**:
-Day 30ではRedisを「キャッシュ」として使った。
-実務ではRedisの最も一般的な用途は「セッション管理」。
+#### Week 1: サーバーレス基礎 + 商品カタログ
 
-**セッション管理とは？**:
+**学習（2日）**: Wild Rydes Workshop
+- https://webapp.serverlessworkshops.io/
+- Lambda, API Gateway, DynamoDB, Cognito の基本
+
+**実装（3日）**: ECアプリ - 商品カタログAPI
 ```
-1. ユーザーがログイン
-2. サーバーがセッションID発行 → Redisに保存
-   Redis: "session:abc123" → {userId: "user-001", name: "Tanaka"}
+作るもの:
+├── GET /products - 商品一覧
+├── GET /products/{id} - 商品詳細
+└── POST /products - 商品登録（管理者用）
 
-3. 次のリクエスト時
-   ユーザー → Cookie: session:abc123
-   サーバー → Redis確認 → ログイン済みと判断
+技術:
+├── Lambda (Node.js)
+├── API Gateway
+├── DynamoDB
+└── S3 (商品画像)
 ```
 
-**実装内容**:
-- Spring Session依存関係追加
-- ElastiCache（Redis）接続設定
-- ログイン状態の永続化
-- 複数サーバー間でのセッション共有
-
-**Day 25との比較**:
-| | JWT（Day 25） | セッション（Day 31） |
-|---|---|---|
-| 保存場所 | クライアント | サーバー（Redis） |
-| ログアウト | 難しい（トークン破棄できない） | 簡単（Redis削除） |
-| スケール | サーバー増やすだけ | Redis必要 |
+**成果物**: 商品カタログAPI（Node.js）
 
 ---
 
-### Day 32: 分散トレーシング（X-Ray）
-**作成物**: AWS X-Ray によるリクエスト追跡
+#### Week 2: 認証 + ユーザー管理
 
-**なぜ重要？**:
-Day 29-30でサービス間通信を実装した。
-どこで遅延が発生しているか分からなくなる問題を解決。
+**学習（2日）**: AWS Serverless Auth Workshop
+- https://github.com/aws-samples/aws-serverless-workshops/tree/master/Auth
+- Cognito, JWT, IAM の深掘り
 
-**可視化イメージ**:
+**実装（3日）**: ECアプリ - ユーザー認証
 ```
-クライアント → ALB → Task Service → User Service
-                  ↓          ↓            ↓
-                10ms       150ms         50ms
-                    
-「Task Serviceで150msかかってる」← X-Rayで可視化
+作るもの:
+├── ユーザー登録
+├── ログイン/ログアウト
+├── パスワードリセット
+└── ユーザープロファイル
+
+技術:
+├── Cognito User Pool
+├── JWT認証
+└── API Gateway Authorizer
+```
+
+**成果物**: 認証付きAPI
+
+---
+
+#### Week 3: ショッピングカート + 注文
+
+**学習（1日）**: AWS Serverless Ecommerce Platform を読む
+- https://github.com/aws-samples/aws-serverless-ecommerce-platform
+- イベント駆動アーキテクチャの理解
+
+**実装（4日）**: ECアプリ - カート＆注文
+```
+作るもの:
+├── POST /cart - カートに追加
+├── GET /cart - カート内容取得
+├── DELETE /cart/{itemId} - カートから削除
+├── POST /orders - 注文確定
+└── GET /orders - 注文履歴
+
+技術:
+├── DynamoDB (カート/注文テーブル)
+├── Step Functions (注文ワークフロー)
+└── SNS/SQS (注文通知)
+```
+
+**成果物**: カート＆注文機能
+
+---
+
+#### Week 4: Reactフロントエンド
+
+**学習（1日）**: AWS Amplify Hosting
+- https://docs.amplify.aws/
+
+**実装（4日）**: ECアプリ - Reactフロントエンド
+```
+作るもの:
+├── 商品一覧ページ
+├── 商品詳細ページ
+├── カートページ
+├── チェックアウトページ
+├── 注文履歴ページ
+└── ログイン/登録ページ
+
+技術:
+├── React (Vite)
+├── AWS Amplify (Hosting)
+├── Amplify Auth (Cognito連携)
+└── CloudFront (CDN)
+```
+
+**成果物**: 🎉 **サーバーレスECサイト v1 完成！**
+
+---
+
+### 🟡 Phase 2: Java/Spring Boot版（Week 5-8）
+
+#### Week 5: Spring Boot基礎 + 商品API
+
+**学習（2日）**: 
+- Spring Boot公式ガイド
+- Day 22-24の復習（改良版）
+
+**実装（3日）**: 商品カタログAPI（Java版）
+```
+作るもの:
+├── Spring Boot REST API
+├── Spring Data JPA
+├── RDS MySQL接続
+└── Docker化
+
+技術:
+├── Spring Boot 3.x
+├── Spring Data JPA
+├── RDS MySQL
+└── Docker
+```
+
+**成果物**: 商品API（Java版）
+
+---
+
+#### Week 6: Spring Security + 認証
+
+**学習（1日）**: Spring Security公式ドキュメント
+
+**実装（4日）**: 認証システム（Java版）
+```
+作るもの:
+├── JWT認証（Spring Security）
+├── ユーザーCRUD
+├── ロールベース認可
+└── Cognito連携（オプション）
+
+技術:
+├── Spring Security
+├── JWT (jjwt)
+└── BCrypt
+```
+
+**成果物**: 認証付きAPI（Java版）
+
+---
+
+#### Week 7: ECSデプロイ + ALB
+
+**学習（2日）**: Amazon ECS Workshop
+- https://ecsworkshop.com/
+- 必須モジュールのみ
+
+**実装（3日）**: ECSデプロイ
+```
+作るもの:
+├── ECRリポジトリ
+├── ECSクラスター
+├── Fargateサービス
+├── ALB設定
+└── ヘルスチェック
+
+技術:
+├── ECR
+├── ECS/Fargate
+├── ALB
+└── CloudWatch Logs
+```
+
+**成果物**: Java APIをECSにデプロイ
+
+---
+
+#### Week 8: マイクロサービス化
+
+**実装（5日）**: サービス分割
+```
+作るもの:
+├── Product Service (Java)
+├── Order Service (Java)
+├── User Service (Java)
+├── API Gateway統合
+└── サービス間通信
+
+技術:
+├── 複数ECSサービス
+├── API Gateway (HTTP API)
+├── ALB パスベースルーティング
+└── サービス間REST呼び出し
+```
+
+**成果物**: 🎉 **マイクロサービスEC v2 完成！**
+
+---
+
+### 🔵 Phase 3: 高度な機能（Week 9-11）
+
+#### Week 9: 検索機能
+
+**学習（1日）**: OpenSearch Service 基礎
+
+**実装（4日）**: 商品検索
+```
+作るもの:
+├── OpenSearch クラスター
+├── 商品データ同期
+├── 全文検索API
+├── フィルタリング
+└── React検索UI
+
+技術:
+├── OpenSearch Service
+├── DynamoDB Streams（同期用）
+└── Lambda（インデクサー）
+```
+
+**成果物**: 高度な検索機能
+
+---
+
+#### Week 10: 決済・通知
+
+**実装（5日）**: 決済フロー（モック）
+```
+作るもの:
+├── 決済API（Stripeモック）
+├── 注文確認メール（SES）
+├── 注文ステータス通知（SNS）
+└── Step Functions ワークフロー
+
+技術:
+├── Step Functions
+├── SES (メール)
+├── SNS (通知)
+└── Lambda
+```
+
+**成果物**: 決済・通知システム
+
+---
+
+#### Week 11: 可観測性
+
+**学習（2日）**: One Observability Workshop（必須部分のみ）
+- https://catalog.workshops.aws/observability/en-US/
+
+**実装（3日）**: モニタリング導入
+```
+作るもの:
+├── CloudWatch ダッシュボード
+├── アラーム設定
+├── X-Ray トレーシング
+└── ログ集約
+
+技術:
+├── CloudWatch
+├── X-Ray
+└── CloudWatch Logs Insights
+```
+
+**成果物**: 運用可能なモニタリング
+
+---
+
+### 🟣 Phase 4: 本番準備（Week 12）
+
+#### Week 12: 本番化 + ドキュメント
+
+**実装（5日）**: 
+```
+作るもの:
+├── CI/CD パイプライン（CodePipeline）
+├── 環境分離（dev/prod）
+├── IaC（CloudFormation or CDK）
+├── セキュリティ強化
+├── README / 技術ドキュメント
+└── ポートフォリオ公開
+
+技術:
+├── CodePipeline
+├── CodeBuild
+├── CloudFormation / CDK
+└── Secrets Manager
+```
+
+**成果物**: 🎉 **本番レベルECプラットフォーム完成！**
+
+---
+
+## 📊 最終成果物
+
+### ECプラットフォーム機能一覧
+
+| 機能 | Node.js版 | Java版 |
+|------|-----------|--------|
+| 商品カタログ | ✅ Lambda | ✅ ECS |
+| ユーザー認証 | ✅ Cognito | ✅ Spring Security |
+| ショッピングカート | ✅ DynamoDB | ✅ RDS |
+| 注文管理 | ✅ Step Functions | ✅ ECS |
+| 検索 | ✅ OpenSearch | - |
+| 決済（モック） | ✅ | - |
+| 通知 | ✅ SES/SNS | - |
+| フロントエンド | ✅ React + Amplify | - |
+
+### アーキテクチャ図
+```
+                    ┌─────────────────┐
+                    │   CloudFront    │
+                    └────────┬────────┘
+                             │
+                    ┌────────┴────────┐
+                    │  React (S3)     │
+                    └────────┬────────┘
+                             │
+              ┌──────────────┴──────────────┐
+              │         API Gateway         │
+              └──────────────┬──────────────┘
+                             │
+         ┌───────────────────┼───────────────────┐
+         │                   │                   │
+    ┌────┴────┐        ┌────┴────┐        ┌────┴────┐
+    │ Lambda  │        │   ALB   │        │ Lambda  │
+    │(Node.js)│        │         │        │(Search) │
+    └────┬────┘        └────┬────┘        └────┬────┘
+         │                  │                  │
+    ┌────┴────┐        ┌────┴────┐        ┌────┴────┐
+    │DynamoDB │        │ECS/Java │        │OpenSearch│
+    └─────────┘        └────┬────┘        └─────────┘
+                            │
+                       ┌────┴────┐
+                       │   RDS   │
+                       └─────────┘
 ```
 
 ---
 
-### Day 33: 共通認証（API Gateway + JWT）
-**作成物**: API Gatewayで認証一元化
+## 🔧 使用するAWS公式リソース
 
-**なぜ重要？**:
-各サービスで別々に認証すると管理が煩雑。
+### 必須ワークショップ（検証済み）
+1. **Wild Rydes** - サーバーレス基礎
+2. **Serverless Auth** - 認証
+3. **ECS Workshop** - コンテナ（一部）
+4. **One Observability** - 監視（一部）
 
-**現状（問題）**:
-```
-クライアント
-    ├── Task Service に認証
-    └── User Service に認証
-→ 2回認証が必要
-```
-
-**解決後**:
-```
-クライアント → API Gateway（JWT検証）→ 各サービス
-```
+### 参考リソース
+- [aws-serverless-ecommerce-platform](https://github.com/aws-samples/aws-serverless-ecommerce-platform) - アーキテクチャ参考
+- [fourTheorem/serverless-ecommerce-workshop](https://github.com/fourTheorem/serverless-ecommerce-workshop) - 実装参考
 
 ---
 
-### Day 34: SQS/SNS（非同期通信）
-**作成物**: メッセージキューによる疎結合化
+## 📝 週次チェックリスト
 
-**なぜ重要？**:
-Day 29の同期通信では、User Serviceが遅いとTask Serviceも遅くなる。
+各週の終わりに確認：
 
-**同期 vs 非同期**:
-```
-【同期】
-Task Service → User Service → 完了まで待つ（遅い）
-
-【非同期】
-Task Service → SQS → 即座に完了
-               ↓
-         Worker が後で処理
-```
+- [ ] 学習ワークショップを完了した
+- [ ] 実装物が動作する
+- [ ] GitHubにコミットした
+- [ ] daily-log.mdを更新した
+- [ ] AWSリソースをクリーンアップした（不要なもの）
 
 ---
 
-### Day 35: EventBridge（イベント駆動）
-**作成物**: イベントバスによるサービス連携
+## 💡 重要な原則
 
-**SQS/SNS vs EventBridge**:
-```
-【SQS/SNS】送信側が受信側を知る必要がある
-【EventBridge】「何が起きたか」だけ発信、受信側が購読
-```
+### 1. 完了を重視
+- 中途半端に終わらせない
+- 動くものを毎週作る
 
----
+### 2. 公式リソースを活用
+- 検証済みのワークショップを使う
+- 動かない場合は公式ドキュメントを確認
 
-## 📅 Phase 8: 統合 & 振り返り
+### 3. アプリ開発が主役
+- インフラは手段
+- 「何を作るか」が先、「どう作るか」が後
 
-### Day 36: パフォーマンス比較
-**実施内容**: これまでの学習の統合と比較分析
-
-**比較対象**:
-1. Node.js + Lambda + DynamoDB（Day 15-19）
-2. Java + ECS + RDS + マイクロサービス（Day 22-35）
-
-**測定項目**:
-- レスポンスタイム
-- コールドスタート
-- コスト
-- 開発速度
-
-**選択基準の確立**:
-```
-【サーバーレス（Lambda）を選ぶ場合】
-- 開発速度重視
-- トラフィック予測不能
-- シンプルなデータ構造
-
-【コンテナ（ECS）を選ぶ場合】
-- 複雑なビジネスロジック
-- 複雑なクエリ（JOIN）
-- 大規模チーム開発
-```
+### 4. 両方の技術を習得
+- Node.js: 素早くプロトタイプ
+- Java: エンタープライズ品質
 
 ---
 
-### Day 37+: 追加トピック（オプション）
+## 🔄 更新履歴
 
-| トピック | 内容 |
-|---------|------|
-| CI/CD | GitHub Actions + CodePipeline |
-| Terraform | IaCの別選択肢 |
-| EKS | Kubernetes on AWS |
-| Step Functions | ワークフロー自動化 |
-| Aurora Serverless | RDSのサーバーレス版 |
+| 日付 | バージョン | 変更内容 |
+|------|-----------|----------|
+| 2025-12-12 | v2.1 | EC系アプリ開発中心に改訂、ローカル環境整理 |
+| 2025-12-12 | v2.0 | AWS公式ワークショップベースに改訂 |
+| 2025-09-27 | v1.0 | 初版作成 |
 
 ---
 
-## 🎯 技術選定チートシート
+## 📌 Day 1-33 の学習内容（参考）
 
-### データベース選択
-| 要件 | 選択 |
-|------|------|
-| シンプルなKey-Value | DynamoDB |
-| 複雑なクエリ・JOIN | RDS（MySQL/PostgreSQL） |
-| セッション・キャッシュ | ElastiCache（Redis） |
+Phase 1で学んだ内容はarchiveフォルダに保管済み。以下は再利用可能：
 
-### 認証選択
-| 要件 | 選択 |
-|------|------|
-| 早く実装したい | Cognito |
-| 完全カスタマイズ | Spring Security + JWT |
-| セッション管理したい | Spring Session + Redis |
-
-### デプロイ選択
-| 要件 | 選択 |
-|------|------|
-| サーバーレス | Lambda + SAM |
-| コンテナ | ECS/Fargate |
-| 従来型 | Elastic Beanstalk |
-
-### 通信選択
-| 要件 | 選択 |
-|------|------|
-| 即座にレスポンス必要 | 同期（RestTemplate） |
-| 処理に時間かかる | 非同期（SQS） |
-| 複数サービスに通知 | SNS/EventBridge |
-
----
-
-## 📝 学習原則
-
-1. **概念理解優先**: 新しい用語が出たら実装前に理解する
-2. **比較学習**: Node.js vs Java、同期 vs 非同期、などを比較
-3. **エラーは学び**: トラブルシューティングが最も学びになる
-4. **適材適所**: 「いつどれを使うか」の判断力を養う
-
----
-
-*最終更新: 2025-12-06*
+- **HTML/CSS/JS基礎** - Week 1
+- **Lambda + API Gateway + DynamoDB** - Week 3
+- **Cognito認証** - Day 18
+- **Spring Boot + RDS** - Day 22-26
+- **Docker + ECS/Fargate** - Day 27-30
+- **ElastiCache** - Day 31（概念のみ）

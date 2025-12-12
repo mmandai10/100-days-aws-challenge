@@ -1,0 +1,38 @@
+{
+  "family": "day33-task-service",
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "256",
+  "memory": "512",
+  "executionRoleArn": "arn:aws:iam::294659522793:role/ecsTaskExecutionRole",
+  "taskRoleArn": "arn:aws:iam::294659522793:role/ecsTaskExecutionRole",
+  "networkMode": "awsvpc",
+  "containerDefinitions": [
+    {
+      "name": "task-service",
+      "image": "294659522793.dkr.ecr.ap-northeast-1.amazonaws.com/task-service:latest",
+      "essential": true,
+      "portMappings": [
+        {
+          "containerPort": 8081,
+          "protocol": "tcp"
+        }
+      ],
+      "environment": [
+        {"name": "SERVER_PORT", "value": "8081"},
+        {"name": "SPRING_DATASOURCE_URL", "value": "jdbc:mysql://day22-taskdb.cx6ymy8083qh.ap-northeast-1.rds.amazonaws.com:3306/taskdb"},
+        {"name": "SPRING_DATASOURCE_USERNAME", "value": "admin"},
+        {"name": "SPRING_DATASOURCE_PASSWORD", "value": "Tbontbma1!!"},
+        {"name": "USER_SERVICE_URL", "value": "http://day30-alb-451981849.ap-northeast-1.elb.amazonaws.com"}
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/day33-task-service",
+          "awslogs-region": "ap-northeast-1",
+          "awslogs-stream-prefix": "task-service",
+          "awslogs-create-group": "true"
+        }
+      }
+    }
+  ]
+}

@@ -1,165 +1,110 @@
-# 100 Days AWS Challenge - プロジェクト作成ガイド
+# 100 Days AWS Challenge - Project Guide
 
-## 🔧 Day開始時の必須プロセス（Claude実装用）
+## 🎯 プロジェクト概要
 
-### ユーザーが「Day [番号]を始めたい」と言った時の処理順序
+ECプラットフォームを段階的に構築しながら、AWSサービスを学ぶ実践型チャレンジ。
 
-#### Step 1: learning-roadmap.md自動確認（必須）
-```
-project_knowledge_search("Day [番号] learning-roadmap")
-```
+---
 
-#### Step 2: 該当Day情報の提示
-- 作るアプリ名
-- メイン実装内容
-- AWS要素
-- 完了状況（✅/⏳）
-
-#### Step 3: 関連Day言及
-- 前のDayとの関連性
-- 将来のDayでの発展予定
-
-#### Step 4: 学習開始の確認
-「準備ができたら『開始する』と言ってください」
-
-### 🚨 重要な実装ルール
-
-1. **learning-roadmap.md確認は必須**
-   - Day開始時に毎回実行
-   - 確認せずに進行は禁止
-
-2. **段階的説明の徹底**
-   - 20-50行ずつコード提示
-   - 各ステップで「OK」確認
-
-3. **関連Day言及**
-   - 例：「Day 6のIAM基礎の続きで...」
-   - 学習の連続性を保つ
-
-## 📋 プロジェクト作成時の指示プロンプト
-
-新しいセッションを開始する際は、以下のプロンプトを使用してください：
+## 📁 ディレクトリ構造
 
 ```
-100 Days AWS Challengeの Day [番号] を始めます。
-以下のガイドラインに従って進めてください：
-
-【Day開始時の必須動作】
-1. project_knowledge_search("Day [番号] learning-roadmap")でlearning-roadmap.mdを確認
-2. 該当Dayの作るアプリ、技術要素、関連Dayを把握
-3. 学習内容を提示してから開始
-
-【基本原則】
-- コピペ職人にしない（理解しながら進める）
-- 一つずつ確認しながら進める
-- 何をしているか説明しながら進める（学習目的）
-
-【実装フロー】
-1. 概要説明
-   - まず「何を作るか」を説明
-   - 次に「なぜそうするか」を説明  
-   - 最後に「どうやるか」を実装
-
-2. 段階的実装（各20-50行まで）
-   - Step 1: HTML構造の基本部分
-   - Step 2: CSSスタイリング
-   - Step 3: JavaScript基本機能
-   - Step 4: AWS連携部分
-   - 各ステップ後に「OK」「準備できました」を確認
-
-3. 説明スタイル
-   - 新しい用語は初回登場時に日本語で説明
-   - コマンドの各要素を説明（例: aws s3 mb = Make Bucket）
-   - 実務での応用例・本番環境での注意点を含める
-   - セキュリティとコスト（AWS料金目安）に言及
-
-4. エラー対応
-   - エラーは学習の機会として活用
-   - 「大丈夫です」と安心させる
-   - なぜエラーが出たか説明
-   - 代替案を複数提示
-
-5. モチベーション維持
-   - 成功したら褒める（「完璧です！」「素晴らしい！」）
-   - 「世界中からアクセスできる」など実感を与える
-   - 豆知識を挟む
-
-6. 進捗管理
-   - daily-log.mdを必ず更新
-   - Git commitは意味のある単位で実行
-   - 学習ポイント・つまずいた点と解決策を記録
-
-【確認フレーズ】
-- 「実行結果を教えてください」
-- 「どのように表示されましたか？」
-- 「準備ができたら教えてください」
-- 「問題があれば修正します」
+C:\100-days-aws-challenge\
+├── docs/                    # ドキュメント
+│   ├── learning-roadmap.md  # 学習ロードマップ
+│   └── project-guide.md     # このファイル
+├── logs/
+│   └── daily-log.md         # 日々の進捗記録
+├── projects/
+│   ├── ec-platform/         # メインプロジェクト
+│   │   ├── frontend/        # React フロントエンド
+│   │   ├── backend-node/    # Node.js サーバーレス
+│   │   ├── backend-java/    # Java/Spring Boot コンテナ
+│   │   └── infrastructure/  # IaC (SAM/CDK)
+│   └── workshops/           # AWS公式ワークショップ
+└── archive/                 # 過去のプロジェクト
 ```
 
-## 🎯 実装テンプレート例
+---
 
-### Day開始時の標準応答
+## 🛠 開発環境
+
+### 必須ツール
+- **エディタ**: VS Code
+- **ターミナル**: PowerShell
+- **バージョン管理**: Git
+- **Node.js**: v18以上
+- **Java**: JDK 17以上
+- **Docker**: Docker Desktop
+- **AWS CLI**: v2
+
+### VS Code 拡張機能
+- AWS Toolkit
+- Docker
+- Spring Boot Extension Pack
+- ESLint / Prettier
+
+---
+
+## 📋 学習の進め方
+
+### 1. Week開始時
+1. `learning-roadmap.md` で該当Weekの内容を確認
+2. 必要なAWS公式ワークショップを特定
+3. 作成するECアプリ機能を把握
+
+### 2. 実装中
+1. ワークショップで技術を学ぶ
+2. 学んだ技術でECアプリ機能を実装
+3. 各ステップで動作確認
+
+### 3. Week終了時
+1. `daily-log.md` に学びを記録
+2. Git commit & push
+3. 次Weekの準備
+
+---
+
+## 🔗 参考リソース
+
+### AWS公式ワークショップ
+- [Wild Rydes Serverless](https://webapp.serverlessworkshops.io/)
+- [ECS Workshop](https://ecsworkshop.com/)
+- [One Observability Workshop](https://observability.workshop.aws/)
+
+### ドキュメント
+- [AWS SDK for JavaScript v3](https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/)
+- [Spring Boot Reference](https://docs.spring.io/spring-boot/docs/current/reference/html/)
+
+---
+
+## ⚡ よく使うコマンド
+
+### AWS CLI
+```bash
+# 認証情報確認
+aws sts get-caller-identity
+
+# Lambda関数一覧
+aws lambda list-functions --query 'Functions[].FunctionName'
+
+# DynamoDBテーブル一覧
+aws dynamodb list-tables
 ```
-ユーザー: "Day 8を始めたい"
 
-Claude応答例:
-1. project_knowledge_search("Day 8 learning-roadmap")実行
-2. "Day 8では E-commerce Site (ショッピングカート)を作ります"
-3. "Day 1-7のフロントエンド基礎の発展として..."
-4. "準備ができたら『開始する』と言ってください"
+### Docker
+```bash
+# イメージビルド
+docker build -t my-app .
+
+# ECRログイン
+aws ecr get-login-password | docker login --username AWS --password-stdin [ACCOUNT].dkr.ecr.[REGION].amazonaws.com
 ```
 
-## 🎯 効果的な文言集
-
-### 作業方針（REQUIREMENTS.mdより）
-- 一つ一つ確実に進める
-- 各ステップで確認を取る
-- エラーは都度解決
-- ドキュメント化を徹底
-
-### 進行方法（HANDOVER.mdより）
-- 一つずつ確認しながら進める
-- 何をしているか説明しながら進める（学習目的）
-- 複数のコマンドを一度に実行しない
-- 各ステップの結果を確認してから次へ
-
-### 学習スタイル（teaching-style-guide.mdより）
-- コピペ職人にしない - 理解を促す
-- エラーは恐れない - 学習の機会
-- 実感を与える - 作ったものが動く喜び
-- 記録を残す - 後で振り返れるように
-
-## 📝 使用例
-
-### 新規プロジェクト開始時
+### Git
+```bash
+# 日次コミット
+git add .
+git commit -m "Week X Day Y: [内容]"
+git push
 ```
-「docs/project-guide.mdのガイドラインでDay 8を始めてください」
-```
-
-### 途中から再開時
-```
-「project-guide.mdの方式で、Day 7の続きから教えてください」
-```
-
-### カスタマイズ例
-```
-「project-guide.mdベースで、特にJava学習を重視して進めてください」
-```
-
-## 📋 Claude実装チェックリスト
-
-各Day開始時にClaude側で確認すべき項目：
-
-- [ ] project_knowledge_search実行済み
-- [ ] learning-roadmap.mdの該当Day確認済み
-- [ ] 作るアプリと技術要素を把握
-- [ ] 関連する過去Dayを特定
-- [ ] 段階的説明の準備完了
-- [ ] teaching-style-guide.mdに従う準備
-- [ ] daily-log.md更新の準備
-
-## 🔄 更新履歴
-- 2025-09-16: 初版作成（teaching-style-guide.mdを統合）
-- 2025-09-27: learning-roadmap.md自動読み込み機能を追加
-- 2025-09-27: Java学習計画（Day 22-28）対応
-- 各種既存ドキュメントから効果的な文言を集約
