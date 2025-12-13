@@ -1,0 +1,15 @@
+{
+  "shopx-api-products": [
+    {
+      "PutRequest": {
+        "Item": {
+          "PK": {"S": "CATEGORY#electronics"},
+          "SK": {"S": "CATEGORY"},
+          "categoryId": {"S": "electronics"},
+          "name": {"S": "Electronics"},
+          "description": {"S": "Smartphones, PCs, appliances"}
+        }
+      }
+    }
+  ]
+}

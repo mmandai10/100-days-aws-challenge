@@ -1,0 +1,37 @@
+﻿{
+  "shopx-api-products": [
+    {
+      "PutRequest": {
+        "Item": {
+          "PK": {"S": "CATEGORY#electronics"},
+          "SK": {"S": "CATEGORY"},
+          "categoryId": {"S": "electronics"},
+          "name": {"S": "電子機器"},
+          "description": {"S": "スマートフォン、PC、家電など"}
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "PK": {"S": "CATEGORY#fashion"},
+          "SK": {"S": "CATEGORY"},
+          "categoryId": {"S": "fashion"},
+          "name": {"S": "ファッション"},
+          "description": {"S": "衣類、靴、アクセサリーなど"}
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "PK": {"S": "CATEGORY#books"},
+          "SK": {"S": "CATEGORY"},
+          "categoryId": {"S": "books"},
+          "name": {"S": "書籍"},
+          "description": {"S": "本、雑誌、電子書籍など"}
+        }
+      }
+    }
+  ]
+}

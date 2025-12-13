@@ -1,0 +1,60 @@
+{
+  "shopx-api-products": [
+    {
+      "PutRequest": {
+        "Item": {
+          "PK": {"S": "CATEGORY#electronics"},
+          "SK": {"S": "PRODUCT#prod-001"},
+          "productId": {"S": "prod-001"},
+          "name": {"S": "Smartphone X"},
+          "price": {"N": "89900"},
+          "description": {"S": "Latest smartphone with 5G"},
+          "category": {"S": "electronics"},
+          "stock": {"N": "50"}
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "PK": {"S": "CATEGORY#electronics"},
+          "SK": {"S": "PRODUCT#prod-002"},
+          "productId": {"S": "prod-002"},
+          "name": {"S": "Laptop Pro"},
+          "price": {"N": "149900"},
+          "description": {"S": "High performance laptop"},
+          "category": {"S": "electronics"},
+          "stock": {"N": "30"}
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "PK": {"S": "CATEGORY#fashion"},
+          "SK": {"S": "PRODUCT#prod-003"},
+          "productId": {"S": "prod-003"},
+          "name": {"S": "Denim Jacket"},
+          "price": {"N": "12900"},
+          "description": {"S": "Classic denim jacket"},
+          "category": {"S": "fashion"},
+          "stock": {"N": "100"}
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "PK": {"S": "CATEGORY#books"},
+          "SK": {"S": "PRODUCT#prod-004"},
+          "productId": {"S": "prod-004"},
+          "name": {"S": "AWS Guide"},
+          "price": {"N": "3500"},
+          "description": {"S": "Complete AWS learning guide"},
+          "category": {"S": "books"},
+          "stock": {"N": "200"}
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "shopx-api-products": [
+    {
+      "PutRequest": {
+        "Item": {
+          "PK": {"S": "CATEGORY#fashion"},
+          "SK": {"S": "CATEGORY"},
+          "categoryId": {"S": "fashion"},
+          "name": {"S": "Fashion"},
+          "description": {"S": "Clothing, shoes, accessories"}
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "PK": {"S": "CATEGORY#books"},
+          "SK": {"S": "CATEGORY"},
+          "categoryId": {"S": "books"},
+          "name": {"S": "Books"},
+          "description": {"S": "Books, magazines, e-books"}
+        }
+      }
+    }
+  ]
+}
