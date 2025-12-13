@@ -66,4 +66,9 @@
 
 **次回:** 商品詳細ページ or UI改善
 
+cd C:\100-days-aws-challenge
+git add .
+git commit -m "Day 3: Add product detail page with React Router"
+git push
+
 ---
