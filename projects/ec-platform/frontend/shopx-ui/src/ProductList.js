@@ -60,6 +60,11 @@ function ProductList() {
             key={product.productId}
             className="product-card"
           >
+            <img 
+              src={product.imageUrl || 'https://placehold.co/400x300/eee/999?text=No+Image'} 
+              alt={product.name}
+              className="product-image"
+            />
             <h3>{product.name}</h3>
             <p className="price">¥{product.price?.toLocaleString()}</p>
             <p className="category">{product.category}</p>

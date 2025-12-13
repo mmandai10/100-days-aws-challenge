@@ -71,4 +71,23 @@ git add .
 git commit -m "Day 3: Add product detail page with React Router"
 git push
 
----
+### Day 4 (2025-12-13)
+
+**完了したこと:**
+- S3 バケット作成 (shopx-product-images-20251213)
+- 商品画像アップロード（4商品分）
+- DynamoDB に imageUrl 属性追加
+- React で S3 画像表示
+- CSS グリッドレイアウト改善
+
+**学んだこと:**
+- S3 パブリックアクセス設定（バケットポリシー）
+- DynamoDB UpdateCommand で既存アイテム更新
+- Single Table Design のキー構造の重要性（PK/SK）
+- CSS Grid でレスポンシブ対応
+
+**課題:**
+- PowerShell の JSON パース問題 → Node.js スクリプトで回避
+- DynamoDB のキー構造を間違えた → 正しいPK/SKで再更新
+
+**次回:** Day 5 - ページネーション + テスト + Week 1 まとめ
