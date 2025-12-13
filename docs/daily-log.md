@@ -40,3 +40,30 @@
 
 （以前の内容は省略）
 "@ | Set-Content -Path docs/daily-log.md -Encoding UTF8
+### Day 2 (2025-12-13)
+
+**完了したこと:**
+- React フロントエンド作成 (shopx-ui)
+- API連携 (fetch + useEffect + useState)
+- 商品一覧表示（カード形式）
+- カテゴリフィルター機能
+
+**技術スタック:**
+- React (create-react-app)
+- CSS Grid (レスポンシブ対応)
+- Fetch API
+
+**学んだこと:**
+- useState: データを保存する箱
+- useEffect: 画面表示時にAPIを呼ぶ
+- map: 配列の各要素を表示
+- Promise.all: 複数APIを同時に呼ぶ
+
+**深掘りトピック（今後）:**
+- [ ] DynamoDB Single Table Design パターン
+- [ ] PK/SK設計のベストプラクティス
+- [ ] RDBとNoSQLの設計思想の違い
+
+**次回:** 商品詳細ページ or UI改善
+
+---
