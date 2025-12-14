@@ -112,3 +112,23 @@ git push
 **成果物:** projects/ai-learning/day01/hello_claude.py
 
 **次回:** Day 2 - Messages API（チャットスクリプト）
+
+### Day 2 (2025-12-14)
+
+**テーマ:** Messages API
+
+**完了したこと:**
+- マルチターン会話の仕組みを理解
+- chat.py 作成（会話履歴を管理するチャットスクリプト）
+- system プロンプトで Claude の役割設定を実装
+
+**学んだこと:**
+- messages リスト: user と assistant の発言を交互に蓄積
+- API は何も覚えない: 毎回履歴全体を送る必要がある
+- トークン制限: 履歴が長くなりすぎたら古いものを削除
+- 履歴の保存先: メモリ上（プログラム終了で消える）
+- system プロンプト: Claude の人格・役割を設定できる
+
+**成果物:** projects/ai-learning/day02/chat.py
+
+**次回:** Day 3 - プロンプト設計①（XMLタグ、役割設定）
