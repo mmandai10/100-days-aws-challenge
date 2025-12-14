@@ -145,3 +145,24 @@ git push
 **学んだこと:**
 - プレースホルダー {変数} で動的にプロンプトを生成
 - **k
+
+
+### Day 4 (2025-12-15)
+
+**テーマ:** プロンプト設計②
+
+**完了したこと:**
+- XMLタグで入力を明確化
+- JSON出力形式の指定
+- Few-shot（例示）テクニック
+
+**学んだこと:**
+- XMLタグ: Claudeが構造を認識しやすくなる
+- JSON出力: プログラムで扱いやすい（result["score"]で取得）
+- Few-shot: 例を見せると出力が安定する
+- {{}} でformat()の波括弧をエスケープ
+- これらは基礎、Tool Useで「Claudeに判断を任せる」に発展
+
+**成果物:** projects/ai-learning/day04/improved_templates.py
+
+**次回:** Day 5 - Tool Use基礎（Claudeが自分でツールを選ぶ）
