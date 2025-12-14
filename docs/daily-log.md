@@ -232,3 +232,35 @@ git push
 
 ### 次回
 - Day 8: RAG実装（Chromaを使ったドキュメントQ&A）
+
+
+### Day 8 (2025-12-14)
+
+**テーマ:** RAG 実装
+
+**完了したこと:**
+- Voyage AI で Embedding 実装
+- コサイン類似度による類似検索実装
+- RAG Q&A システム完成（社内FAQ検索）
+
+**学んだこと:**
+- RAG 実装の全体構成: documents → embedding → search → rag_qa
+- Voyage AI: Anthropic 推奨の Embedding API
+- コサイン類似度: ベクトル間の角度で類似性を測定（-1〜1）
+- 無料枠のレート制限対策: time.sleep() で回避
+- 現実的な RAG 導入:
+  - Embedding コストは安い（数万件で数百円）
+  - 一度 Embedding すれば永続化可能
+  - 主なコストは回答生成（Claude API）
+- 企業向け RAG サービス:
+  - Microsoft Copilot: SharePoint 統合、$30/ユーザー/月
+  - Amazon Q Business: 40以上のデータソース対応、$3-20/ユーザー/月
+- RAG 普及の課題: データ散在、権限管理、セキュリティ審査
+
+**成果物:**
+- day08/documents.py（サンプルドキュメント）
+- day08/embedding.py（Embedding 処理）
+- day08/search.py（類似検索）
+- day08/rag_qa.py（Q&A システム）
+
+**次回:** Day 9 - MCP 入門
