@@ -166,3 +166,28 @@ git push
 **成果物:** projects/ai-learning/day04/improved_templates.py
 
 **次回:** Day 5 - Tool Use基礎（Claudeが自分でツールを選ぶ）
+
+## Day 5 (YYYY-MM-DD)
+### 学習内容
+- Tool Use 基礎
+
+### やったこと
+- Tool Use の概念理解
+  - Claude API 単体 = 言語モデルのみ、外部接続不可
+  - claude.ai = Anthropic が Tool Use で拡張済み
+  - Tool Use = Claude に手足を付ける仕組み
+- 天気取得ツール実装 (weather_tool.py)
+  - ツール定義（name, description, input_schema）
+  - Claude の役割: 判断 + パラメータ抽出 + 文章生成
+  - 開発者の役割: 実際のツール実行
+- 動作確認
+  - 「東京の天気は？」→ stop_reason: tool_use → ツール実行
+  - 「日本の首都は？」→ stop_reason: end_turn → 直接回答
+
+### 成果物
+- day05/weather_tool.py
+
+### 気づき
+- Claude は「このツールをこのパラメータで呼んで」と返すだけ
+- 実行は開発者のコード側
+- Claude が文脈から使うべきか判断する
