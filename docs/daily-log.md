@@ -264,3 +264,25 @@ git push
 - day08/rag_qa.py（Q&A システム）
 
 **次回:** Day 9 - MCP 入門
+
+## Day 9 - 2024/12/14
+### テーマ: MCP 入門
+
+### 学習内容
+- MCP（Model Context Protocol）の概念理解
+- Claude Desktop へのMCPサーバー設定
+- filesystem / GitHub / Memory MCP の動作検証
+
+### 成果物
+- claude_desktop_config.json（MCP設定ファイル）
+
+### 学んだこと
+- MCP = Tool Use の共有版・プラグイン版
+- 設定ファイルで外部ツールを追加できる
+- filesystem MCP は安定動作
+- GitHub MCP は不安定（読み取りのみ成功）
+- Project 内では MCP が制限される（Anthropicコネクタ優先）
+- MCP はまだ発展途上の技術
+
+### 次回
+- Day 10: まとめ
