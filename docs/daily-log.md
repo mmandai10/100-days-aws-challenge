@@ -213,3 +213,22 @@ git push
 - 「札幌 天気 観光 2万円 2日」のような雑な入力でも、Claude が3ツール同時に正しくパラメータ抽出
 - ダミー関数を本物のAPIに置き換えれば実用化できる
 - Tool Use の仕組み自体は Day 5 と同じ、複数対応がポイント
+
+## Day 7 - 2024/12/XX（XX は今日の日付）
+
+### 学習内容
+- RAG（Retrieval-Augmented Generation）概念理解
+
+### 学んだこと
+- LLMの基礎：学習データ（公開Webデータ）、仕組み（トークン化→次トークン予測）、Transformerアーキテクチャ
+- LLM関連用語：プロンプト、コンテキスト、トークン、ハルシネーション、Temperature、Fine-tuning、RLHF、マルチモーダル
+- LLMの課題：知識のカットオフ、非公開データ不明、ハルシネーション
+- RAGの3ステップ：Retrieve（検索）→ Augment（拡張）→ Generate（生成）
+- Embedding：テキストをベクトル（数値リスト）に変換、意味が近いと似たベクトルになる
+- Vector Database：ベクトルの類似検索に特化したDB（Chroma、Pineconeなど）
+
+### 成果物
+- day07/rag-understanding.md（RAG理解ノート）
+
+### 次回
+- Day 8: RAG実装（Chromaを使ったドキュメントQ&A）
