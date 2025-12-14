@@ -90,4 +90,25 @@ git push
 - PowerShell の JSON パース問題 → Node.js スクリプトで回避
 - DynamoDB のキー構造を間違えた → 正しいPK/SKで再更新
 
-**次回:** Day 5 - ページネーション + テスト + Week 1 まとめ
+## 🤖 12月: AI/LLM 基礎集中
+
+### Day 1 (2025-12-14)
+
+**テーマ:** API セットアップ
+
+**完了したこと:**
+- Python 3.14.2 インストール
+- 仮想環境 (venv) 作成・有効化
+- Anthropic SDK インストール
+- API キー取得・.env ファイル設定
+- hello_claude.py 作成・実行成功
+
+**学んだこと:**
+- 仮想環境: プロジェクトごとにパッケージを分離する仕組み
+- SDK: API を簡単に使うためのライブラリ
+- .env ファイル: API キーをコードから分離してセキュリティ確保
+- API の用途: 自動化、アプリ組み込み、他システム連携
+
+**成果物:** projects/ai-learning/day01/hello_claude.py
+
+**次回:** Day 2 - Messages API（チャットスクリプト）
