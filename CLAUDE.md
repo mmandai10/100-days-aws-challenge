@@ -8,10 +8,9 @@ This file provides guidance to Claude Code when working with this repository.
 - **現在**: 12月 AI/LLM 学習 Day 11-15（Claude Code 実践）
 - **次**: 1月〜 AWS + ShopX 開発
 
-### 今すぐ解決が必要な問題
-- `.cursor/mcp.json` に GitHub トークンが Git 履歴に残っている
-- GitHub の Secret Scanning により push がブロック中
-- 解決方法: 履歴から完全削除、または GitHub で許可
+### 解決済みの問題
+- ~~`.cursor/mcp.json` に GitHub トークンが Git 履歴に残っている~~ → **解決済み**（履歴をリセットして再コミット）
+- `.cursor/` は `.gitignore` で除外済み
 
 ### ロードマップ v5.0
 | Day | テーマ | 状態 |
