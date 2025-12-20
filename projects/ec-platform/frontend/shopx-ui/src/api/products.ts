@@ -1,6 +1,6 @@
 // API クライアント - 商品関連
 
-import type { Product } from '../types/product';
+import type { Product, Category } from '../types/product';
 
 // API のベース URL
 const API_BASE_URL = 'https://zzhyj5syl6.execute-api.ap-northeast-1.amazonaws.com/Prod';
@@ -51,4 +51,28 @@ export const fetchProductById = async (id: string): Promise<Product | null> => {
   
   const data = await response.json();
   return mapProduct(data);  // 変換して返す
+};
+
+// カテゴリ別に商品を取得
+export const fetchProductsByCategory = async (categoryId: string): Promise<Product[]> => {
+  const response = await fetch(`${API_BASE_URL}/products?category=${categoryId}`);
+  
+  if (!response.ok) {
+    throw new Error(`API Error: ${response.status}`);
+  }
+  
+  const data = await response.json();
+  return data.products.map(mapProduct);
+};
+
+// カテゴリ一覧を取得
+export const fetchCategories = async (): Promise<Category[]> => {
+  const response = await fetch(`${API_BASE_URL}/categories`);
+  
+  if (!response.ok) {
+    throw new Error(`API Error: ${response.status}`);
+  }
+  
+  const data = await response.json();
+  return data.categories;
 };

@@ -13,3 +13,10 @@ export interface Product {
 export interface ProductListResponse {
   products: Product[];
 }
+
+// カテゴリの型定義
+export interface Category {
+  categoryId: string;
+  name: string;
+  description: string;
+}
