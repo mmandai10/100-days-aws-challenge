@@ -1,21 +1,53 @@
+import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-
-// ダミーデータ（後で API から取得する）
-const dummyProducts: Record<string, { name: string; price: number; description: string }> = {
-  'prod-001': { name: 'ワイヤレスイヤホン', price: 12800, description: '高音質なワイヤレスイヤホン。ノイズキャンセリング機能付き。' },
-  'prod-002': { name: 'スマートウォッチ', price: 24800, description: '健康管理に最適。心拍数、睡眠、運動を記録。' },
-  'prod-003': { name: 'モバイルバッテリー', price: 3980, description: '大容量10000mAh。スマホを約3回充電可能。' },
-  'prod-004': { name: 'Bluetoothスピーカー', price: 8800, description: '防水仕様。アウトドアでも使える高音質スピーカー。' },
-};
+import type { Product } from '../types/product';
+import { fetchProductById } from '../api/products';
 
 const ProductDetailPage = () => {
   const { id } = useParams();
-  const product = id ? dummyProducts[id] : null;
+  
+  // 状態管理
+  const [product, setProduct] = useState<Product | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  if (!product) {
+  // 画面表示時（または id 変更時）に API を呼び出す
+  useEffect(() => {
+    const loadProduct = async () => {
+      if (!id) {
+        setError('商品IDが指定されていません');
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const data = await fetchProductById(id);
+        if (data) {
+          setProduct(data);
+        } else {
+          setError('商品が見つかりません');
+        }
+      } catch (err) {
+        setError('商品の取得に失敗しました');
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadProduct();
+  }, [id]);  // id が変わったら再実行
+
+  // ローディング中
+  if (loading) {
+    return <div>読み込み中...</div>;
+  }
+
+  // エラー時
+  if (error || !product) {
     return (
       <div>
-        <h1>商品が見つかりません</h1>
+        <h1>{error || '商品が見つかりません'}</h1>
         <Link to="/products">商品一覧に戻る</Link>
       </div>
     );
@@ -26,10 +58,13 @@ const ProductDetailPage = () => {
       <Link to="/products">← 商品一覧に戻る</Link>
       <h1>{product.name}</h1>
       <img
-        src="https://placehold.co/400x300?text=Product+Image"
+        src={product.imageUrl || 'https://placehold.co/400x300?text=No+Image'}
         alt={product.name}
-        style={{ borderRadius: '8px', marginTop: '1rem' }}
+        style={{ borderRadius: '8px', marginTop: '1rem', maxWidth: '400px' }}
       />
+      <p style={{ fontSize: '0.9rem', color: '#666' }}>
+        カテゴリ: {product.category}
+      </p>
       <p style={{ fontSize: '1.5rem', color: '#e74c3c', fontWeight: 'bold' }}>
         ¥{product.price.toLocaleString()}
       </p>

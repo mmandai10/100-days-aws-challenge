@@ -322,3 +322,142 @@ git push
 - CLAUDE.md でプロジェクト固有の指示を設定
 
 **次回:** Day 12 - 既存コードの修正を Claude Code に実行させる
+
+daily-log.md に Day 12 を追記して git push して。
+
+### Day 12 (2025-12-19)
+
+**テーマ:** Claude Code 機能ツアー
+
+**完了したこと:**
+- Git 問題解決（シークレット履歴削除）
+- Issue 作成（GitHub CLI 経由）
+- コード分析・リファクタリング体験
+
+**学んだこと:**
+- Claude Code は複雑な作業向き
+- 単純作業は Cursor MCP の方が楽
+
+---
+
+### Day 14 (2025-12-20)
+
+**テーマ:** ShopX フロントエンド環境構築
+
+**完了したこと:**
+- Vite + React + TypeScript プロジェクト作成
+- CRA から Vite への移行
+- HMR（ホットリロード）動作確認
+- Vitest テスト環境構築
+- 最初のテスト作成・実行
+
+**学んだこと:**
+- Vite vs CRA: Vite は起動・更新が圧倒的に速い
+- TypeScript: 型で実行前にエラー検出
+- Vitest: Vite 用テストランナー（Jest 互換）
+
+**成果物:**
+- projects/ec-platform/frontend/shopx-ui/（Vite + React + TS）
+
+**次回:** CI/CD（GitHub Actions → Amplify）
+
+### Day 14 (2025-12-20)
+
+**テーマ:** ShopX フロントエンド環境構築 + CI/CD
+
+**完了したこと:**
+- Vite + React + TypeScript プロジェクト作成
+- CRA から Vite への移行
+- HMR（ホットリロード）動作確認
+- Vitest テスト環境構築
+- 最初のテスト作成・実行
+- GitHub Actions CI ワークフロー設定
+
+**学んだこと:**
+- Vite vs CRA: Vite は起動・更新が圧倒的に速い
+- TypeScript: 型で実行前にエラー検出
+- Vitest: Vite 用テストランナー（Jest 互換）
+- GitHub Actions: push 時に自動でテスト・ビルド実行
+- package-lock.json: 環境を再現するために必須
+- CI の実行環境: GitHub のクラウド上（Ubuntu）で毎回ゼロから構築
+
+**成果物:**
+- projects/ec-platform/frontend/shopx-ui/（Vite + React + TS）
+- .github/workflows/ci.yml（CI 設定）
+
+**次回:** Amplify でホスティング（自動デプロイ）
+
+---
+
+### Day 15 (2025-12-20)
+
+**テーマ:** AWS Amplify ホスティング
+
+**完了したこと:**
+- GitHub と Amplify 連携
+- モノレポ設定（shopx-ui のみビルド）
+- 自動デプロイ確認（push → 自動で本番反映）
+- SSL証明書の自動設定を確認
+
+**学んだこと:**
+- Amplify Hosting = マネージドなフロントエンドホスティング
+- GitHub push で自動ビルド＆デプロイ
+- SSL証明書は自動発行・自動更新（ACM）
+- モノレポでも特定フォルダだけビルド可能
+
+**成果物:**
+- https://main.d20nytcowp331l.amplifyapp.com
+
+**次回:** 12月振り返り、1月計画確認
+
+### Day 16 (2025-12-20)
+
+**テーマ:** ShopX UI 開発（ルーティング + ページ作成）
+
+**完了したこと:**
+- React Router 導入
+- ページ構成（HomePage, ProductListPage, ProductDetailPage）
+- ProductCard コンポーネント作成
+- ナビゲーション実装
+- 商品一覧 → 詳細への遷移
+
+**学んだこと:**
+- React Router: URL とコンポーネントの対応付け
+- useParams: URL パラメータの取得（/products/:id → id）
+- map: 配列を JSX に変換して一覧表示
+- Props の型定義と分割代入
+- Record<string, T>: キーが文字列のオブジェクト型
+
+**成果物:**
+- src/pages/HomePage.tsx
+- src/pages/ProductListPage.tsx
+- src/pages/ProductDetailPage.tsx
+- src/components/ProductCard.tsx
+
+**次回:** API 連携（ダミーデータ → 実際の API から取得）
+
+### Day 17 (2025-12-20)
+
+**テーマ:** API 連携
+
+**完了したこと:**
+- 型定義ファイル作成（Product interface）
+- API クライアント作成（URL一元管理、データ変換）
+- ProductListPage を API 連携に修正
+- ProductDetailPage を API 連携に修正
+- ローディング・エラー状態の実装
+
+**学んだこと:**
+- useState + useEffect で API データ取得パターン
+- try-catch-finally でエラーハンドリング
+- import type: 型のみをインポートする TypeScript 構文
+- API レスポンス変換: バックエンド形式（productId）→ フロントエンド形式（id）
+- MCP (filesystem) で Claude がファイル操作できる仕組み
+
+**成果物:**
+- src/types/product.ts（型定義）
+- src/api/products.ts（API クライアント）
+- src/pages/ProductListPage.tsx（修正）
+- src/pages/ProductDetailPage.tsx（修正）
+
+**次回:** カート機能 or カテゴリフィルター
