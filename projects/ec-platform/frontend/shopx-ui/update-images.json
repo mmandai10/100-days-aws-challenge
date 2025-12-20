@@ -1,6 +1,0 @@
-[
-  {"PK": "CATEGORY#electronics", "SK": "PRODUCT#prod-001", "imageUrl": "https://shopx-product-images-20251213.s3.ap-northeast-1.amazonaws.com/prod-001.png"},
-  {"PK": "CATEGORY#electronics", "SK": "PRODUCT#prod-002", "imageUrl": "https://shopx-product-images-20251213.s3.ap-northeast-1.amazonaws.com/prod-002.png"},
-  {"PK": "CATEGORY#fashion", "SK": "PRODUCT#prod-003", "imageUrl": "https://shopx-product-images-20251213.s3.ap-northeast-1.amazonaws.com/prod-003.png"},
-  {"PK": "CATEGORY#books", "SK": "PRODUCT#prod-004", "imageUrl": "https://shopx-product-images-20251213.s3.ap-northeast-1.amazonaws.com/prod-004.png"}
-]
