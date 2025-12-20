@@ -491,3 +491,41 @@ daily-log.md に Day 12 を追記して git push して。
 - src/pages/ProductDetailPage.tsx（カート追加ボタン）
 
 **次回:** カテゴリフィルター
+
+---
+
+### Day 19 (2025-12-20)
+
+**テーマ:** カテゴリフィルター + テスト + 検索機能
+
+**完了したこと:**
+- カテゴリフィルター機能（ドロップダウン）
+- URL パラメータ連携（?category=xxx）
+- テスト環境構築（MSW でAPIモック）
+- ProductListPage テスト（4件）
+- CartContext テスト（6件）
+- CartPage テスト（2件）
+- カバレッジ: 55% → 65% に向上
+- 商品名検索ボックス追加
+
+**学んだこと:**
+- テストの種類: 単体、統合、E2E
+- MSW: APIをモックして偽のレスポンスを返す
+- expect().toBeInTheDocument(): 画面に要素があるか確認
+- userEvent: ユーザー操作をシミュレート
+- カバレッジ: テストで通ったコードの割合
+- filter() + includes(): フロントエンドでの絞り込み検索
+
+**アーキテクチャ理解:**
+- Amplify Hosting: フロントエンド配信のみ
+- SAM (Lambda + API Gateway + DynamoDB): バックエンドAPI
+- テストのモックデータと本番データは別物
+
+**成果物:**
+- src/test/ProductListPage.test.tsx
+- src/test/CartContext.test.tsx
+- src/test/CartPage.test.tsx
+- src/test/handlers.ts（MSWモック定義）
+- src/pages/ProductListPage.tsx（フィルター+検索追加）
+
+**次回:** Day 20
