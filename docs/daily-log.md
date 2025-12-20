@@ -461,3 +461,33 @@ daily-log.md に Day 12 を追記して git push して。
 - src/pages/ProductDetailPage.tsx（修正）
 
 **次回:** カート機能 or カテゴリフィルター
+
+---
+
+### Day 18 (2025-12-20)
+
+**テーマ:** カート機能（Context API）
+
+**完了したこと:**
+- CartContext 作成（グローバル状態管理）
+- CartProvider でアプリ全体を囲む
+- 商品詳細ページに「カートに追加」ボタン
+- カートページ作成（商品一覧・合計金額表示）
+- ナビゲーションにカートアイコン + 個数バッジ
+
+**学んだこと:**
+- props: 親→子にデータを渡す仕組み
+- Context API: アプリ全体でデータを共有（グローバル状態）
+- Provider: Context の値を提供する「箱」
+- useContext: Context の値を取得するフック
+- カスタムフック: useCart のように機能をまとめて再利用
+- 「API」の意味: 接続口（Web API と Context API は別物）
+
+**成果物:**
+- src/context/CartContext.tsx（カート状態管理）
+- src/pages/CartPage.tsx（カートページ）
+- src/main.tsx（CartProvider 追加）
+- src/App.tsx（ナビ・ルート追加）
+- src/pages/ProductDetailPage.tsx（カート追加ボタン）
+
+**次回:** カテゴリフィルター

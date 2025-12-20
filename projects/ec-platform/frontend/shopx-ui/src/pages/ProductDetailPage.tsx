@@ -2,14 +2,17 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import type { Product } from '../types/product';
 import { fetchProductById } from '../api/products';
+import { useCart } from '../context/CartContext';
 
 const ProductDetailPage = () => {
   const { id } = useParams();
+  const { addToCart } = useCart();  // カート機能を取得
   
   // 状態管理
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [addedMessage, setAddedMessage] = useState(false);  // 追加時のメッセージ
 
   // 画面表示時（または id 変更時）に API を呼び出す
   useEffect(() => {
@@ -36,7 +39,17 @@ const ProductDetailPage = () => {
     };
 
     loadProduct();
-  }, [id]);  // id が変わったら再実行
+  }, [id]);
+
+  // カートに追加する処理
+  const handleAddToCart = () => {
+    if (product) {
+      addToCart(product);
+      setAddedMessage(true);
+      // 2秒後にメッセージを消す
+      setTimeout(() => setAddedMessage(false), 2000);
+    }
+  };
 
   // ローディング中
   if (loading) {
@@ -69,17 +82,28 @@ const ProductDetailPage = () => {
         ¥{product.price.toLocaleString()}
       </p>
       <p>{product.description}</p>
-      <button style={{
-        backgroundColor: '#3498db',
-        color: 'white',
-        border: 'none',
-        padding: '0.75rem 2rem',
-        borderRadius: '4px',
-        cursor: 'pointer',
-        fontSize: '1rem',
-      }}>
+      
+      <button
+        onClick={handleAddToCart}
+        style={{
+          backgroundColor: '#3498db',
+          color: 'white',
+          border: 'none',
+          padding: '0.75rem 2rem',
+          borderRadius: '4px',
+          cursor: 'pointer',
+          fontSize: '1rem',
+        }}
+      >
         カートに追加
       </button>
+      
+      {/* 追加時のメッセージ */}
+      {addedMessage && (
+        <p style={{ color: '#27ae60', marginTop: '0.5rem' }}>
+          ✓ カートに追加しました！
+        </p>
+      )}
     </div>
   );
 };
