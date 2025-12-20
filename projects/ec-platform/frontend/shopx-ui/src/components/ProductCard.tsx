@@ -1,11 +1,10 @@
 type Props = {
-  id: string;
   name: string;
   price: number;
   imageUrl?: string;
 };
 
-const ProductCard = ({ id, name, price, imageUrl }: Props) => {
+const ProductCard = ({ name, price, imageUrl }: Props) => {
   return (
     <div style={{
       border: '1px solid #ddd',

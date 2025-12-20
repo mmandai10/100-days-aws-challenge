@@ -107,10 +107,9 @@ const ProductListPage = () => {
                 style={{ textDecoration: 'none', color: 'inherit' }}
               >
                 <ProductCard
-                  id={product.id}
-                  name={product.name}
-                  price={product.price}
-                  imageUrl={product.imageUrl}
+                name={product.name}
+                price={product.price}
+                imageUrl={product.imageUrl}
                 />
               </Link>
             ))
