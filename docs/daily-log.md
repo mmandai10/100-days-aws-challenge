@@ -529,3 +529,40 @@ daily-log.md に Day 12 を追記して git push して。
 - src/pages/ProductListPage.tsx（フィルター+検索追加）
 
 **次回:** Day 20
+
+### Day 20 (2026-01-10)
+
+**テーマ:** Cognito 認証機能の実装
+
+**完了したこと:**
+- フォルダ構造整理（backend-node/shopx-api）
+- Cognito ユーザープールを SAM で作成
+- フロントエンドに aws-amplify 導入
+- 新規登録画面（SignUpPage）
+- ログイン画面（SignInPage）
+- AuthContext（認証状態管理）
+- ログアウト機能
+- ナビゲーションに認証状態反映
+
+**学んだこと:**
+- Cognito: AWS の認証サービス（ユーザープール、クライアント）
+- SAM で Cognito リソースを IaC 管理
+- Amplify v6 の設定方法（Auth.Cognito 構造）
+- Context パターンで認証状態をアプリ全体で共有
+- signUp / confirmSignUp / signIn / signOut の使い方
+- getCurrentUser で認証状態をチェック
+
+**アーキテクチャ理解:**
+- UserPool: ユーザー情報を保存するデータベース
+- UserPoolClient: フロントエンドがアクセスするための入口
+- JWT トークン: ログイン後に発行、API 認可に使用
+- 認証フロー: ユーザー → Cognito → JWT → API Gateway
+
+**成果物:**
+- backend-node/shopx-api/template.yaml（Cognito追加）
+- frontend/shopx-ui/src/config/auth.ts
+- frontend/shopx-ui/src/pages/SignUpPage.tsx
+- frontend/shopx-ui/src/pages/SignInPage.tsx
+- frontend/shopx-ui/src/context/AuthContext.tsx
+
+**次回:** Day 21 - 保護ルート、カート永続化

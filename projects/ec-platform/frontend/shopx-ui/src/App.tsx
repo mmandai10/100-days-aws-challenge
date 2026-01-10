@@ -3,12 +3,21 @@ import HomePage from './pages/HomePage';
 import ProductListPage from './pages/ProductListPage';
 import ProductDetailPage from './pages/ProductDetailPage';
 import CartPage from './pages/CartPage';
-import { useCart } from './context/CartContext';
+import SignUpPage from './pages/SignUpPage';
+import SignInPage from './pages/SignInPage';
+import { useCart, CartProvider } from './context/CartContext';
+import { useAuth, AuthProvider } from './context/AuthContext';
 
-// ナビゲーションコンポーネント（カート個数を表示するため分離）
+// ナビゲーションコンポーネント
 const Navigation = () => {
   const { totalItems } = useCart();
-  
+  const { isAuthenticated, isLoading, user, logout } = useAuth();
+
+  const handleLogout = async () => {
+    await logout();
+    window.location.href = '/';
+  };
+
   return (
     <nav style={{
       padding: '1rem',
@@ -19,23 +28,49 @@ const Navigation = () => {
     }}>
       <div>
         <Link to="/" style={{ marginRight: '1rem' }}>ホーム</Link>
-        <Link to="/products">商品一覧</Link>
+        <Link to="/products" style={{ marginRight: '1rem' }}>商品一覧</Link>
       </div>
-      <Link to="/cart" style={{ textDecoration: 'none' }}>
-        🛒 カート
-        {totalItems > 0 && (
-          <span style={{
-            backgroundColor: '#e74c3c',
-            color: 'white',
-            borderRadius: '50%',
-            padding: '0.2rem 0.5rem',
-            marginLeft: '0.3rem',
-            fontSize: '0.8rem',
-          }}>
-            {totalItems}
-          </span>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+        {isLoading ? (
+          <span>読込中...</span>
+        ) : isAuthenticated ? (
+          <>
+            <span>{user?.username}</span>
+            <button
+              onClick={handleLogout}
+              style={{
+                padding: '0.5rem 1rem',
+                backgroundColor: '#e74c3c',
+                color: 'white',
+                border: 'none',
+                cursor: 'pointer',
+              }}
+            >
+              ログアウト
+            </button>
+          </>
+        ) : (
+          <>
+            <Link to="/login">ログイン</Link>
+            <Link to="/signup">新規登録</Link>
+          </>
         )}
-      </Link>
+        <Link to="/cart" style={{ textDecoration: 'none' }}>
+          🛒 カート
+          {totalItems > 0 && (
+            <span style={{
+              backgroundColor: '#e74c3c',
+              color: 'white',
+              borderRadius: '50%',
+              padding: '0.2rem 0.5rem',
+              marginLeft: '0.3rem',
+              fontSize: '0.8rem',
+            }}>
+              {totalItems}
+            </span>
+          )}
+        </Link>
+      </div>
     </nav>
   );
 };
@@ -43,16 +78,22 @@ const Navigation = () => {
 function App() {
   return (
     <BrowserRouter>
-      <Navigation />
+      <AuthProvider>
+        <CartProvider>
+          <Navigation />
 
-      <main style={{ padding: '1rem' }}>
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/products" element={<ProductListPage />} />
-          <Route path="/products/:id" element={<ProductDetailPage />} />
-          <Route path="/cart" element={<CartPage />} />
-        </Routes>
-      </main>
+          <main style={{ padding: '1rem' }}>
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/products" element={<ProductListPage />} />
+              <Route path="/products/:id" element={<ProductDetailPage />} />
+              <Route path="/cart" element={<CartPage />} />
+              <Route path="/signup" element={<SignUpPage />} />
+              <Route path="/login" element={<SignInPage />} />
+            </Routes>
+          </main>
+        </CartProvider>
+      </AuthProvider>
     </BrowserRouter>
   );
 }
