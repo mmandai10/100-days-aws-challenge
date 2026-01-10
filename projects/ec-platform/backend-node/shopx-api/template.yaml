@@ -9,14 +9,29 @@ Globals:
     Environment:
       Variables:
         PRODUCTS_TABLE: !Ref ProductsTable
-  Api:
-    Cors:
-      AllowMethods: "'*'"
-      AllowHeaders: "'Content-Type'"
-      AllowOrigin: "'*'"
 
 Resources:
-  # 商品一覧取得
+  # ==========================================
+  # API Gateway（Cognito Authorizer 付き）
+  # ==========================================
+
+  ApiGatewayApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: Prod
+      Cors:
+        AllowMethods: "'GET,POST,PUT,DELETE,OPTIONS'"
+        AllowHeaders: "'Content-Type,Authorization'"
+        AllowOrigin: "'*'"
+      Auth:
+        Authorizers:
+          CognitoAuthorizer:
+            UserPoolArn: !GetAtt UserPool.Arn
+
+  # ==========================================
+  # 商品 API（認証不要）
+  # ==========================================
+
   GetProductsFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -29,10 +44,10 @@ Resources:
         GetProducts:
           Type: Api
           Properties:
+            RestApiId: !Ref ApiGatewayApi
             Path: /products
             Method: GET
 
-  # 商品詳細取得
   GetProductByIdFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -45,10 +60,10 @@ Resources:
         GetProductById:
           Type: Api
           Properties:
+            RestApiId: !Ref ApiGatewayApi
             Path: /products/{id}
             Method: GET
 
-  # カテゴリ一覧取得
   GetCategoriesFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -61,10 +76,54 @@ Resources:
         GetCategories:
           Type: Api
           Properties:
+            RestApiId: !Ref ApiGatewayApi
             Path: /categories
             Method: GET
 
+  # ==========================================
+  # カート API（認証必須）
+  # ==========================================
+
+  GetCartFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/handlers/getCart/
+      Handler: app.handler
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref ProductsTable
+      Events:
+        GetCart:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGatewayApi
+            Path: /cart
+            Method: GET
+            Auth:
+              Authorizer: CognitoAuthorizer
+
+  UpdateCartFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/handlers/updateCart/
+      Handler: app.handler
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ProductsTable
+      Events:
+        UpdateCart:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGatewayApi
+            Path: /cart
+            Method: PUT
+            Auth:
+              Authorizer: CognitoAuthorizer
+
+  # ==========================================
   # DynamoDB テーブル
+  # ==========================================
+
   ProductsTable:
     Type: AWS::DynamoDB::Table
     Properties:
@@ -89,11 +148,11 @@ Resources:
               KeyType: RANGE
           Projection:
             ProjectionType: ALL
+
   # ==========================================
   # Cognito 認証
   # ==========================================
-  
-  # ユーザープール（ユーザーのデータベース）
+
   UserPool:
     Type: AWS::Cognito::UserPool
     Properties:
@@ -114,7 +173,6 @@ Resources:
           Required: true
           Mutable: true
 
-  # ユーザープールクライアント（フロントエンド用）
   UserPoolClient:
     Type: AWS::Cognito::UserPoolClient
     Properties:
@@ -130,7 +188,7 @@ Resources:
 Outputs:
   ApiUrl:
     Description: API Gateway endpoint URL
-    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
+    Value: !Sub "https://${ApiGatewayApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
   ProductsTableName:
     Description: DynamoDB table name
     Value: !Ref ProductsTable

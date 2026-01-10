@@ -1,8 +1,22 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
+import { useAuth } from '../context/AuthContext';
 
 const CartPage = () => {
   const { items, removeFromCart, clearCart, totalPrice, totalItems } = useCart();
+  const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
+
+  // 購入手続きへ
+  const handleCheckout = () => {
+    if (!isAuthenticated) {
+      // 未ログインならログインページへ（戻り先を渡す）
+      navigate('/login', { state: { from: { pathname: '/cart' } } });
+      return;
+    }
+    // TODO: 購入手続きページへ遷移（Phase 4 で実装）
+    alert('購入手続き機能は Phase 4 で実装します');
+  };
 
   // カートが空の場合
   if (items.length === 0) {
@@ -102,6 +116,7 @@ const CartPage = () => {
             合計: ¥{totalPrice.toLocaleString()}
           </p>
           <button
+            onClick={handleCheckout}
             style={{
               backgroundColor: '#27ae60',
               color: 'white',

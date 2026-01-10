@@ -35,7 +35,7 @@ const Navigation = () => {
           <span>読込中...</span>
         ) : isAuthenticated ? (
           <>
-            <span>{user?.username}</span>
+            <span>{user?.email}</span>
             <button
               onClick={handleLogout}
               style={{

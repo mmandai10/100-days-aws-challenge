@@ -1,6 +1,9 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import type { ReactNode } from 'react';
 import type { Product } from '../types/product';
+import { useAuth } from './AuthContext';
+import { fetchCart, updateCart } from '../api/cart';
+import { fetchProductById } from '../api/products';
 
 // カート内の商品（商品情報 + 数量）
 interface CartItem {
@@ -10,62 +13,117 @@ interface CartItem {
 
 // Context で共有する値の型
 interface CartContextType {
-  items: CartItem[];                          // カートの中身
-  addToCart: (product: Product) => void;      // カートに追加
-  removeFromCart: (productId: string) => void; // カートから削除
-  clearCart: () => void;                      // カートを空にする
-  totalPrice: number;                         // 合計金額
-  totalItems: number;                         // 合計個数
+  items: CartItem[];
+  addToCart: (product: Product) => void;
+  removeFromCart: (productId: string) => void;
+  clearCart: () => void;
+  totalPrice: number;
+  totalItems: number;
+  isLoading: boolean;
 }
 
-// Context を作成（初期値は undefined）
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
-// Provider コンポーネント（アプリ全体を囲む）
 export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [items, setItems] = useState<CartItem[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const { isAuthenticated, isLoading: authLoading } = useAuth();
+
+  // API にカートを保存（ログイン済みの場合）
+  const saveCartToApi = useCallback(async (cartItems: CartItem[]) => {
+    if (!isAuthenticated) return;
+    
+    try {
+      const apiItems = cartItems.map(item => ({
+        productId: item.product.id,
+        quantity: item.quantity,
+      }));
+      await updateCart(apiItems);
+    } catch (error) {
+      console.error('カート保存エラー:', error);
+    }
+  }, [isAuthenticated]);
+
+  // API からカートを読み込み（ログイン済みの場合）
+  const loadCartFromApi = useCallback(async () => {
+    if (!isAuthenticated) return;
+    
+    setIsLoading(true);
+    try {
+      const apiCart = await fetchCart();
+      
+      // 商品情報を取得してマージ
+      const cartItems: CartItem[] = [];
+      for (const item of apiCart) {
+        const product = await fetchProductById(item.productId);
+        if (product) {
+          cartItems.push({ product, quantity: item.quantity });
+        }
+      }
+      
+      setItems(cartItems);
+    } catch (error) {
+      console.error('カート読み込みエラー:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [isAuthenticated]);
+
+  // ログイン状態が変わったらカートを読み込む
+  useEffect(() => {
+    if (!authLoading && isAuthenticated) {
+      loadCartFromApi();
+    }
+    if (!authLoading && !isAuthenticated) {
+      setItems([]);  // ログアウト時はカートをクリア
+    }
+  }, [isAuthenticated, authLoading, loadCartFromApi]);
 
   // カートに追加
   const addToCart = (product: Product) => {
     setItems((currentItems) => {
-      // 既にカートにある商品か確認
       const existingItem = currentItems.find(
         (item) => item.product.id === product.id
       );
 
+      let newItems: CartItem[];
       if (existingItem) {
-        // あれば数量を +1
-        return currentItems.map((item) =>
+        newItems = currentItems.map((item) =>
           item.product.id === product.id
             ? { ...item, quantity: item.quantity + 1 }
             : item
         );
       } else {
-        // なければ新規追加
-        return [...currentItems, { product, quantity: 1 }];
+        newItems = [...currentItems, { product, quantity: 1 }];
       }
+
+      // ログイン済みなら API に保存
+      saveCartToApi(newItems);
+      
+      return newItems;
     });
   };
 
   // カートから削除
   const removeFromCart = (productId: string) => {
-    setItems((currentItems) =>
-      currentItems.filter((item) => item.product.id !== productId)
-    );
+    setItems((currentItems) => {
+      const newItems = currentItems.filter((item) => item.product.id !== productId);
+      saveCartToApi(newItems);
+      return newItems;
+    });
   };
 
   // カートを空にする
   const clearCart = () => {
     setItems([]);
+    saveCartToApi([]);
   };
 
-  // 合計金額を計算
   const totalPrice = items.reduce(
     (sum, item) => sum + item.product.price * item.quantity,
     0
   );
 
-  // 合計個数を計算
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
 
   return (
@@ -77,6 +135,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         clearCart,
         totalPrice,
         totalItems,
+        isLoading,
       }}
     >
       {children}
@@ -84,7 +143,6 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   );
 };
 
-// カスタムフック（Context を簡単に使うため）
 export const useCart = () => {
   const context = useContext(CartContext);
   if (context === undefined) {

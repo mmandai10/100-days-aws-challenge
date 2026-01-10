@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { signIn } from 'aws-amplify/auth';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 const SignInPage = () => {
   const [email, setEmail] = useState('');
@@ -8,6 +9,16 @@ const SignInPage = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+  const { isAuthenticated, isLoading, checkAuth } = useAuth();
+
+  const from = location.state?.from?.pathname || '/';
+
+  useEffect(() => {
+    if (!isLoading && isAuthenticated) {
+      navigate(from, { replace: true });
+    }
+  }, [isAuthenticated, isLoading, navigate, from]);
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -19,13 +30,18 @@ const SignInPage = () => {
         username: email,
         password,
       });
-      navigate('/');
+      await checkAuth();
+      navigate(from, { replace: true });
     } catch (err) {
       setError(err instanceof Error ? err.message : 'ログインに失敗しました');
     } finally {
       setLoading(false);
     }
   };
+
+  if (isLoading || isAuthenticated) {
+    return <div>読み込み中...</div>;
+  }
 
   return (
     <div style={{ maxWidth: '400px', margin: '2rem auto', padding: '1rem' }}>

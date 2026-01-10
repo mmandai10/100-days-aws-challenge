@@ -6,13 +6,13 @@ import { useCart } from '../context/CartContext';
 
 const ProductDetailPage = () => {
   const { id } = useParams();
-  const { addToCart } = useCart();  // カート機能を取得
+  const { addToCart } = useCart();
   
   // 状態管理
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [addedMessage, setAddedMessage] = useState(false);  // 追加時のメッセージ
+  const [addedMessage, setAddedMessage] = useState(false);
 
   // 画面表示時（または id 変更時）に API を呼び出す
   useEffect(() => {
@@ -46,7 +46,6 @@ const ProductDetailPage = () => {
     if (product) {
       addToCart(product);
       setAddedMessage(true);
-      // 2秒後にメッセージを消す
       setTimeout(() => setAddedMessage(false), 2000);
     }
   };
@@ -98,7 +97,6 @@ const ProductDetailPage = () => {
         カートに追加
       </button>
       
-      {/* 追加時のメッセージ */}
       {addedMessage && (
         <p style={{ color: '#27ae60', marginTop: '0.5rem' }}>
           ✓ カートに追加しました！

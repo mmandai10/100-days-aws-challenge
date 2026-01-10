@@ -566,3 +566,51 @@ daily-log.md に Day 12 を追記して git push して。
 - frontend/shopx-ui/src/context/AuthContext.tsx
 
 **次回:** Day 21 - 保護ルート、カート永続化
+
+---
+
+### Day 21 (2026-01-10)
+
+**テーマ:** 保護ルート + カート永続化
+
+**完了したこと:**
+- ProtectedRoute コンポーネント作成
+- EC サイトの正しい UX 設計（購入手続き時にログイン要求）
+- 購入手続きボタンにログインチェック追加
+- CartPage テスト追加（未ログイン/ログイン時の動作）
+- カート API 作成（GET /cart, PUT /cart）
+- Cognito Authorizer 設定（API Gateway で JWT 認証）
+- カート永続化（DynamoDB 保存・復元）
+- AuthContext 改善（メールアドレス表示）
+
+**学んだこと:**
+- ProtectedRoute: 認証状態で表示/リダイレクトを制御
+- Navigate + state: リダイレクト時に情報を渡す
+- useLocation: 遷移元の情報を受け取る
+- fetchUserAttributes: Cognito からメールアドレス取得
+- Single Table Design: 1テーブルに複数データ種別（商品、カート）を保存
+- Cognito Authorizer: API Gateway で JWT トークン検証
+- EC サイト UX: カート追加は誰でも可、購入時にログイン要求
+
+**アーキテクチャ理解:**
+- ローカル: フロントエンド（React）のみ
+- AWS: API Gateway, Lambda, DynamoDB, Cognito 全て
+- 開発時も本番も、バックエンドは常に AWS 上で動作
+- サーバーレス構成ではローカルに DB を持たない
+
+**モダナイズ関連の学び:**
+- コンテナ化はモダナイズの「一つの手段」であり目的ではない
+- マルチテナント化: データ分離（DB/スキーマ/テーブル）、セキュリティ、パフォーマンス
+- 月2-3日しか使わないシステムにコンテナ化は過剰
+
+**成果物:**
+- src/components/ProtectedRoute.tsx
+- src/api/cart.ts
+- src/context/CartContext.tsx（API連携版）
+- src/context/AuthContext.tsx（メール表示対応）
+- src/test/CartPage.test.tsx（テスト追加）
+- backend-node/shopx-api/src/handlers/getCart/app.mjs
+- backend-node/shopx-api/src/handlers/updateCart/app.mjs
+- backend-node/shopx-api/template.yaml（カートAPI + Authorizer追加）
+
+**次回:** Day 22 - 注文機能

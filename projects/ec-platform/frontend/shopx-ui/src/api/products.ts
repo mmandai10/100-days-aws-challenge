@@ -3,7 +3,7 @@
 import type { Product, Category } from '../types/product';
 
 // API のベース URL
-const API_BASE_URL = 'https://zzhyj5syl6.execute-api.ap-northeast-1.amazonaws.com/Prod';
+const API_BASE_URL = 'https://6tw3k46gmk.execute-api.ap-northeast-1.amazonaws.com/Prod';
 
 // API レスポンスの型（API が返す形式）
 interface ApiProduct {
