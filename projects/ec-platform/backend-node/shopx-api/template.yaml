@@ -218,6 +218,42 @@ Resources:
             Auth:
               Authorizer: CognitoAuthorizer
 
+  GetAllOrdersFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/handlers/getAllOrders/
+      Handler: app.handler
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref ProductsTable
+      Events:
+        GetAllOrders:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGatewayApi
+            Path: /admin/orders
+            Method: GET
+            Auth:
+              Authorizer: CognitoAuthorizer
+
+  UpdateOrderFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/handlers/updateOrder/
+      Handler: app.handler
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ProductsTable
+      Events:
+        UpdateOrder:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGatewayApi
+            Path: /admin/orders/{orderId}
+            Method: PUT
+            Auth:
+              Authorizer: CognitoAuthorizer
+
   # ==========================================
   # DynamoDB テーブル
   # ==========================================
