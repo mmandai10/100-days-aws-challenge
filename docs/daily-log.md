@@ -646,3 +646,40 @@ daily-log.md に Day 12 を追記して git push して。
 - frontend/shopx-ui/src/pages/OrderHistoryPage.tsx
 
 **次回:** Day 23 - 管理機能（商品 CRUD）
+
+---
+
+### Day 23 (2026-01-12)
+
+**テーマ:** 管理機能（商品 CRUD）
+
+**完了したこと:**
+- Cognito Groups で管理者グループ（admin）作成
+- 管理者用 API 実装（POST/PUT/DELETE /admin/products）
+- Lambda で JWT から cognito:groups を取得して認可
+- AuthContext に isAdmin 判定を追加
+- AdminPage（商品管理画面）作成
+- 商品の追加・編集・削除機能
+
+**学んだこと:**
+- Cognito Groups: UserPool 内でユーザーをグループ分け
+- 認証 vs 認可: 認証（誰か）→ 認可（何ができるか）
+- JWT payload に cognito:groups が含まれる
+- fetchAuthSession() で idToken の payload にアクセス
+- UpdateCommand の動的更新式（部分更新対応）
+- admin-add-user-to-group コマンドでユーザーをグループに追加
+
+**アーキテクチャ理解:**
+- 認可フロー: JWT → API Gateway → Lambda → groups チェック → 処理
+- /admin/ プレフィックスで管理者 API を明示
+- フロントエンドでも isAdmin でナビゲーション制御
+
+**成果物:**
+- backend-node/shopx-api/template.yaml（AdminGroup + 管理 API 追加）
+- backend-node/shopx-api/src/handlers/createProduct/app.mjs
+- backend-node/shopx-api/src/handlers/updateProduct/app.mjs
+- backend-node/shopx-api/src/handlers/deleteProduct/app.mjs
+- frontend/shopx-ui/src/pages/AdminPage.tsx
+- frontend/shopx-ui/src/context/AuthContext.tsx（isAdmin 追加）
+
+**次回:** Day 24

@@ -7,13 +7,14 @@ import SignUpPage from './pages/SignUpPage';
 import SignInPage from './pages/SignInPage';
 import CheckoutPage from './pages/CheckoutPage';
 import OrderHistoryPage from './pages/OrderHistoryPage';
+import AdminPage from './pages/AdminPage';
 import { useCart, CartProvider } from './context/CartContext';
 import { useAuth, AuthProvider } from './context/AuthContext';
 
 // ナビゲーションコンポーネント
 const Navigation = () => {
   const { totalItems } = useCart();
-  const { isAuthenticated, isLoading, user, logout } = useAuth();
+  const { isAuthenticated, isLoading, isAdmin, user, logout } = useAuth();
 
   const handleLogout = async () => {
     await logout();
@@ -31,13 +32,21 @@ const Navigation = () => {
       <div>
         <Link to="/" style={{ marginRight: '1rem' }}>ホーム</Link>
         <Link to="/products" style={{ marginRight: '1rem' }}>商品一覧</Link>
+        {isAdmin && (
+          <Link to="/admin" style={{ marginRight: '1rem', color: '#e74c3c', fontWeight: 'bold' }}>
+            管理画面
+          </Link>
+        )}
       </div>
       <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
         {isLoading ? (
           <span>読込中...</span>
         ) : isAuthenticated ? (
           <>
-            <span>{user?.email}</span>
+            <span>
+              {user?.email}
+              {isAdmin && <span style={{ color: '#e74c3c', marginLeft: '5px' }}>(Admin)</span>}
+            </span>
             <Link to="/orders" style={{ textDecoration: 'none' }}>注文履歴</Link>
             <button
               onClick={handleLogout}
@@ -95,6 +104,7 @@ function App() {
               <Route path="/login" element={<SignInPage />} />
               <Route path="/checkout" element={<CheckoutPage />} />
               <Route path="/orders" element={<OrderHistoryPage />} />
+              <Route path="/admin" element={<AdminPage />} />
             </Routes>
           </main>
         </CartProvider>

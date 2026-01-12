@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { getCurrentUser, signOut, fetchUserAttributes } from 'aws-amplify/auth';
+import { getCurrentUser, signOut, fetchUserAttributes, fetchAuthSession } from 'aws-amplify/auth';
 
 type User = {
   username: string;
@@ -11,6 +11,7 @@ type AuthContextType = {
   user: User | null;
   isLoading: boolean;
   isAuthenticated: boolean;
+  isAdmin: boolean;
   checkAuth: () => Promise<void>;
   logout: () => Promise<void>;
 };
@@ -20,6 +21,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   // 認証状態をチェック
   const checkAuth = async () => {
@@ -31,8 +33,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         userId: currentUser.userId,
         email: attributes.email || '',
       });
+
+      // グループ情報を取得（IDトークンから）
+      const session = await fetchAuthSession();
+      const idToken = session.tokens?.idToken;
+      if (idToken) {
+        const payload = idToken.payload;
+        const groups = payload['cognito:groups'] as string[] | undefined;
+        setIsAdmin(groups?.includes('admin') ?? false);
+      }
     } catch {
       setUser(null);
+      setIsAdmin(false);
     } finally {
       setIsLoading(false);
     }
@@ -43,6 +55,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     try {
       await signOut();
       setUser(null);
+      setIsAdmin(false);
     } catch (err) {
       console.error('ログアウトエラー:', err);
     }
@@ -59,6 +72,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         user,
         isLoading,
         isAuthenticated: !!user,
+        isAdmin,
         checkAuth,
         logout,
       }}
