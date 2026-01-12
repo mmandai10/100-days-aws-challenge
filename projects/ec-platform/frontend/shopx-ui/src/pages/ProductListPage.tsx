@@ -63,7 +63,7 @@ const ProductListPage = () => {
 
   // 検索でフィルタリングした商品
   const filteredProducts = products.filter((product) =>
-    product.name.toLowerCase().includes(searchKeyword.toLowerCase())
+    product.name?.toLowerCase().includes(searchKeyword.toLowerCase()) ?? false
   );
 
   // エラー時
