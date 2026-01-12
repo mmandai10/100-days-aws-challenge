@@ -5,6 +5,8 @@ import ProductDetailPage from './pages/ProductDetailPage';
 import CartPage from './pages/CartPage';
 import SignUpPage from './pages/SignUpPage';
 import SignInPage from './pages/SignInPage';
+import CheckoutPage from './pages/CheckoutPage';
+import OrderHistoryPage from './pages/OrderHistoryPage';
 import { useCart, CartProvider } from './context/CartContext';
 import { useAuth, AuthProvider } from './context/AuthContext';
 
@@ -36,6 +38,7 @@ const Navigation = () => {
         ) : isAuthenticated ? (
           <>
             <span>{user?.email}</span>
+            <Link to="/orders" style={{ textDecoration: 'none' }}>注文履歴</Link>
             <button
               onClick={handleLogout}
               style={{
@@ -90,6 +93,8 @@ function App() {
               <Route path="/cart" element={<CartPage />} />
               <Route path="/signup" element={<SignUpPage />} />
               <Route path="/login" element={<SignInPage />} />
+              <Route path="/checkout" element={<CheckoutPage />} />
+              <Route path="/orders" element={<OrderHistoryPage />} />
             </Routes>
           </main>
         </CartProvider>

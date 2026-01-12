@@ -614,3 +614,35 @@ daily-log.md に Day 12 を追記して git push して。
 - backend-node/shopx-api/template.yaml（カートAPI + Authorizer追加）
 
 **次回:** Day 22 - 注文機能
+
+---
+
+### Day 22 (2026-01-12)
+
+**テーマ:** 注文機能の実装
+
+**完了したこと:**
+- 注文 API（POST /orders, GET /orders）
+- CheckoutPage（注文確認・配送先入力）
+- OrderHistoryPage（注文履歴一覧）
+- ナビゲーションに「注文履歴」追加
+- DB データのクリーンアップと再投入
+
+**学んだこと:**
+- Single Table Design: GSI1 を使った商品情報取得
+- データ構造の整合性: PK/SK パターンの一致が重要
+- QueryCommand: GSI を使った検索方法
+- デバッグ: CloudWatch Logs と DB スキャンで問題特定
+
+**トラブルシューティング:**
+- 商品が Unknown/¥0 → DB のデータ構造が古い形式だった
+- 解決: DB クリア後、正しい seed データを再投入
+
+**成果物:**
+- backend-node/shopx-api/src/handlers/createOrder/app.mjs
+- backend-node/shopx-api/src/handlers/getOrders/app.mjs
+- frontend/shopx-ui/src/api/orders.ts
+- frontend/shopx-ui/src/pages/CheckoutPage.tsx
+- frontend/shopx-ui/src/pages/OrderHistoryPage.tsx
+
+**次回:** Day 23 - 管理機能（商品 CRUD）

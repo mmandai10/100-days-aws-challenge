@@ -14,8 +14,8 @@ const CartPage = () => {
       navigate('/login', { state: { from: { pathname: '/cart' } } });
       return;
     }
-    // TODO: 購入手続きページへ遷移（Phase 4 で実装）
-    alert('購入手続き機能は Phase 4 で実装します');
+    // 購入手続きページへ遷移
+    navigate('/checkout');
   };
 
   // カートが空の場合
