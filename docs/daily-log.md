@@ -683,3 +683,37 @@ daily-log.md に Day 12 を追記して git push して。
 - frontend/shopx-ui/src/context/AuthContext.tsx（isAdmin 追加）
 
 **次回:** Day 24
+
+---
+
+### Day 24 (2026-01-12)
+
+**テーマ:** 注文管理 + パフォーマンス改善
+
+**完了したこと:**
+- 注文管理 API（GET /admin/orders, PUT /admin/orders/{orderId}）
+- AdminPage に注文管理タブ追加（ステータス変更機能）
+- Amplify 環境変数設定（VITE_API_URL, Cognito設定）
+- TypeScript エラー修正（import type for ReactNode）
+- DynamoDB データ修正（imageUrl 追加）
+- Lambda メモリ増加（128MB → 512MB）
+
+**学んだこと:**
+- Amplify + GitHub 連携: Webhook で push → 自動ビルド＆デプロイ
+- 環境変数: Amplify コンソールで VITE_* を設定、再デプロイで反映
+- Lambda パフォーマンス: メモリ増加 = CPU も増加 = 処理速度UP
+- コールドスタート: 初回/放置後は遅い、連続アクセスは速い（ウォーム）
+- TypeScript verbatimModuleSyntax: 型は `import type` で読み込む必要がある
+- Single Table Design の注意: PK/SK を間違えると別レコードができる
+
+**パフォーマンス改善:**
+- メモリ 512MB でローディング表示が視認できないほど高速化
+- さらなる改善: 1024MB、Provisioned Concurrency（有料）
+
+**成果物:**
+- backend-node/shopx-api/src/handlers/getAllOrders/app.mjs
+- backend-node/shopx-api/src/handlers/updateOrder/app.mjs
+- frontend/shopx-ui/src/pages/AdminPage.tsx（注文管理タブ追加）
+- template.yaml（MemorySize: 512 追加）
+
+**次回:** Day 25 - Phase 6（検索機能 or AI チャット or 監視）

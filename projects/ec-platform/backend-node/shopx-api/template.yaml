@@ -6,6 +6,7 @@ Globals:
   Function:
     Runtime: nodejs20.x
     Timeout: 10
+    MemorySize: 512
     Environment:
       Variables:
         PRODUCTS_TABLE: !Ref ProductsTable
