@@ -887,3 +887,49 @@ React UI → Lambda (/chat) → Claude API (Tool Use)
 - frontend/shopx-ui/src/test/handlers.ts（API URL 修正）
 
 **次回:** Day 28 - CI/CD (GitHub Actions)
+
+---
+
+### Day 28 (2026-01-18)
+
+**テーマ:** CI/CD 動作確認と理解
+
+**完了したこと:**
+- GitHub Actions CI の動作確認
+- CI でテスト失敗 → 原因調査 → 修正 → 再テスト成功
+- Amplify Hosting（CD）が Day 15 で設定済みであることを再確認
+
+**CI/CD の理解:**
+- CI（Continuous Integration）: push → 自動テスト → ビルド
+- CD（Continuous Deployment）: テスト成功 → 自動デプロイ
+- なぜ2回テスト？: ローカルと CI で環境差異を発見するため
+
+**発見したバグ:**
+- `getByRole` は同期的（待たない）
+- `findByRole` は非同期（待つ）
+- ローカルは速いので通過、CI は遅いので失敗
+- 非同期データ取得後の要素は `findByRole` を使う
+
+**学んだこと:**
+- GitHub Actions: GitHub 標準の CI サービス
+- ci.yml: ワークフロー定義ファイル
+- Workflow → Job → Step の階層構造
+- `npm ci`: クリーンインストール（CI 向け）
+- 環境差異がバグを発見する価値
+
+**CI/CD 構成（ShopX）:**
+```
+[CI] GitHub Actions
+  - テスト実行（Vitest）
+  - ビルド確認（Vite）
+
+[CD] Amplify Hosting（Day 15 で設定済み）
+  - main への push で自動デプロイ
+  - https://main.d20nytcowp331l.amplifyapp.com
+```
+
+**成果物:**
+- .github/workflows/ci.yml（既存確認）
+- src/test/ProductListPage.test.tsx（findByRole 修正）
+
+**次回:** Day 29
