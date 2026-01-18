@@ -717,3 +717,108 @@ daily-log.md に Day 12 を追記して git push して。
 - template.yaml（MemorySize: 512 追加）
 
 **次回:** Day 25 - Phase 6（検索機能 or AI チャット or 監視）
+
+---
+
+### Day 25 (2026-01-13)
+
+**テーマ:** AI チャット機能（Claude API + Tool Use）
+
+**完了したこと:**
+- サンプル商品データ拡充（120件 + Unsplash画像）
+- 8カテゴリ構成（electronics, fashion, books, food, home, sports, toys, beauty）
+- カテゴリ取得 Lambda 修正（begins_with 検索）
+- AI チャット Lambda 作成（POST /chat）
+- Tool Use で商品検索ツール実装
+- フロントエンドにチャット UI 追加
+- クイックアクションボタン実装
+
+**学んだこと:**
+- Tool Use の実践的な使い方（12月の復習を ShopX に適用）
+- Claude の役割: 判断 + パラメータ抽出 + 文章生成
+- 開発者の役割: 実際のツール実行（DynamoDB 検索）
+- Lambda で外部 SDK を使う場合は各ハンドラに package.json が必要
+- SAM が CodeUri ごとに依存関係をバンドルする仕組み
+- .env ファイルの typo に注意（l と 4 の見間違い）
+
+**Tool Use 定義:**
+- search_products: カテゴリ、価格帯、キーワードで商品検索
+- get_product_detail: 商品ID で詳細取得
+- get_categories: カテゴリ一覧取得
+
+**アーキテクチャ:**
+```
+React UI → Lambda (/chat) → Claude API (Tool Use)
+                ↓
+           DynamoDB (商品検索)
+```
+
+**成果物:**
+- backend-node/shopx-api/scripts/seed-products.mjs
+- backend-node/shopx-api/src/handlers/chat/app.mjs
+- backend-node/shopx-api/src/handlers/chat/package.json
+- frontend/shopx-ui/src/api/chat.ts
+- frontend/shopx-ui/src/pages/ChatPage.tsx
+- template.yaml（ChatFunction + AnthropicApiKey パラメータ追加）
+
+**次回:** Day 26 - 検索機能 or 監視 or AI チャット改善
+
+---
+
+### Day 26 (2026-01-18)
+
+**テーマ:** 全部盛り（検索 + お気に入り + レビュー + モニタリング）
+
+**完了したこと:**
+- 商品検索機能（キーワード、カテゴリ、価格帯フィルター）
+- お気に入り機能（追加・削除・一覧ページ）
+- レビュー機能（星評価 + コメント）
+- CloudWatch ダッシュボード作成
+- テストユーザー10名作成
+
+**検索機能:**
+- getProducts Lambda にキーワード・価格帯フィルター追加
+- ProductListPage に検索 UI 追加
+- `type="button"` でフォーム送信を防止（リロード問題修正）
+
+**お気に入り機能:**
+- Lambda x3（getFavorites, addFavorite, removeFavorite）
+- DynamoDB: USER#{userId} + FAVORITE#{productId}
+- 商品詳細ページにハートボタン（❤️/🤍 切り替え）
+- お気に入り一覧ページ（FavoritesPage）
+
+**レビュー機能:**
+- Lambda x2（getReviews, createReview）
+- DynamoDB: PRODUCT#{productId} + REVIEW#{timestamp}#{reviewId}
+- 星評価コンポーネント（StarRating）
+- 商品詳細ページにレビューセクション追加
+- 平均評価の自動計算・表示
+
+**モニタリング:**
+- CloudWatch ダッシュボード（ShopX-Monitoring）
+- Lambda メトリクス（Invocations, Errors, Duration）
+- API Gateway メトリクス（Requests）
+- IAM インラインポリシー追加（cloudwatch:PutDashboard）
+
+**学んだこと:**
+- API Gateway のパスパラメータ名統一の重要性（{id} vs {productId}）
+- button のデフォルト type は "submit"（明示的に type="button" が必要）
+- IAM マネージドポリシー上限（10個）→ インラインポリシーで対応
+- React 検索 UI のベストプラクティス（debounce, replace: true）
+- Cognito AdminCreateUser でテストユーザー作成
+
+**成果物:**
+- backend-node/shopx-api/src/handlers/getFavorites/app.mjs
+- backend-node/shopx-api/src/handlers/addFavorite/app.mjs
+- backend-node/shopx-api/src/handlers/removeFavorite/app.mjs
+- backend-node/shopx-api/src/handlers/getReviews/app.mjs
+- backend-node/shopx-api/src/handlers/createReview/app.mjs
+- frontend/shopx-ui/src/api/favorites.ts
+- frontend/shopx-ui/src/api/reviews.ts
+- frontend/shopx-ui/src/pages/FavoritesPage.tsx
+- frontend/shopx-ui/src/pages/ProductDetailPage.tsx（お気に入り・レビュー追加）
+- frontend/shopx-ui/src/pages/ProductListPage.tsx（検索 UI 追加）
+- scripts/create-test-users.js
+- scripts/dashboard.json
+
+**次回:** Day 27

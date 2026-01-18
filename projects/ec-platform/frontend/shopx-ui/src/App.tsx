@@ -8,6 +8,8 @@ import SignInPage from './pages/SignInPage';
 import CheckoutPage from './pages/CheckoutPage';
 import OrderHistoryPage from './pages/OrderHistoryPage';
 import AdminPage from './pages/AdminPage';
+import FavoritesPage from './pages/FavoritesPage';
+import { ChatPage } from './pages/ChatPage';
 import { useCart, CartProvider } from './context/CartContext';
 import { useAuth, AuthProvider } from './context/AuthContext';
 
@@ -32,6 +34,9 @@ const Navigation = () => {
       <div>
         <Link to="/" style={{ marginRight: '1rem' }}>ホーム</Link>
         <Link to="/products" style={{ marginRight: '1rem' }}>商品一覧</Link>
+        <Link to="/chat" style={{ marginRight: '1rem', color: '#2196f3', fontWeight: 'bold' }}>
+          🤖 AIアシスタント
+        </Link>
         {isAdmin && (
           <Link to="/admin" style={{ marginRight: '1rem', color: '#e74c3c', fontWeight: 'bold' }}>
             管理画面
@@ -47,6 +52,7 @@ const Navigation = () => {
               {user?.email}
               {isAdmin && <span style={{ color: '#e74c3c', marginLeft: '5px' }}>(Admin)</span>}
             </span>
+            <Link to="/favorites" style={{ textDecoration: 'none' }}>❤️ お気に入り</Link>
             <Link to="/orders" style={{ textDecoration: 'none' }}>注文履歴</Link>
             <button
               onClick={handleLogout}
@@ -104,7 +110,9 @@ function App() {
               <Route path="/login" element={<SignInPage />} />
               <Route path="/checkout" element={<CheckoutPage />} />
               <Route path="/orders" element={<OrderHistoryPage />} />
+              <Route path="/favorites" element={<FavoritesPage />} />
               <Route path="/admin" element={<AdminPage />} />
+              <Route path="/chat" element={<ChatPage />} />
             </Routes>
           </main>
         </CartProvider>

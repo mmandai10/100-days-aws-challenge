@@ -2,6 +2,12 @@ AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: ShopX Product Catalog API
 
+Parameters:
+  AnthropicApiKey:
+    Type: String
+    Description: Anthropic API Key for Claude
+    NoEcho: true
+
 Globals:
   Function:
     Runtime: nodejs20.x
@@ -254,6 +260,127 @@ Resources:
             Method: PUT
             Auth:
               Authorizer: CognitoAuthorizer
+
+  # ==========================================
+  # レビュー API
+  # ==========================================
+
+  GetReviewsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/handlers/getReviews/
+      Handler: app.handler
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref ProductsTable
+      Events:
+        GetReviews:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGatewayApi
+            Path: /products/{id}/reviews
+            Method: GET
+
+  CreateReviewFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/handlers/createReview/
+      Handler: app.handler
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ProductsTable
+      Events:
+        CreateReview:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGatewayApi
+            Path: /products/{id}/reviews
+            Method: POST
+            Auth:
+              Authorizer: CognitoAuthorizer
+
+  # ==========================================
+  # お気に入り API（認証必須）
+  # ==========================================
+
+  GetFavoritesFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/handlers/getFavorites/
+      Handler: app.handler
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref ProductsTable
+      Events:
+        GetFavorites:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGatewayApi
+            Path: /favorites
+            Method: GET
+            Auth:
+              Authorizer: CognitoAuthorizer
+
+  AddFavoriteFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/handlers/addFavorite/
+      Handler: app.handler
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ProductsTable
+      Events:
+        AddFavorite:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGatewayApi
+            Path: /favorites
+            Method: POST
+            Auth:
+              Authorizer: CognitoAuthorizer
+
+  RemoveFavoriteFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/handlers/removeFavorite/
+      Handler: app.handler
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ProductsTable
+      Events:
+        RemoveFavorite:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGatewayApi
+            Path: /favorites/{productId}
+            Method: DELETE
+            Auth:
+              Authorizer: CognitoAuthorizer
+
+  # ==========================================
+  # AI チャット API（認証不要）
+  # ==========================================
+
+  ChatFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/handlers/chat/
+      Handler: app.handler
+      Timeout: 30
+      MemorySize: 512
+      Environment:
+        Variables:
+          ANTHROPIC_API_KEY: !Ref AnthropicApiKey
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref ProductsTable
+      Events:
+        Chat:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGatewayApi
+            Path: /chat
+            Method: POST
 
   # ==========================================
   # DynamoDB テーブル

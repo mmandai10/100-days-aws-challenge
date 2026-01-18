@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>世界の株価 リアルタイムダッシュボード</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', 'Hiragino Sans', 'Meiryo', sans-serif;
+            background: #f5f5f5;
+            color: #333;
+            font-size: 12px;
+        }
+
+        /* ヘッダー */
+        .header {
+            background: #fff;
+            padding: 8px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #1976d2;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .header h1 { font-size: 1.1rem; font-weight: bold; color: #1976d2; }
+        .header h1 span { color: #d32f2f; }
+        .header-right { display: flex; align-items: center; gap: 15px; }
+        .realtime-info { font-size: 0.7rem; color: #666; background: #e3f2fd; padding: 3px 8px; border-radius: 3px; }
+        .realtime-info .live { color: #4caf50; }
+        .clock { font-size: 0.85rem; color: #333; font-weight: bold; }
+
+        /* タブ */
+        .tab-nav {
+            display: flex;
+            background: #fff;
+            border-bottom: 1px solid #ddd;
+            overflow-x: auto;
+            padding: 0 10px;
+        }
+        .tab-btn {
+            padding: 10px 18px;
+            background: none;
+            border: none;
+            color: #666;
+            font-size: 0.8rem;
+            font-weight: 500;
+            cursor: pointer;
+            white-space: nowrap;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s;
+        }
+        .tab-btn:hover { color: #1976d2; background: #e3f2fd; }
+        .tab-btn.active { color: #1976d2; border-bottom-color: #1976d2; background: #e3f2fd; }
+
+        /* メイン */
+        .main-content { display: flex; height: calc(100vh - 85px); }
+        .chart-area { flex: 1; overflow: hidden; }
+        .tab-content { display: none; height: 100%; overflow: hidden; }
+        .tab-content.active { display: flex; flex-direction: column; }
+
+        /* グリッド */
+        .chart-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 2px;
+            background: #ddd;
+            flex: 1;
+            overflow-y: auto;
+            padding: 2px;
+        }
+        .chart-item {
+            background: #fff;
+            height: 130px;
+            border: 1px solid #e0e0e0;
+        }
+
+        /* ウィジェット */
+        .widget-container { flex: 1; overflow: hidden; background: #fff; }
+        .tradingview-widget-container { height: 100%; width: 100%; }
+
+        /* ニュースサイドバー */
+        .news-area {
+            width: 280px;
+            border-left: 1px solid #ddd;
+            display: flex;
+            flex-direction: column;
+            background: #fff;
+        }
+        .news-header {
+            padding: 8px 10px;
+            background: #1976d2;
+            color: #fff;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        .news-tabs { display: flex; background: #f5f5f5; border-bottom: 1px solid #ddd; }
+        .news-tab {
+            flex: 1;
+            padding: 6px;
+            background: none;
+            border: none;
+            color: #666;
+            font-size: 0.7rem;
+            cursor: pointer;
+        }
+        .news-tab.active { background: #fff; color: #1976d2; font-weight: bold; }
+        .news-content { flex: 1; overflow: hidden; }
+        .news-list { height: 100%; overflow-y: auto; }
+        .news-item {
+            padding: 8px 10px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+        }
+        .news-item:hover { background: #f5f5f5; }
+        .news-item .time { font-size: 0.6rem; color: #999; }
+        .news-item .title { font-size: 0.72rem; color: #333; margin-top: 2px; line-height: 1.4; }
+        .news-item .source { font-size: 0.6rem; color: #1976d2; margin-top: 2px; }
+
+        /* レスポンシブ */
+        @media (max-width: 1024px) {
+            .main-content { flex-direction: column; }
+            .news-area { width: 100%; height: 180px; border-left: none; border-top: 1px solid #ddd; }
+            .chart-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
+        }
+        @media (max-width: 600px) {
+            .chart-grid { grid-template-columns: repeat(2, 1fr); }
+            .chart-item { height: 110px; }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>🌍 世界の<span>株価</span></h1>
+        <div class="header-right">
+            <div class="realtime-info"><span class="live">●</span> 為替/CFD: リアルタイム | 株式: 15分遅延</div>
+            <div class="clock"><span id="current-date"></span> <span id="current-time"></span></div>
+        </div>
+    </header>
+
+    <!-- タブ -->
+    <nav class="tab-nav">
+        <button class="tab-btn active" data-tab="japan">🇯🇵 日本・アジア</button>
+        <button class="tab-btn" data-tab="usa">🇺🇸 米国・欧州</button>
+        <button class="tab-btn" data-tab="forex">💱 為替レート</button>
+        <button class="tab-btn" data-tab="futures">📈 先物・24時間</button>
+        <button class="tab-btn" data-tab="commodity">🛢️ 商品</button>
+        <button class="tab-btn" data-tab="crypto">₿ 仮想通貨</button>
+        <button class="tab-btn" data-tab="overview">📊 一覧表示</button>
+        <button class="tab-btn" data-tab="calendar">📅 経済指標</button>
+    </nav>
+
+    <div class="main-content">
+        <div class="chart-area">
+            <!-- 日本・アジア -->
+            <div id="japan" class="tab-content active">
+                <div class="chart-grid">
+                    <div class="chart-item"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div>
+                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                    {"symbol": "OANDA:JP225USD","width": "100%","height": "100%","locale": "ja","dateRange": "1D","colorTheme": "light","isTransparent": false,"autosize": true}
+                    </script></div></div>
+
+                    <div class="chart-item"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div>
+                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                    {"symbol": "CME:NKD1!","width": "100%","height": "100%","locale": "ja","dateRange": "1D","colorTheme": "light","isTransparent": false,"autosize": true}
+                    </script></div></div>
+
+                    <div class="chart-item"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div>
+                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                    {"symbol": "OSE:NK2251!","width": "100%","height": "100%","locale": "ja","dateRange": "1D","colorTheme": "light","isTransparent": false,"autosize": true}
+                    </script></div></div>
+
+                    <div class="chart-item"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div>
+                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                    {"symbol": "OSE:TP1!","width": "100%","height": "100%","locale": "ja","dateRange": "1D","colorTheme": "light","isTransparent": false,"autosize": true}
+                    </script></div></div>
+
+                    <div class="chart-item"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div>
+                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                    {"symbol": "TVC:JN10Y","width": "100%","height": "100%","locale": "ja","dateRange": "1D","colorTheme": "light","isTransparent": false,"autosize": true}
+                    </script></div></div>
+
+                    <div class="chart-item"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div>
+                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                    {"symbol": "FX:USDJPY","width": "100%","height": "100%","locale": "ja","dateRange": "1D","colorTheme": "light","isTransparent": false,"autosize": true}
+                    </script></div></div>
+
+                    <div class="chart-item"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div>
+                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                    {"symbol": "HSI:HSI","width": "100%","height": "100%","locale": "ja","dateRange": "1D","colorTheme": "light","isTransparent": false,"autosize": true}
+                    </script></div></div>
+
+                    <div class="chart-item"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div>
+                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                    {"symbol": "SSE:000001","width": "100%","height": "100%","locale": "ja","dateRange": "1D","colorTheme": "light","isTransparent": false,"autosize": true}
+                    </script></div></div>
+
+                    <div class="chart-item"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div>
+                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                    {"symbol": "SZSE:399001","width": "100%","height": "100%","locale": "ja","dateRange": "1D","colorTheme": "light","isTransparent": false,"autosize": true}
+                    </script></div></div>
+
+                    <div class="chart-item"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div>
+                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                    {"symbol": "SGX:CN1!","width": "100%","height": "100%","locale": "ja","dateRange": "1D","colorTheme": "light","isTransparent": false,"autosize": true}
+                    </script></div></div>
+
+                    <div class="chart-item"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div>
+                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                    {"symbol": "KRX:KOSPI","width": "100%","height": "100%","locale": "ja","dateRange": "1D","colorTheme": "light","isTransparent": false,"autosize": true}
+                    </script></div></div>
+
+                    <div class="chart-item"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div>
+                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                    {"symbol": "KRX:KOSDAQ","width": "100%","height": "100%","locale": "ja","dateRange": "1D","colorTheme": "light","isTransparent": false,"autosize": true}
+                    </script></div></div>
+
+                    <div class="chart-item"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div>
+                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                    {"symbol": "TWSE:TAIEX","width": "100%","height": "100%","locale": "ja","dateRange": "1D","colorTheme": "light","isTransparent": false,"autosize": true}
+                    </script></div></div>
+
+                    <div class="chart-item"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div>
+                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                    {"symbol": "BSE:SENSEX","width": "100%","height": "100%","locale": "ja","dateRange": "1D","colorTheme": "light","isTransparent": false,"autosize": true}
+                    </script></div></div>
+
+                    <div class="chart-item"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div>
+                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                    {"symbol": "NSE:NIFTY","width": "100%","height": "100%","locale": "ja","dateRange": "1D","colorTheme": "light","isTransparent": false,"autosize": true}
+                    </script></div></div>
+
+                    <div class="chart-item"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div>
+                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                    {"symbol": "ASX:XJO","width": "100%","height": "100%","locale": "ja","dateRange": "1D","colorTheme": "light","isTransparent": false,"autosize": true}
+                    </script></div></div>
+
+                    <div class="chart-item"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div>
+                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                    {"symbol": "SET:SET","width": "100%","height": "100%","locale": "ja","dateRange": "1D","colorTheme": "light","isTransparent": false,"autosize": true}
+                    </script></div></div>
+
+                    <div class="chart-item"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div>
+                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                    {"symbol": "IDX:COMPOSITE","width": "100%","height": "100%","locale": "ja","dateRange": "1D","colorTheme": "light","isTransparent": false,"autosize": true}
+                    </script></div></div>
+                </div>
+            </div>
+
+            <!-- 米国・欧州 -->
+            <div id="usa" class="tab-content">
+                <div class="chart-grid">
+                    <div class="chart-item"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div>
+                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                    {"symbol": "FOREXCOM:DJI","width": "100%","height": "100%","locale": "ja","dateRange": "1D","colorTheme": "light","isTransparent": false,"autosize": true}
+                    </script></div></div>
+
+                    <div class="chart-item"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div>
+                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                    {"symbol": "FOREXCOM:SPXUSD","width": "100%","height": "100%","locale": "ja","dateRange": "1D","colorTheme": "light","isTransparent": false,"autosize": true}
+                    </script></div></div>
+
+                    <div class="chart-item"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div>
+                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                    {"symbol": "FOREXCOM:NSXUSD","width": "100%","height": "100%","locale": "ja","dateRange": "1D","colorTheme": "light","isTransparent": false,"autosize": true}
+                    </script></div></div>
+
+                    <div class="chart-item"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div>
+                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                    {"symbol": "AMEX:IWM","width": "100%","height": "100%","locale": "ja","dateRange": "1D","colorTheme": "light","isTransparent": false,"autosize": true}
+                    </script></div></div>
+
+                    <div class="chart-item"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div>
+                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                    {"symbol": "CBOE:VIX","width": "100%","height": "100%","locale": "ja","dateRange": "1D","colorTheme": "light","isTransparent": false,"autosize": true}
+                    </script></div></div>
+
+                    <div class="chart-item"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div>
+                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                    {"symbol": "TVC:US10Y","width": "100%","height": "100%","locale": "ja","dateRange": "1D","colorTheme": "light","isTransparent": false,"autosize": true}
+                    </script></div></div>
+
+                    <div class="chart-item"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div>
+                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                    {"symbol": "TVC:US02Y","width": "100%","height": "100%","locale": "ja","dateRange": "1D","colorTheme": "light","isTransparent": false,"autosize": true}
+                    </script></div></div>
+
+                    <div class="chart-item"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div>
+                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                    {"symbol": "SPREADEX:DAX","width": "100%","height": "100%","locale": "ja","dateRange": "1D","colorTheme": "light","isTransparent": false,"autosize": true}
+                    </script></div></div>
+
+                    <div class="chart-item"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div>
+                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                    {"symbol": "SPREADEX:FTSE","width": "100%","height": "100%","locale": "ja","dateRange": "1D","colorTheme": "light","isTransparent": false,"autosize": true}
+                    </script></div></div>
+
+                    <div class="chart-item"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div>
+                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                    {"symbol": "SPREADEX:CAC","width": "100%","height": "100%","locale": "ja","dateRange": "1D","colorTheme": "light","isTransparent": false,"autosize": true}
+                    </script></div></div>
+
+                    <div class="chart-item"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div>
+                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                    {"symbol": "TVC:SX5E","width": "100%","height": "100%","locale": "ja","dateRange": "1D","colorTheme": "light","isTransparent": false,"autosize": true}
+                    </script></div></div>
+
+                    <div class="chart-item"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div>
+                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                    {"symbol": "SIX:SMI","width": "100%","height": "100%","locale": "ja","dateRange": "1D","colorTheme": "light","isTransparent": false,"autosize": true}
+                    </script></div></div>
+
+                    <div class="chart-item"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div>
+                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                    {"symbol": "MIL:FTSEMIB","width": "100%","height": "100%","locale": "ja","dateRange": "1D","colorTheme": "light","isTransparent": false,"autosize": true}
+                    </script></div></div>
+
+                    <div class="chart-item"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div>
+                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                    {"symbol": "TVC:DE10Y","width": "100%","height": "100%","locale": "ja","dateRange": "1D","colorTheme": "light","isTransparent": false,"autosize": true}
+                    </script></div></div>
+
+                    <div class="chart-item"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div>
+                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                    {"symbol": "NASDAQ:AAPL","width": "100%","height": "100%","locale": "ja","dateRange": "1D","colorTheme": "light","isTransparent": false,"autosize": true}
+                    </script></div></div>
+
+                    <div class="chart-item"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div>
+                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                    {"symbol": "NASDAQ:NVDA","width": "100%","height": "100%","locale": "ja","dateRange": "1D","colorTheme": "light","isTransparent": false,"autosize": true}
+                    </script></div></div>
+
+                    <div class="chart-item"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div>
+                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                    {"symbol": "NASDAQ:TSLA","width": "100%","height": "100%","locale": "ja","dateRange": "1D","colorTheme": "light","isTransparent": false,"autosize": true}
+                    </script></div></div>
+
+                    <div class="chart-item"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div>
+                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                    {"symbol": "NASDAQ:MSFT","width": "100%","height": "100%","locale": "ja","dateRange": "1D","colorTheme": "light","isTransparent": false,"autosize": true}
+                    </script></div></div>
+                </div>
+            </div>
+
+            <!-- 為替 -->
+            <div id="forex" class="tab-content">
+                <div class="chart-grid">
+                    <div class="chart-item"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div>
+                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                    {"symbol": "FX:USDJPY","width": "100%","height": "100%","locale": "ja","dateRange": "1D","colorTheme": "light","isTransparent": false,"autosize": true}
+                    </script></div></div>
+
+                    <div class="chart-item"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div>
+                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                    {"symbol": "FX:EURJPY","width": "100%","height": "100%","locale": "ja","dateRange": "1D","colorTheme": "light","isTransparent": false,"autosize": true}
+                    </script></div></div>
+
+                    <div class="chart-item"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div>
+                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                    {"symbol": "FX:GBPJPY","width": "100%","height": "100%","locale": "ja","dateRange": "1D","colorTheme": "light","isTransparent": false,"autosize": true}
+                    </script></div></div>
+
+                    <div class="chart-item"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div>
+                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                    {"symbol": "FX:AUDJPY","width": "100%","height": "100%","locale": "ja","dateRange": "1D","colorTheme": "light","isTransparent": false,"autosize": true}
+                    </script></div></div>
+
+                    <div class="chart-item"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div>
+                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                    {"symbol": "FX:NZDJPY","width": "100%","height": "100%","locale": "ja","dateRange": "1D","colorTheme": "light","isTransparent": false,"autosize": true}
+                    </script></div></div>
+
+                    <div class="chart-item"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div>
+                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                    {"symbol": "FX:CADJPY","width": "100%","height": "100%","locale": "ja","dateRange": "1D","colorTheme": "light","isTransparent": false,"autosize": true}
+                    </script></div></div>
+
+                    <div class="chart-item"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div>
+                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                    {"symbol": "FX:CHFJPY","width": "100%","height": "100%","locale": "ja","dateRange": "1D","colorTheme": "light","isTransparent": false,"autosize": true}
+                    </script></div></div>
+
+                    <div class="chart-item"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div>
+                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                    {"symbol": "FX:EURUSD","width": "100%","height": "100%","locale": "ja","dateRange": "1D","colorTheme": "light","isTransparent": false,"autosize": true}
+                    </script></div></div>
+
+                    <div class="chart-item"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div>
+                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                    {"symbol": "FX:GBPUSD","width": "100%","height": "100%","locale": "ja","dateRange": "1D","colorTheme": "light","isTransparent": false,"autosize": true}
+                    </script></div></div>
+
+                    <div class="chart-item"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div>
+                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                    {"symbol": "FX:AUDUSD","width": "100%","height": "100%","locale": "ja","dateRange": "1D","colorTheme": "light","isTransparent": false,"autosize": true}
+                    </script></div></div>
+
+                    <div class="chart-item"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div>
+                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                    {"symbol": "TVC:DXY","width": "100%","height": "100%","locale": "ja","dateRange": "1D","colorTheme": "light","isTransparent": false,"autosize": true}
+                    </script></div></div>
+
+                    <div class="chart-item"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div>
+                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                    {"symbol": "FX:USDCNH","width": "100%","height": "100%","locale": "ja","dateRange": "1D","colorTheme": "light","isTransparent": false,"autosize": true}
+                    </script></div></div>
+                </div>
+            </div>
+
+            <!-- 先物 -->
+            <div id="futures" class="tab-content">
+                <div class="chart-grid">
+                    <div class="chart-item"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div>
+                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                    {"symbol": "CME_MINI:ES1!","width": "100%","height": "100%","locale": "ja","dateRange": "1D","colorTheme": "light","isTransparent": false,"autosize": true}
+                    </script></div></div>
+
+                    <div class="chart-item"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div>
+                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                    {"symbol": "CME_MINI:NQ1!","width": "100%","height": "100%","locale": "ja","dateRange": "1D","colorTheme": "light","isTransparent": false,"autosize": true}
+                    </script></div></div>
+
+                    <div class="chart-item"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div>
+                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                    {"symbol": "CBOT_MINI:YM1!","width": "100%","height": "100%","locale": "ja","dateRange": "1D","colorTheme": "light","isTransparent": false,"autosize": true}
+                    </script></div></div>
+
+                    <div class="chart-item"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div>
+                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                    {"symbol": "CME:NKD1!","width": "100%","height": "100%","locale": "ja","dateRange": "1D","colorTheme": "light","isTransparent": false,"autosize": true}
+                    </script></div></div>
+
+                    <div class="chart-item"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div>
+                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                    {"symbol": "OSE:NK2251!","width": "100%","height": "100%","locale": "ja","dateRange": "1D","colorTheme": "light","isTransparent": false,"autosize": true}
+                    </script></div></div>
+
+                    <div class="chart-item"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div>
+                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                    {"symbol": "EUREX:FDAX1!","width": "100%","height": "100%","locale": "ja","dateRange": "1D","colorTheme": "light","isTransparent": false,"autosize": true}
+                    </script></div></div>
+
+                    <div class="chart-item"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div>
+                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                    {"symbol": "SGX:CN1!","width": "100%","height": "100%","locale": "ja","dateRange": "1D","colorTheme": "light","isTransparent": false,"autosize": true}
+                    </script></div></div>
+
+                    <div class="chart-item"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div>
+                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                    {"symbol": "COMEX:GC1!","width": "100%","height": "100%","locale": "ja","dateRange": "1D","colorTheme": "light","isTransparent": false,"autosize": true}
+                    </script></div></div>
+
+                    <div class="chart-item"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div>
+                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                    {"symbol": "NYMEX:CL1!","width": "100%","height": "100%","locale": "ja","dateRange": "1D","colorTheme": "light","isTransparent": false,"autosize": true}
+                    </script></div></div>
+
+                    <div class="chart-item"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div>
+                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                    {"symbol": "CBOT:ZB1!","width": "100%","height": "100%","locale": "ja","dateRange": "1D","colorTheme": "light","isTransparent": false,"autosize": true}
+                    </script></div></div>
+                </div>
+            </div>
+
+            <!-- 商品 -->
+            <div id="commodity" class="tab-content">
+                <div class="chart-grid">
+                    <div class="chart-item"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div>
+                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                    {"symbol": "TVC:GOLD","width": "100%","height": "100%","locale": "ja","dateRange": "1D","colorTheme": "light","isTransparent": false,"autosize": true}
+                    </script></div></div>
+
+                    <div class="chart-item"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div>
+                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                    {"symbol": "TVC:SILVER","width": "100%","height": "100%","locale": "ja","dateRange": "1D","colorTheme": "light","isTransparent": false,"autosize": true}
+                    </script></div></div>
+
+                    <div class="chart-item"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div>
+                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                    {"symbol": "TVC:PLATINUM","width": "100%","height": "100%","locale": "ja","dateRange": "1D","colorTheme": "light","isTransparent": false,"autosize": true}
+                    </script></div></div>
+
+                    <div class="chart-item"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div>
+                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                    {"symbol": "TVC:USOIL","width": "100%","height": "100%","locale": "ja","dateRange": "1D","colorTheme": "light","isTransparent": false,"autosize": true}
+                    </script></div></div>
+
+                    <div class="chart-item"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div>
+                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                    {"symbol": "TVC:UKOIL","width": "100%","height": "100%","locale": "ja","dateRange": "1D","colorTheme": "light","isTransparent": false,"autosize": true}
+                    </script></div></div>
+
+                    <div class="chart-item"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div>
+                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                    {"symbol": "NYMEX:NG1!","width": "100%","height": "100%","locale": "ja","dateRange": "1D","colorTheme": "light","isTransparent": false,"autosize": true}
+                    </script></div></div>
+
+                    <div class="chart-item"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div>
+                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                    {"symbol": "COMEX:HG1!","width": "100%","height": "100%","locale": "ja","dateRange": "1D","colorTheme": "light","isTransparent": false,"autosize": true}
+                    </script></div></div>
+
+                    <div class="chart-item"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div>
+                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                    {"symbol": "CBOE:VIX","width": "100%","height": "100%","locale": "ja","dateRange": "1D","colorTheme": "light","isTransparent": false,"autosize": true}
+                    </script></div></div>
+
+                    <div class="chart-item"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div>
+                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                    {"symbol": "CBOT:ZC1!","width": "100%","height": "100%","locale": "ja","dateRange": "1D","colorTheme": "light","isTransparent": false,"autosize": true}
+                    </script></div></div>
+
+                    <div class="chart-item"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div>
+                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                    {"symbol": "CBOT:ZW1!","width": "100%","height": "100%","locale": "ja","dateRange": "1D","colorTheme": "light","isTransparent": false,"autosize": true}
+                    </script></div></div>
+
+                    <div class="chart-item"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div>
+                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                    {"symbol": "CBOT:ZS1!","width": "100%","height": "100%","locale": "ja","dateRange": "1D","colorTheme": "light","isTransparent": false,"autosize": true}
+                    </script></div></div>
+                </div>
+            </div>
+
+            <!-- 仮想通貨 -->
+            <div id="crypto" class="tab-content">
+                <div class="chart-grid">
+                    <div class="chart-item"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div>
+                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                    {"symbol": "BINANCE:BTCUSDT","width": "100%","height": "100%","locale": "ja","dateRange": "1D","colorTheme": "light","isTransparent": false,"autosize": true}
+                    </script></div></div>
+
+                    <div class="chart-item"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div>
+                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                    {"symbol": "BINANCE:ETHUSDT","width": "100%","height": "100%","locale": "ja","dateRange": "1D","colorTheme": "light","isTransparent": false,"autosize": true}
+                    </script></div></div>
+
+                    <div class="chart-item"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div>
+                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                    {"symbol": "BINANCE:XRPUSDT","width": "100%","height": "100%","locale": "ja","dateRange": "1D","colorTheme": "light","isTransparent": false,"autosize": true}
+                    </script></div></div>
+
+                    <div class="chart-item"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div>
+                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                    {"symbol": "BINANCE:SOLUSDT","width": "100%","height": "100%","locale": "ja","dateRange": "1D","colorTheme": "light","isTransparent": false,"autosize": true}
+                    </script></div></div>
+
+                    <div class="chart-item"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div>
+                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                    {"symbol": "BINANCE:BNBUSDT","width": "100%","height": "100%","locale": "ja","dateRange": "1D","colorTheme": "light","isTransparent": false,"autosize": true}
+                    </script></div></div>
+
+                    <div class="chart-item"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div>
+                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                    {"symbol": "BINANCE:ADAUSDT","width": "100%","height": "100%","locale": "ja","dateRange": "1D","colorTheme": "light","isTransparent": false,"autosize": true}
+                    </script></div></div>
+
+                    <div class="chart-item"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div>
+                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                    {"symbol": "BINANCE:DOGEUSDT","width": "100%","height": "100%","locale": "ja","dateRange": "1D","colorTheme": "light","isTransparent": false,"autosize": true}
+                    </script></div></div>
+
+                    <div class="chart-item"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div>
+                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                    {"symbol": "CRYPTOCAP:TOTAL","width": "100%","height": "100%","locale": "ja","dateRange": "1D","colorTheme": "light","isTransparent": false,"autosize": true}
+                    </script></div></div>
+                </div>
+            </div>
+
+            <!-- 一覧表示 -->
+            <div id="overview" class="tab-content">
+                <div class="widget-container">
+                    <div class="tradingview-widget-container" style="height:100%;">
+                        <div class="tradingview-widget-container__widget" style="height:100%;"></div>
+                        <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-market-overview.js" async>
+                        {
+                            "colorTheme": "light",
+                            "dateRange": "1D",
+                            "showChart": true,
+                            "locale": "ja",
+                            "width": "100%",
+                            "height": "100%",
+                            "isTransparent": false,
+                            "showSymbolLogo": true,
+                            "showFloatingTooltip": true,
+                            "tabs": [
+                                {"title": "指数", "symbols": [
+                                    {"s": "OANDA:JP225USD", "d": "日経225"},
+                                    {"s": "FOREXCOM:DJI", "d": "NYダウ"},
+                                    {"s": "FOREXCOM:SPXUSD", "d": "S&P500"},
+                                    {"s": "FOREXCOM:NSXUSD", "d": "NASDAQ"},
+                                    {"s": "SPREADEX:DAX", "d": "DAX"},
+                                    {"s": "HSI:HSI", "d": "香港ハンセン"}
+                                ]},
+                                {"title": "為替", "symbols": [
+                                    {"s": "FX:USDJPY", "d": "ドル円"},
+                                    {"s": "FX:EURJPY", "d": "ユーロ円"},
+                                    {"s": "FX:GBPJPY", "d": "ポンド円"},
+                                    {"s": "FX:EURUSD", "d": "ユーロドル"},
+                                    {"s": "TVC:DXY", "d": "ドル指数"}
+                                ]},
+                                {"title": "商品", "symbols": [
+                                    {"s": "TVC:GOLD", "d": "金"},
+                                    {"s": "TVC:SILVER", "d": "銀"},
+                                    {"s": "TVC:USOIL", "d": "原油WTI"},
+                                    {"s": "CBOE:VIX", "d": "VIX"}
+                                ]}
+                            ]
+                        }
+                        </script>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 経済指標 -->
+            <div id="calendar" class="tab-content">
+                <div class="widget-container">
+                    <div class="tradingview-widget-container" style="height:100%;">
+                        <div class="tradingview-widget-container__widget" style="height:100%;"></div>
+                        <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-events.js" async>
+                        {"colorTheme": "light","isTransparent": false,"width": "100%","height": "100%","locale": "ja","importanceFilter": "-1,0,1","countryFilter": "jp,us,eu,cn,gb,de"}
+                        </script>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ニュース -->
+        <div class="news-area">
+            <div class="news-header">📰 マーケットニュース</div>
+            <div class="news-tabs">
+                <button class="news-tab active" data-news="jp">日本語</button>
+                <button class="news-tab" data-news="tv">TradingView</button>
+            </div>
+            <div class="news-content">
+                <div id="news-jp" class="news-list"></div>
+                <div id="news-tv" class="news-list" style="display:none;">
+                    <div class="tradingview-widget-container" style="height:100%;">
+                        <div class="tradingview-widget-container__widget" style="height:100%;"></div>
+                        <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-timeline.js" async>
+                        {"feedMode": "all_symbols","isTransparent": false,"displayMode": "regular","width": "100%","height": "100%","colorTheme": "light","locale": "ja"}
+                        </script>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 時計
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('current-date').textContent = now.toLocaleDateString('ja-JP', {month:'numeric',day:'numeric',weekday:'short'});
+            document.getElementById('current-time').textContent = now.toLocaleTimeString('ja-JP');
+        }
+        updateClock();
+        setInterval(updateClock, 1000);
+
+        // タブ切り替え
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                document.getElementById(this.dataset.tab).classList.add('active');
+            });
+        });
+
+        // ニュースタブ
+        document.querySelectorAll('.news-tab').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.news-tab').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                document.querySelectorAll('.news-list').forEach(n => n.style.display = 'none');
+                document.getElementById('news-' + this.dataset.news).style.display = 'block';
+            });
+        });
+
+        // 日本語ニュース
+        async function fetchJapaneseNews() {
+            const feeds = [
+                {name: 'ロイター', url: 'https://api.rss2json.com/v1/api.json?rss_url=https://assets.wor.jp/rss/rdf/reuters/top.rdf'},
+                {name: '日経', url: 'https://api.rss2json.com/v1/api.json?rss_url=https://assets.wor.jp/rss/rdf/nikkei/news.rdf'}
+            ];
+            const container = document.getElementById('news-jp');
+            let allNews = [];
+            
+            for (const feed of feeds) {
+                try {
+                    const res = await fetch(feed.url);
+                    const data = await res.json();
+                    if (data.items) {
+                        data.items.forEach(item => {
+                            allNews.push({
+                                title: item.title,
+                                link: item.link,
+                                pubDate: new Date(item.pubDate),
+                                source: feed.name
+                            });
+                        });
+                    }
+                } catch (e) { console.log('Feed error:', feed.name); }
+            }
+            
+            allNews.sort((a, b) => b.pubDate - a.pubDate);
+            
+            if (allNews.length > 0) {
+                container.innerHTML = allNews.slice(0, 30).map(item => `
+                    <div class="news-item" onclick="window.open('${item.link}', '_blank')">
+                        <div class="time">${item.pubDate.toLocaleString('ja-JP', {month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'})}</div>
+                        <div class="title">${item.title}</div>
+                        <div class="source">${item.source}</div>
+                    </div>
+                `).join('');
+            } else {
+                container.innerHTML = '<div style="padding:20px;text-align:center;color:#999;">TradingViewタブをお試しください</div>';
+            }
+        }
+        
+        fetchJapaneseNews();
+        setInterval(fetchJapaneseNews, 300000);
+    </script>
+</body>
+</html>

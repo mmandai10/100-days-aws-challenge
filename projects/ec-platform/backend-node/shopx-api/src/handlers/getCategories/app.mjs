@@ -10,8 +10,8 @@ export const handler = async (event) => {
   try {
     const params = {
       TableName: tableName,
-      FilterExpression: 'SK = :sk',
-      ExpressionAttributeValues: { ':sk': 'CATEGORY' }
+      FilterExpression: 'begins_with(SK, :sk)',
+      ExpressionAttributeValues: { ':sk': 'CATEGORY#' }
     };
     const result = await docClient.send(new ScanCommand(params));
     return {

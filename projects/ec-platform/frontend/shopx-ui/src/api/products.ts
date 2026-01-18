@@ -25,6 +25,14 @@ const mapProduct = (apiProduct: ApiProduct): Product => ({
   imageUrl: apiProduct.imageUrl,
 });
 
+// 検索パラメータの型
+export interface SearchParams {
+  category?: string;
+  keyword?: string;
+  minPrice?: number;
+  maxPrice?: number;
+}
+
 // 商品一覧を取得
 export const fetchProducts = async (): Promise<Product[]> => {
   const response = await fetch(`${API_BASE_URL}/products`);
@@ -35,6 +43,28 @@ export const fetchProducts = async (): Promise<Product[]> => {
   
   const data = await response.json();
   return data.products.map(mapProduct);  // 変換して返す
+};
+
+// 商品検索（フィルター付き）
+export const searchProducts = async (params: SearchParams): Promise<Product[]> => {
+  const queryParams = new URLSearchParams();
+  
+  if (params.category) queryParams.append('category', params.category);
+  if (params.keyword) queryParams.append('keyword', params.keyword);
+  if (params.minPrice !== undefined) queryParams.append('minPrice', params.minPrice.toString());
+  if (params.maxPrice !== undefined) queryParams.append('maxPrice', params.maxPrice.toString());
+  
+  const queryString = queryParams.toString();
+  const url = queryString ? `${API_BASE_URL}/products?${queryString}` : `${API_BASE_URL}/products`;
+  
+  const response = await fetch(url);
+  
+  if (!response.ok) {
+    throw new Error(`API Error: ${response.status}`);
+  }
+  
+  const data = await response.json();
+  return data.products.map(mapProduct);
 };
 
 // 商品詳細を取得
