@@ -58,6 +58,30 @@ export const createOrder = async (shippingAddress: ShippingAddress): Promise<Ord
   return data.order;
 };
 
+// Stripe Checkout Session 作成
+export const createCheckoutSession = async (): Promise<{ sessionId: string; url: string }> => {
+  const token = await getAuthToken();
+
+  const response = await fetch(`${API_BASE_URL}/checkout/session`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    },
+    body: JSON.stringify({
+      successUrl: `${window.location.origin}/orders?success=true`,
+      cancelUrl: `${window.location.origin}/cart?canceled=true`
+    })
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.error || 'Failed to create checkout session');
+  }
+
+  return response.json();
+};
+
 // 注文履歴取得
 export const getOrders = async (): Promise<Order[]> => {
   const token = await getAuthToken();

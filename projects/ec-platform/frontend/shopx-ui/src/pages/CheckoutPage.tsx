@@ -1,14 +1,18 @@
 import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
-import { createOrder } from '../api/orders';
+import { createOrder, createCheckoutSession } from '../api/orders';
 import type { ShippingAddress } from '../api/orders';
 
 const CheckoutPage = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { items, totalPrice, clearCart } = useCart();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [paymentMethod, setPaymentMethod] = useState<'cod' | 'stripe'>('stripe');
+
+  const canceled = searchParams.get('canceled');
 
   const [shippingAddress, setShippingAddress] = useState<ShippingAddress>({
     name: '',
@@ -48,12 +52,23 @@ const CheckoutPage = () => {
     setIsSubmitting(true);
 
     try {
-      const order = await createOrder(shippingAddress);
-      clearCart();
-      navigate('/orders', { state: { newOrderId: order.orderId } });
+      if (paymentMethod === 'stripe') {
+        // 配送先を localStorage に保存（決済成功後に使う）
+        localStorage.setItem('pendingShippingAddress', JSON.stringify(shippingAddress));
+        
+        // Stripe Checkout Session 作成
+        const { url } = await createCheckoutSession();
+        
+        // Stripe 決済ページにリダイレクト
+        window.location.href = url;
+      } else {
+        // 代引き（従来の処理）
+        const order = await createOrder(shippingAddress);
+        clearCart();
+        navigate('/orders', { state: { newOrderId: order.orderId } });
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Order failed');
-    } finally {
       setIsSubmitting(false);
     }
   };
@@ -64,6 +79,12 @@ const CheckoutPage = () => {
   return (
     <div className="container" style={{ maxWidth: '800px', padding: '2rem' }}>
       <h1 className="section-title" style={{ marginBottom: '2rem' }}>Checkout</h1>
+
+      {canceled && (
+        <div className="alert alert-error mb-lg">
+          Payment was canceled. Please try again.
+        </div>
+      )}
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 320px', gap: '2rem' }}>
         <div>
@@ -119,12 +140,37 @@ const CheckoutPage = () => {
               />
             </div>
 
+            <h3 style={{ fontSize: '1rem', marginTop: '2rem', marginBottom: '1rem' }}>Payment Method</h3>
+            
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+              <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
+                <input
+                  type="radio"
+                  name="paymentMethod"
+                  value="stripe"
+                  checked={paymentMethod === 'stripe'}
+                  onChange={() => setPaymentMethod('stripe')}
+                />
+                <span>Credit Card (Stripe)</span>
+              </label>
+              <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
+                <input
+                  type="radio"
+                  name="paymentMethod"
+                  value="cod"
+                  checked={paymentMethod === 'cod'}
+                  onChange={() => setPaymentMethod('cod')}
+                />
+                <span>Cash on Delivery</span>
+              </label>
+            </div>
+
             <div className="flex gap-md mt-xl">
               <button type="button" onClick={() => navigate('/cart')} className="btn btn-secondary">
                 Back
               </button>
               <button type="submit" disabled={isSubmitting} className="btn btn-primary btn-lg" style={{ flex: 1 }}>
-                {isSubmitting ? 'Processing...' : 'Place Order'}
+                {isSubmitting ? 'Processing...' : paymentMethod === 'stripe' ? 'Pay with Stripe' : 'Place Order'}
               </button>
             </div>
           </form>
@@ -155,6 +201,12 @@ const CheckoutPage = () => {
                 <span>¥{grandTotal.toLocaleString()}</span>
               </div>
             </div>
+
+            {paymentMethod === 'stripe' && (
+              <p className="text-sm text-muted mt-md">
+                Test card: 4242 4242 4242 4242
+              </p>
+            )}
           </div>
         </div>
       </div>

@@ -82,7 +82,8 @@ export const handler = async (event) => {
         productId: cartItem.productId,
         name: product?.name || 'Unknown',
         price: product?.price || 0,
-        quantity: cartItem.quantity
+        quantity: cartItem.quantity,
+        imageUrl: product?.imageUrl || null
       });
     }
 

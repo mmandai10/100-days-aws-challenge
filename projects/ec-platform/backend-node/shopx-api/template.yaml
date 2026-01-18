@@ -7,6 +7,10 @@ Parameters:
     Type: String
     Description: Anthropic API Key for Claude
     NoEcho: true
+  StripeSecretKey:
+    Type: String
+    Description: Stripe Secret Key for payment
+    NoEcho: true
 
 Globals:
   Function:
@@ -164,6 +168,28 @@ Resources:
             RestApiId: !Ref ApiGatewayApi
             Path: /orders
             Method: GET
+            Auth:
+              Authorizer: CognitoAuthorizer
+
+  CreateCheckoutSessionFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/handlers/createCheckoutSession/
+      Handler: app.handler
+      Timeout: 30
+      Environment:
+        Variables:
+          STRIPE_SECRET_KEY: !Ref StripeSecretKey
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref ProductsTable
+      Events:
+        CreateCheckoutSession:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGatewayApi
+            Path: /checkout/session
+            Method: POST
             Auth:
               Authorizer: CognitoAuthorizer
 

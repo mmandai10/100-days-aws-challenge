@@ -1,15 +1,43 @@
 import { useState, useEffect } from 'react';
-import { useLocation, Link } from 'react-router-dom';
-import { getOrders } from '../api/orders';
-import type { Order } from '../api/orders';
+import { useLocation, useSearchParams, Link } from 'react-router-dom';
+import { getOrders, createOrder } from '../api/orders';
+import type { Order, ShippingAddress } from '../api/orders';
+import { useCart } from '../context/CartContext';
 
 const OrderHistoryPage = () => {
   const location = useLocation();
+  const [searchParams] = useSearchParams();
+  const { clearCart } = useCart();
   const [orders, setOrders] = useState<Order[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   const newOrderId = location.state?.newOrderId;
+  const paymentSuccess = searchParams.get('success');
+
+  useEffect(() => {
+    const processPaymentSuccess = async () => {
+      if (paymentSuccess === 'true') {
+        // Stripe 決済成功後の処理
+        const savedAddress = localStorage.getItem('pendingShippingAddress');
+        if (savedAddress) {
+          try {
+            const shippingAddress: ShippingAddress = JSON.parse(savedAddress);
+            const order = await createOrder(shippingAddress);
+            setSuccessMessage(`Payment successful! Order ID: ${order.orderId.slice(0, 8)}...`);
+            localStorage.removeItem('pendingShippingAddress');
+            clearCart();
+          } catch (err) {
+            console.error('Failed to create order after payment:', err);
+            setError('Payment received but order creation failed. Please contact support.');
+          }
+        }
+      }
+    };
+
+    processPaymentSuccess();
+  }, [paymentSuccess, clearCart]);
 
   useEffect(() => {
     const loadOrders = async () => {
@@ -23,8 +51,10 @@ const OrderHistoryPage = () => {
       }
     };
 
-    loadOrders();
-  }, []);
+    // 少し遅延させて注文作成後のデータを取得
+    const timer = setTimeout(loadOrders, paymentSuccess ? 1000 : 0);
+    return () => clearTimeout(timer);
+  }, [paymentSuccess, successMessage]);
 
   const getStatusLabel = (status: string) => {
     const map: Record<string, string> = {
@@ -53,7 +83,7 @@ const OrderHistoryPage = () => {
     );
   }
 
-  if (error) {
+  if (error && !successMessage) {
     return (
       <div className="container">
         <div className="alert alert-error">{error}</div>
@@ -68,7 +98,13 @@ const OrderHistoryPage = () => {
     <div className="container" style={{ maxWidth: '800px', padding: '2rem' }}>
       <h1 className="section-title" style={{ marginBottom: '2rem' }}>Orders</h1>
 
-      {newOrderId && (
+      {successMessage && (
+        <div className="alert alert-success mb-xl">
+          {successMessage}
+        </div>
+      )}
+
+      {newOrderId && !successMessage && (
         <div className="alert alert-success mb-xl">
           Order placed successfully! Order ID: {newOrderId.slice(0, 8)}...
         </div>
