@@ -1,7 +1,11 @@
 # 100 Days AWS Challenge - ロードマップ v5.0
 
-## 現在のフェーズ
-**12月：AI/LLM 基礎集中 + AI エージェント実践**
+## コンセプト：「作る」から「仕組み化する」へ
+
+AI時代のエンジニアとして、コードを書くだけでなく：
+- **IaC** で属人化を解消
+- **AI** を深く活用
+- **AWS** サービスを実践的に学ぶ
 
 ---
 
@@ -10,160 +14,224 @@
 2. 一つずつ確認しながら進める（各ステップで「OK」を待つ）
 3. 理解しながら進める（コピペ職人にしない）
 4. daily-log.md を更新する
-5. **10分以上かけたエラーは記事化を検討**
+5. **全インフラは Terraform で管理**
 
 ---
 
-## 【12月 AI カリキュラム】
+## 全体スケジュール
 
-### Phase 1: API 基礎（Day 1-10）✅ 完了
+| Phase | Day | テーマ | アプリ |
+|-------|-----|--------|--------|
+| 0 | 1-28 | ShopX EC Platform | ✅ 完了 |
+| 1 | 29-50 | Terraform + AI エージェント | パーソナル AI アシスタント |
+| 2 | 51-70 | RAG + Bedrock | AI ナレッジベース |
+| 3 | 71-90 | 画像分析 + イベント駆動 | AI 画像/動画分析アプリ |
+| 4 | 91-120 | マルチテナント + ECS | AI チャットボット SaaS |
+| 5 | 121-150 | 集大成 | インフラ自動化ダッシュボード |
 
-| Day | テーマ | 成果物 |
-|-----|--------|--------|
-| 1 | API セットアップ | hello_claude.py |
-| 2 | Messages API | チャットスクリプト |
-| 3 | プロンプト設計① | プロンプトテンプレート |
-| 4 | プロンプト設計② | 改善版プロンプト |
-| 5 | Tool Use 基礎 | 天気取得ツール |
-| 6 | Tool Use 実践 | 複数ツール連携 |
-| 7 | RAG 概念 | 理解ノート |
-| 8 | RAG 実装 | ドキュメント Q&A |
-| 9 | MCP 入門 | MCP 接続テスト |
-| 10 | まとめ | 学習サマリー |
+---
 
-### Phase 2: AI エージェント実践（Day 11-15）🔄 進行中
+## Phase 0: ShopX EC Platform（Day 1-28）✅ 完了
+
+**成果物:**
+- フロントエンド: React + TypeScript + Vite
+- バックエンド: Lambda + API Gateway + DynamoDB
+- 認証: Cognito
+- 決済: Stripe
+- CI: GitHub Actions
+- CD: Amplify Hosting
+- 本番URL: https://main.d20nytcowp331l.amplifyapp.com
+
+---
+
+## Phase 1: パーソナル AI アシスタント（Day 29-50）🔄 進行中
+
+### 目標
+自分専用の AI アシスタントを Terraform で構築
+
+### スケジュール
 
 | Day | テーマ | 内容 |
 |-----|--------|------|
-| 11 | Claude Code 導入 | インストール、CLAUDE.md 生成 ✅ |
-| 12 | Claude Code 実践① | 既存コードの修正、Git問題解決 |
-| 13 | Claude Code 実践② | 新機能をゼロから作成 |
-| 14 | IaC 生成 | CloudFormation を AI に書かせる |
-| 15 | まとめ | 振り返り、1月計画策定 |
+| 29-32 | Terraform 基礎 | インストール、AWS Provider、基本リソース |
+| 33-36 | Terraform 実践 | モジュール化、状態管理、ベストプラクティス |
+| 37-40 | AI エージェント設計 | Claude API 復習、Tool Use、エージェント設計 |
+| 41-44 | MCP サーバー構築 | MCP 完成、ツール連携（GitHub/カレンダー等） |
+| 45-48 | インフラ構築 | Lambda, API Gateway, DynamoDB を Terraform で |
+| 49-50 | デプロイ + 仕上げ | CI/CD、ドキュメント |
+
+### AWS サービス
+- Lambda
+- API Gateway
+- DynamoDB
+- Bedrock
+- Secrets Manager
+- IAM
+
+### 成果物
+- 自分が毎日使える AI アシスタント
+- 全インフラが Terraform 管理
+- MCP でツール連携
 
 ---
 
-## 【1月〜 AWS + ShopX】
+## Phase 2: AI ナレッジベース（Day 51-70）
 
-### 開発環境・ツール（最初に決定）
+### 目標
+ドキュメント → AI が回答するシステム
 
-| カテゴリ | 選定 |
-|----------|------|
-| フロントエンド | React + TypeScript + Vite |
-| UI ライブラリ | Chakra UI / Tailwind + shadcn（Day 15 で決定）|
-| フォーム | react-hook-form |
-| テスト | Jest + React Testing Library |
-| バックエンド | Node.js + Lambda（SAM） |
-| DB | DynamoDB（Single Table Design） |
-| 認証 | Cognito |
-| CI/CD | GitHub Actions |
-| デプロイ | Amplify（Frontend）+ SAM deploy（Backend）|
+### スケジュール
 
-### 開発原則
-- **テストファースト**: 機能実装前にテストを書く
-- **CI/CD 最初から**: 初日にパイプライン構築
-- **段階的リリース**: 小さく作って早くデプロイ
+| Day | テーマ | 内容 |
+|-----|--------|------|
+| 51-54 | RAG アーキテクチャ | Embedding、ベクトル検索の仕組み |
+| 55-58 | ベクトルDB | OpenSearch Serverless 構築 |
+| 59-62 | Bedrock 統合 | Claude on Bedrock、Knowledge Bases |
+| 63-66 | バックエンド | Lambda、S3 アップロード処理 |
+| 67-70 | フロントエンド | React、Amplify デプロイ |
 
----
+### AWS サービス
+- Bedrock
+- OpenSearch Serverless
+- S3
+- Lambda
+- Amplify
 
-### Phase 1: 基盤構築（Week 1-2）
-
-| タスク | 内容 |
-|--------|------|
-| プロジェクト作成 | Vite + React + TypeScript |
-| テスト環境 | Jest + React Testing Library 導入 |
-| CI/CD | GitHub Actions → Amplify 自動デプロイ |
-| UI 基盤 | レイアウト、共通コンポーネント |
-| API 基盤 | SAM init、Hello World Lambda |
-
-### Phase 2: 商品機能（Week 3-4）
-
-| タスク | 内容 |
-|--------|------|
-| 商品一覧 | DynamoDB 読み取り、一覧表示 |
-| 商品詳細 | 詳細ページ、ルーティング |
-| テスト | コンポーネントテスト実装 |
-
-### Phase 3: カート・認証（Week 5-6）
-
-| タスク | 内容 |
-|--------|------|
-| カート | 状態管理（Context / Zustand）|
-| Cognito | ユーザー登録・ログイン |
-| 保護ルート | 認証済みユーザーのみアクセス |
-
-### Phase 4: 注文処理（Week 7-8）
-
-| タスク | 内容 |
-|--------|------|
-| 注文フォーム | react-hook-form + バリデーション |
-| 注文 API | Lambda + DynamoDB トランザクション |
-| 注文履歴 | マイページ実装 |
-
-### Phase 5: 管理機能（Week 9-10）
-
-| タスク | 内容 |
-|--------|------|
-| 管理画面 | 商品 CRUD |
-| 在庫管理 | 在庫更新機能 |
-| 注文管理 | ステータス更新 |
-
-### Phase 6: 高度な機能（Week 11-12）
-
-| タスク | 内容 |
-|--------|------|
-| 検索 | OpenSearch / Algolia |
-| AI チャット | Claude API 統合 |
-| 監視 | CloudWatch ダッシュボード |
+### 成果物
+- PDF/Markdown アップロード → AI 回答
+- 実務の属人化解消に応用可能
 
 ---
 
-## 【ファイル構成】
+## Phase 3: AI 画像/動画分析アプリ（Day 71-90）
+
+### 目標
+画像/動画をアップロード → AI 分析 → 通知
+
+### スケジュール
+
+| Day | テーマ | 内容 |
+|-----|--------|------|
+| 71-74 | イベント駆動設計 | S3 イベント、EventBridge、Lambda トリガー |
+| 75-78 | Rekognition | 顔検出、物体検出、テキスト抽出 |
+| 79-82 | Bedrock 画像分析 | マルチモーダル、高度な画像理解 |
+| 83-86 | 通知システム | SNS、Slack/メール連携 |
+| 87-90 | ダッシュボード | CloudWatch、分析結果可視化 |
+
+### AWS サービス
+- Rekognition
+- Bedrock
+- S3
+- Lambda
+- SNS
+- EventBridge
+
+### 成果物
+- 画像アップロード → 自動分析 → 通知
+- 分析結果ダッシュボード
+
+---
+
+## Phase 4: AI チャットボット SaaS（Day 91-120）
+
+### 目標
+企業向けマルチテナント AI チャットボット
+
+### スケジュール
+
+| Day | テーマ | 内容 |
+|-----|--------|------|
+| 91-96 | マルチテナント設計 | テナント分離、データ設計 |
+| 97-102 | 認証・認可 | Cognito、IAM ポリシー |
+| 103-108 | ECS/Fargate | コンテナ構築、Terraform |
+| 109-114 | MCP ツール連携 | 顧客ごとのカスタムツール |
+| 115-120 | 管理画面 + 課金 | 管理ダッシュボード、Stripe |
+
+### AWS サービス
+- ECS/Fargate
+- ALB
+- ECR
+- Cognito
+- DynamoDB
+- CloudWatch
+
+### 成果物
+- マルチテナント SaaS アプリ
+- テナントごとデータ分離
+- 実務のマルチテナント経験に直結
+
+---
+
+## Phase 5: インフラ自動化ダッシュボード（Day 121-150）
+
+### 目標
+自然言語でインフラを操作する集大成
+
+### スケジュール
+
+| Day | テーマ | 内容 |
+|-----|--------|------|
+| 121-126 | 自然言語 → IaC | プロンプト設計、Terraform 生成 |
+| 127-132 | Step Functions | 承認フロー、状態管理 |
+| 133-138 | 安全な自動実行 | CI/CD 統合、Terraform 実行 |
+| 139-144 | コスト分析 AI | Cost Explorer、最適化提案 |
+| 145-150 | ダッシュボード | 可視化、アラート、仕上げ |
+
+### AWS サービス
+- Step Functions
+- Bedrock
+- Lambda
+- Cost Explorer
+- CloudWatch
+- IAM
+
+### 成果物
+- 自然言語 → Terraform → 承認 → 実行
+- コスト分析 AI
+- 全スキルの集大成
+
+---
+
+## プロジェクト構成
+
 ```
-C:\100-days-aws-challenge\
-├── projects/
-│   ├── ai-learning/          # 12月 AI学習用
-│   │   ├── .env              # API キー（Git除外）
-│   │   └── day01/〜day15/    # 日別の成果物
-│   └── ec-platform/          # 1月〜 ShopX
-│       ├── frontend/         # React アプリ
-│       │   ├── src/
-│       │   └── __tests__/    # テストファイル
-│       ├── backend/          # SAM アプリ
-│       └── .github/workflows/ # CI/CD
-├── docs/
-│   └── learning-roadmap.md
-└── progress/
-    └── daily-log.md
+C:\100-days-aws-challenge\projects\
+├── ai-learning/           # 12月 AI学習（完了）
+├── ec-platform/           # ShopX（完了）
+├── personal-assistant/    # Phase 1
+├── knowledge-base/        # Phase 2
+├── image-analyzer/        # Phase 3
+├── chatbot-saas/          # Phase 4
+└── infra-dashboard/       # Phase 5
 ```
 
 ---
 
-## 【リソース】
+## スキル習得マップ
 
-### AI 関連
+```
+スキル            Phase1  Phase2  Phase3  Phase4  Phase5
+─────────────────────────────────────────────────────
+Terraform         ████    ████    ████    ████    ████
+AI/LLM            ████    ████    ████    ████    ████
+Lambda            ████    ████    ████            ████
+DynamoDB          ████            ████    ████
+Bedrock                   ████    ████    ████    ████
+ECS/Fargate                               ████
+MCP               ████                    ████
+RAG                       ████
+マルチテナント                            ████
+Step Functions                                    ████
+Rekognition                       ████
+EventBridge                       ████
+```
+
+---
+
+## リソース
+
+- Terraform Docs: https://developer.hashicorp.com/terraform/docs
+- AWS Provider: https://registry.terraform.io/providers/hashicorp/aws/latest/docs
+- AWS Bedrock: https://docs.aws.amazon.com/bedrock/
 - Anthropic Docs: https://docs.anthropic.com
-- Anthropic Cookbook: https://github.com/anthropics/anthropic-cookbook
 - MCP Docs: https://modelcontextprotocol.io
-
-### React/TypeScript
-- React 公式: https://react.dev
-- TypeScript 公式: https://www.typescriptlang.org/docs/
-- Vite: https://vitejs.dev
-
-### AWS
-- SAM: https://docs.aws.amazon.com/serverless-application-model/
-- DynamoDB: https://docs.aws.amazon.com/dynamodb/
-- Cognito: https://docs.aws.amazon.com/cognito/
-
-### テスト
-- Jest: https://jestjs.io
-- Testing Library: https://testing-library.com/docs/react-testing-library/intro/
-
----
-
-## AI エージェントとは
-
-- 目標を与えると自律的に計画・実行・評価を繰り返す
-- 単発のタスク処理ではなく、プロセス全体を自動化
-- Claude Code = ソフトウェア開発エージェント
