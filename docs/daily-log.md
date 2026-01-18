@@ -931,5 +931,23 @@ React UI → Lambda (/chat) → Claude API (Tool Use)
 **成果物:**
 - .github/workflows/ci.yml（既存確認）
 - src/test/ProductListPage.test.tsx（findByRole 修正）
+- src/handlers/createCheckoutSession/（Stripe Lambda）
+- src/pages/CheckoutPage.tsx（決済方法選択追加）
+- src/pages/OrderHistoryPage.tsx（決済成功後処理）
+- src/api/orders.ts（createCheckoutSession 追加）
+
+**Stripe 連携:**
+- Stripe Checkout Session で決済ページ生成
+- テストモードでカード決済動作確認
+- 決済成功後に注文作成 → 注文履歴表示
+
+**ShopX 完成形:**
+- フロントエンド: React + TypeScript + Vite
+- バックエンド: Lambda + API Gateway + DynamoDB
+- 認証: Cognito
+- 決済: Stripe
+- CI: GitHub Actions
+- CD: Amplify Hosting
+- 本番URL: https://main.d20nytcowp331l.amplifyapp.com
 
 **次回:** Day 29
