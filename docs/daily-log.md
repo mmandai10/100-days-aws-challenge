@@ -822,3 +822,68 @@ React UI → Lambda (/chat) → Claude API (Tool Use)
 - scripts/dashboard.json
 
 **次回:** Day 27
+
+---
+
+### Day 27 (2026-01-18)
+
+**テーマ:** UI/UX リデザイン + TypeScript 厳格化 + テスト追加
+
+**完了したこと:**
+- 2025年ミニマルデザイントレンド適用
+- TypeScript strict mode 設定
+- Vitest + React Testing Library でテスト追加
+
+**UI/UX リデザイン:**
+- デザイントレンド調査（Web検索）
+- カラー削減: Blue+Red+Yellow+Green → Black + Gray
+- 絵文字削除: 🛍️🤖🚚🔒↩️💬❤️📦 → なし
+- タイポグラフィ: Hero 4.5rem、大きな文字階層
+- スペーシング: Whitespace 倍増（--spacing-4xl: 6rem）
+- 言語: 日本語 → 英語に統一
+
+**適用した 2025 トレンド:**
+- Minimalism with purpose（目的のあるミニマリズム）
+- Large typography（大きなタイポグラフィ）
+- Monochrome palettes（モノクローム配色）
+- Generous whitespace（余白を多く）
+- Subtle animations（控えめなアニメーション）
+
+**TypeScript strict mode:**
+- tsconfig.app.json に追加オプション設定
+- `strict: true`（既存）
+- `noImplicitReturns: true`（全コードパスで return 必須）
+- `noUncheckedIndexedAccess: true`（配列アクセスを T | undefined に）
+- `exactOptionalPropertyTypes` と `noPropertyAccessFromIndexSignature` は厳しすぎて無効化
+
+**テスト追加（20テスト全パス）:**
+| ファイル | テスト数 | 内容 |
+|---------|---------|------|
+| App.test.tsx | 2 | ロゴ、ナビゲーション |
+| ProductListPage.test.tsx | 5 | 商品表示、検索、カテゴリ |
+| CartPage.test.tsx | 7 | カート表示、Checkout、削除 |
+| CartContext.test.tsx | 6 | 追加、削除、クリア |
+
+**学んだこと:**
+- Vitest: Jest の高速版（Vite と相性抜群）
+- React Testing Library: ユーザー視点でテスト
+- MSW: API をモック（偽のサーバー）
+- `getByText` vs `getAllByText`: 要素が複数ある場合の対処
+- `getByRole('button', { name: 'X' })`: 同名テキストが複数ある場合
+- `vi.mock()`: 依存モジュールのモック
+- MSW の API URL 一致の重要性
+
+**成果物:**
+- frontend/shopx-ui/src/index.css（完全リライト）
+- frontend/shopx-ui/src/App.css（完全リライト）
+- frontend/shopx-ui/src/components/Header.tsx
+- frontend/shopx-ui/src/components/Footer.tsx
+- frontend/shopx-ui/src/pages/*.tsx（全ページ更新）
+- frontend/shopx-ui/tsconfig.app.json
+- frontend/shopx-ui/src/App.test.tsx
+- frontend/shopx-ui/src/test/ProductListPage.test.tsx
+- frontend/shopx-ui/src/test/CartPage.test.tsx
+- frontend/shopx-ui/src/test/CartContext.test.tsx
+- frontend/shopx-ui/src/test/handlers.ts（API URL 修正）
+
+**次回:** Day 28 - CI/CD (GitHub Actions)
