@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { createOrder } from '../api/orders';
 import type { ShippingAddress } from '../api/orders';
@@ -10,7 +10,6 @@ const CheckoutPage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // フォームの状態
   const [shippingAddress, setShippingAddress] = useState<ShippingAddress>({
     name: '',
     postalCode: '',
@@ -18,14 +17,16 @@ const CheckoutPage = () => {
     phone: ''
   });
 
-  // カートが空なら商品一覧へ
   if (items.length === 0) {
     return (
-      <div style={{ padding: '20px', textAlign: 'center' }}>
-        <h2>カートが空です</h2>
-        <button onClick={() => navigate('/products')}>
-          商品一覧へ戻る
-        </button>
+      <div className="container">
+        <div className="empty-state">
+          <h3>Cart is empty</h3>
+          <p>Add products before checkout</p>
+          <Link to="/products" className="btn btn-primary">
+            Browse Products
+          </Link>
+        </div>
       </div>
     );
   }
@@ -39,9 +40,8 @@ const CheckoutPage = () => {
     e.preventDefault();
     setError(null);
 
-    // バリデーション
     if (!shippingAddress.name || !shippingAddress.postalCode || !shippingAddress.address) {
-      setError('必須項目を入力してください');
+      setError('Please fill in required fields');
       return;
     }
 
@@ -49,126 +49,115 @@ const CheckoutPage = () => {
 
     try {
       const order = await createOrder(shippingAddress);
-      clearCart();  // ローカルのカートもクリア
+      clearCart();
       navigate('/orders', { state: { newOrderId: order.orderId } });
     } catch (err) {
-      setError(err instanceof Error ? err.message : '注文に失敗しました');
+      setError(err instanceof Error ? err.message : 'Order failed');
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  return (
-    <div style={{ padding: '20px', maxWidth: '800px', margin: '0 auto' }}>
-      <h2>注文確認</h2>
+  const shippingFee = totalPrice >= 5000 ? 0 : 500;
+  const grandTotal = totalPrice + shippingFee;
 
-      {/* 注文内容 */}
-      <div style={{ marginBottom: '30px', padding: '20px', backgroundColor: '#f5f5f5', borderRadius: '8px' }}>
-        <h3>注文内容</h3>
-        {items.map((item) => (
-          <div key={item.product.id} style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 0', borderBottom: '1px solid #ddd' }}>
-            <span>{item.product.name} × {item.quantity}</span>
-            <span>¥{(item.product.price * item.quantity).toLocaleString()}</span>
+  return (
+    <div className="container" style={{ maxWidth: '800px', padding: '2rem' }}>
+      <h1 className="section-title" style={{ marginBottom: '2rem' }}>Checkout</h1>
+
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 320px', gap: '2rem' }}>
+        <div>
+          <h3 style={{ fontSize: '1rem', marginBottom: '1.5rem' }}>Shipping Address</h3>
+
+          {error && <div className="alert alert-error mb-lg">{error}</div>}
+
+          <form onSubmit={handleSubmit}>
+            <div className="form-group">
+              <label>Name *</label>
+              <input
+                type="text"
+                name="name"
+                value={shippingAddress.name}
+                onChange={handleInputChange}
+                placeholder="Full name"
+                required
+              />
+            </div>
+
+            <div className="form-group">
+              <label>Postal Code *</label>
+              <input
+                type="text"
+                name="postalCode"
+                value={shippingAddress.postalCode}
+                onChange={handleInputChange}
+                placeholder="123-4567"
+                required
+              />
+            </div>
+
+            <div className="form-group">
+              <label>Address *</label>
+              <textarea
+                name="address"
+                value={shippingAddress.address}
+                onChange={handleInputChange}
+                placeholder="Street address"
+                rows={3}
+                required
+              />
+            </div>
+
+            <div className="form-group">
+              <label>Phone</label>
+              <input
+                type="tel"
+                name="phone"
+                value={shippingAddress.phone}
+                onChange={handleInputChange}
+                placeholder="090-1234-5678"
+              />
+            </div>
+
+            <div className="flex gap-md mt-xl">
+              <button type="button" onClick={() => navigate('/cart')} className="btn btn-secondary">
+                Back
+              </button>
+              <button type="submit" disabled={isSubmitting} className="btn btn-primary btn-lg" style={{ flex: 1 }}>
+                {isSubmitting ? 'Processing...' : 'Place Order'}
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <div>
+          <div className="card" style={{ padding: '1.5rem', position: 'sticky', top: '100px' }}>
+            <h3 style={{ fontSize: '1rem', marginBottom: '1rem' }}>Order Summary</h3>
+            
+            {items.map((item) => (
+              <div key={item.product.id} className="flex justify-between text-sm" style={{ padding: '0.5rem 0' }}>
+                <span className="text-muted">{item.product.name} × {item.quantity}</span>
+                <span>¥{(item.product.price * item.quantity).toLocaleString()}</span>
+              </div>
+            ))}
+
+            <div style={{ borderTop: '1px solid var(--color-border)', marginTop: '1rem', paddingTop: '1rem' }}>
+              <div className="flex justify-between text-sm" style={{ marginBottom: '0.5rem' }}>
+                <span>Subtotal</span>
+                <span>¥{totalPrice.toLocaleString()}</span>
+              </div>
+              <div className="flex justify-between text-sm" style={{ marginBottom: '0.5rem' }}>
+                <span>Shipping</span>
+                <span>{shippingFee === 0 ? 'Free' : `¥${shippingFee}`}</span>
+              </div>
+              <div className="flex justify-between font-medium" style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid var(--color-border)' }}>
+                <span>Total</span>
+                <span>¥{grandTotal.toLocaleString()}</span>
+              </div>
+            </div>
           </div>
-        ))}
-        <div style={{ display: 'flex', justifyContent: 'space-between', padding: '15px 0', fontWeight: 'bold', fontSize: '1.2em' }}>
-          <span>合計</span>
-          <span>¥{totalPrice.toLocaleString()}</span>
         </div>
       </div>
-
-      {/* 配送先フォーム */}
-      <form onSubmit={handleSubmit}>
-        <h3>配送先情報</h3>
-
-        {error && (
-          <div style={{ padding: '10px', backgroundColor: '#ffebee', color: '#c62828', borderRadius: '4px', marginBottom: '15px' }}>
-            {error}
-          </div>
-        )}
-
-        <div style={{ marginBottom: '15px' }}>
-          <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>
-            お名前 <span style={{ color: 'red' }}>*</span>
-          </label>
-          <input
-            type="text"
-            name="name"
-            value={shippingAddress.name}
-            onChange={handleInputChange}
-            placeholder="山田太郎"
-            style={{ width: '100%', padding: '10px', fontSize: '16px', border: '1px solid #ccc', borderRadius: '4px' }}
-          />
-        </div>
-
-        <div style={{ marginBottom: '15px' }}>
-          <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>
-            郵便番号 <span style={{ color: 'red' }}>*</span>
-          </label>
-          <input
-            type="text"
-            name="postalCode"
-            value={shippingAddress.postalCode}
-            onChange={handleInputChange}
-            placeholder="123-4567"
-            style={{ width: '100%', padding: '10px', fontSize: '16px', border: '1px solid #ccc', borderRadius: '4px' }}
-          />
-        </div>
-
-        <div style={{ marginBottom: '15px' }}>
-          <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>
-            住所 <span style={{ color: 'red' }}>*</span>
-          </label>
-          <textarea
-            name="address"
-            value={shippingAddress.address}
-            onChange={handleInputChange}
-            placeholder="東京都渋谷区..."
-            rows={3}
-            style={{ width: '100%', padding: '10px', fontSize: '16px', border: '1px solid #ccc', borderRadius: '4px' }}
-          />
-        </div>
-
-        <div style={{ marginBottom: '25px' }}>
-          <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>
-            電話番号
-          </label>
-          <input
-            type="tel"
-            name="phone"
-            value={shippingAddress.phone}
-            onChange={handleInputChange}
-            placeholder="090-1234-5678"
-            style={{ width: '100%', padding: '10px', fontSize: '16px', border: '1px solid #ccc', borderRadius: '4px' }}
-          />
-        </div>
-
-        <div style={{ display: 'flex', gap: '10px' }}>
-          <button
-            type="button"
-            onClick={() => navigate('/cart')}
-            style={{ padding: '15px 30px', fontSize: '16px', backgroundColor: '#ccc', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
-          >
-            カートに戻る
-          </button>
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            style={{
-              padding: '15px 30px',
-              fontSize: '16px',
-              backgroundColor: isSubmitting ? '#ccc' : '#4CAF50',
-              color: 'white',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: isSubmitting ? 'not-allowed' : 'pointer',
-              flex: 1
-            }}
-          >
-            {isSubmitting ? '処理中...' : '注文を確定する'}
-          </button>
-        </div>
-      </form>
     </div>
   );
 };

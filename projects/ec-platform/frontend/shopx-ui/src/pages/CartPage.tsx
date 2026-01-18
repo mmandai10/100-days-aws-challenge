@@ -7,130 +7,96 @@ const CartPage = () => {
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
-  // 購入手続きへ
   const handleCheckout = () => {
     if (!isAuthenticated) {
-      // 未ログインならログインページへ（戻り先を渡す）
       navigate('/login', { state: { from: { pathname: '/cart' } } });
       return;
     }
-    // 購入手続きページへ遷移
     navigate('/checkout');
   };
 
-  // カートが空の場合
+  const shippingFee = totalPrice >= 5000 ? 0 : 500;
+
   if (items.length === 0) {
     return (
-      <div>
-        <h1>🛒 カート</h1>
-        <p>カートは空です</p>
-        <Link to="/products">商品一覧を見る</Link>
+      <div className="container">
+        <div className="empty-state">
+          <h3>Your cart is empty</h3>
+          <p>Add some products to get started</p>
+          <Link to="/products" className="btn btn-primary">
+            Browse Products
+          </Link>
+        </div>
       </div>
     );
   }
 
   return (
-    <div>
-      <h1>🛒 カート（{totalItems}点）</h1>
+    <div className="cart-page">
+      <h1 className="section-title" style={{ marginBottom: '2rem' }}>Cart ({totalItems})</h1>
       
-      {/* カート内の商品一覧 */}
-      <div style={{ marginBottom: '2rem' }}>
+      <div className="cart-items">
         {items.map((item) => (
-          <div
-            key={item.product.id}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '1rem',
-              padding: '1rem',
-              borderBottom: '1px solid #eee',
-            }}
-          >
-            {/* 商品画像 */}
-            <img
-              src={item.product.imageUrl || 'https://placehold.co/80x80?text=No+Image'}
-              alt={item.product.name}
-              style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '4px' }}
-            />
+          <div key={item.product.id} className="cart-item">
+            <div className="cart-item-image">
+              <img
+                src={item.product.imageUrl || 'https://via.placeholder.com/80'}
+                alt={item.product.name}
+              />
+            </div>
             
-            {/* 商品情報 */}
-            <div style={{ flex: 1 }}>
-              <Link
-                to={`/products/${item.product.id}`}
-                style={{ textDecoration: 'none', color: '#333' }}
-              >
-                <h3 style={{ margin: 0 }}>{item.product.name}</h3>
+            <div className="cart-item-info">
+              <Link to={`/products/${item.product.id}`}>
+                <h3>{item.product.name}</h3>
               </Link>
-              <p style={{ margin: '0.25rem 0', color: '#666' }}>
+              <p className="cart-item-price">
                 ¥{item.product.price.toLocaleString()} × {item.quantity}
               </p>
             </div>
             
-            {/* 小計 */}
-            <div style={{ fontWeight: 'bold', minWidth: '100px', textAlign: 'right' }}>
+            <div style={{ fontWeight: 500 }}>
               ¥{(item.product.price * item.quantity).toLocaleString()}
             </div>
             
-            {/* 削除ボタン */}
             <button
               onClick={() => removeFromCart(item.product.id)}
-              style={{
-                backgroundColor: '#e74c3c',
-                color: 'white',
-                border: 'none',
-                padding: '0.5rem 1rem',
-                borderRadius: '4px',
-                cursor: 'pointer',
-              }}
+              className="btn btn-secondary"
+              style={{ padding: '8px 16px' }}
             >
-              削除
+              Remove
             </button>
           </div>
         ))}
       </div>
       
-      {/* 合計・操作ボタン */}
-      <div style={{
-        borderTop: '2px solid #333',
-        paddingTop: '1rem',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-      }}>
-        <button
-          onClick={clearCart}
-          style={{
-            backgroundColor: '#95a5a6',
-            color: 'white',
-            border: 'none',
-            padding: '0.5rem 1rem',
-            borderRadius: '4px',
-            cursor: 'pointer',
-          }}
-        >
-          カートを空にする
-        </button>
+      <div className="cart-summary">
+        <div className="cart-summary-row">
+          <span>Subtotal</span>
+          <span>¥{totalPrice.toLocaleString()}</span>
+        </div>
+        <div className="cart-summary-row">
+          <span>Shipping</span>
+          <span>{shippingFee === 0 ? 'Free' : `¥${shippingFee}`}</span>
+        </div>
+        <div className="cart-summary-row cart-summary-total">
+          <span>Total</span>
+          <span>¥{(totalPrice + shippingFee).toLocaleString()}</span>
+        </div>
         
-        <div style={{ textAlign: 'right' }}>
-          <p style={{ fontSize: '1.5rem', fontWeight: 'bold', margin: 0 }}>
-            合計: ¥{totalPrice.toLocaleString()}
-          </p>
-          <button
-            onClick={handleCheckout}
-            style={{
-              backgroundColor: '#27ae60',
-              color: 'white',
-              border: 'none',
-              padding: '0.75rem 2rem',
-              borderRadius: '4px',
-              cursor: 'pointer',
-              fontSize: '1rem',
-              marginTop: '0.5rem',
-            }}
-          >
-            購入手続きへ
+        <div className="flex gap-md mt-lg">
+          <button onClick={clearCart} className="btn btn-secondary">
+            Clear Cart
+          </button>
+          <button onClick={handleCheckout} className="btn btn-primary btn-lg" style={{ flex: 1 }}>
+            Checkout
           </button>
         </div>
+        
+        {totalPrice < 5000 && (
+          <p className="text-sm text-muted mt-md text-center">
+            ¥{(5000 - totalPrice).toLocaleString()} more for free shipping
+          </p>
+        )}
       </div>
     </div>
   );

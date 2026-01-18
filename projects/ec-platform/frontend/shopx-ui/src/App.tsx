@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import HomePage from './pages/HomePage';
 import ProductListPage from './pages/ProductListPage';
 import ProductDetailPage from './pages/ProductDetailPage';
@@ -10,97 +10,18 @@ import OrderHistoryPage from './pages/OrderHistoryPage';
 import AdminPage from './pages/AdminPage';
 import FavoritesPage from './pages/FavoritesPage';
 import { ChatPage } from './pages/ChatPage';
-import { useCart, CartProvider } from './context/CartContext';
-import { useAuth, AuthProvider } from './context/AuthContext';
-
-// ナビゲーションコンポーネント
-const Navigation = () => {
-  const { totalItems } = useCart();
-  const { isAuthenticated, isLoading, isAdmin, user, logout } = useAuth();
-
-  const handleLogout = async () => {
-    await logout();
-    window.location.href = '/';
-  };
-
-  return (
-    <nav style={{
-      padding: '1rem',
-      borderBottom: '1px solid #ccc',
-      display: 'flex',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-    }}>
-      <div>
-        <Link to="/" style={{ marginRight: '1rem' }}>ホーム</Link>
-        <Link to="/products" style={{ marginRight: '1rem' }}>商品一覧</Link>
-        <Link to="/chat" style={{ marginRight: '1rem', color: '#2196f3', fontWeight: 'bold' }}>
-          🤖 AIアシスタント
-        </Link>
-        {isAdmin && (
-          <Link to="/admin" style={{ marginRight: '1rem', color: '#e74c3c', fontWeight: 'bold' }}>
-            管理画面
-          </Link>
-        )}
-      </div>
-      <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-        {isLoading ? (
-          <span>読込中...</span>
-        ) : isAuthenticated ? (
-          <>
-            <span>
-              {user?.email}
-              {isAdmin && <span style={{ color: '#e74c3c', marginLeft: '5px' }}>(Admin)</span>}
-            </span>
-            <Link to="/favorites" style={{ textDecoration: 'none' }}>❤️ お気に入り</Link>
-            <Link to="/orders" style={{ textDecoration: 'none' }}>注文履歴</Link>
-            <button
-              onClick={handleLogout}
-              style={{
-                padding: '0.5rem 1rem',
-                backgroundColor: '#e74c3c',
-                color: 'white',
-                border: 'none',
-                cursor: 'pointer',
-              }}
-            >
-              ログアウト
-            </button>
-          </>
-        ) : (
-          <>
-            <Link to="/login">ログイン</Link>
-            <Link to="/signup">新規登録</Link>
-          </>
-        )}
-        <Link to="/cart" style={{ textDecoration: 'none' }}>
-          🛒 カート
-          {totalItems > 0 && (
-            <span style={{
-              backgroundColor: '#e74c3c',
-              color: 'white',
-              borderRadius: '50%',
-              padding: '0.2rem 0.5rem',
-              marginLeft: '0.3rem',
-              fontSize: '0.8rem',
-            }}>
-              {totalItems}
-            </span>
-          )}
-        </Link>
-      </div>
-    </nav>
-  );
-};
+import NotFoundPage from './pages/NotFoundPage';
+import Layout from './components/Layout';
+import { CartProvider } from './context/CartContext';
+import { AuthProvider } from './context/AuthContext';
+import './App.css';
 
 function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
         <CartProvider>
-          <Navigation />
-
-          <main style={{ padding: '1rem' }}>
+          <Layout>
             <Routes>
               <Route path="/" element={<HomePage />} />
               <Route path="/products" element={<ProductListPage />} />
@@ -113,8 +34,9 @@ function App() {
               <Route path="/favorites" element={<FavoritesPage />} />
               <Route path="/admin" element={<AdminPage />} />
               <Route path="/chat" element={<ChatPage />} />
+              <Route path="*" element={<NotFoundPage />} />
             </Routes>
-          </main>
+          </Layout>
         </CartProvider>
       </AuthProvider>
     </BrowserRouter>

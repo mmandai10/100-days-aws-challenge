@@ -17,25 +17,26 @@ vi.mock('react-router-dom', async () => {
   };
 });
 
-// useCart のモック
-const mockCartItems = [
-  {
-    product: { id: '1', name: 'テスト商品', price: 1000, category: 'test', imageUrl: '' },
-    quantity: 2,
-  },
-];
+// useCart のモック（商品あり）
+const mockRemoveFromCart = vi.fn();
+const mockClearCart = vi.fn();
 
 vi.mock('../context/CartContext', () => ({
   useCart: () => ({
-    items: mockCartItems,
-    removeFromCart: vi.fn(),
-    clearCart: vi.fn(),
+    items: [
+      {
+        product: { id: '1', name: 'Test Product', price: 1000, description: 'test', category: 'test', imageUrl: '' },
+        quantity: 2,
+      },
+    ],
+    removeFromCart: mockRemoveFromCart,
+    clearCart: mockClearCart,
     totalPrice: 2000,
     totalItems: 2,
   }),
 }));
 
-// useAuth のモック（デフォルト：未ログイン）
+// useAuth のモック
 let mockIsAuthenticated = false;
 
 vi.mock('../context/AuthContext', () => ({
@@ -46,24 +47,43 @@ vi.mock('../context/AuthContext', () => ({
   }),
 }));
 
-describe('CartPage - 購入手続き', () => {
+describe('CartPage', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mockIsAuthenticated = false;
-    vi.spyOn(window, 'alert').mockImplementation(() => {});
   });
 
-  it('カートに商品がある場合、購入手続きボタンが表示される', () => {
+  it('カートの商品名が表示される', () => {
     render(
       <MemoryRouter>
         <CartPage />
       </MemoryRouter>
     );
 
-    expect(screen.getByText('購入手続きへ')).toBeInTheDocument();
+    expect(screen.getByText('Test Product')).toBeInTheDocument();
   });
 
-  it('未ログインで「購入手続きへ」をクリックすると /login にリダイレクト', async () => {
+  it('カートのタイトルにアイテム数が表示される', () => {
+    render(
+      <MemoryRouter>
+        <CartPage />
+      </MemoryRouter>
+    );
+
+    expect(screen.getByText('Cart (2)')).toBeInTheDocument();
+  });
+
+  it('Checkout ボタンが表示される', () => {
+    render(
+      <MemoryRouter>
+        <CartPage />
+      </MemoryRouter>
+    );
+
+    expect(screen.getByRole('button', { name: 'Checkout' })).toBeInTheDocument();
+  });
+
+  it('未ログインで Checkout をクリックすると /login にリダイレクト', async () => {
     mockIsAuthenticated = false;
     const user = userEvent.setup();
 
@@ -73,7 +93,7 @@ describe('CartPage - 購入手続き', () => {
       </MemoryRouter>
     );
 
-    const checkoutButton = screen.getByText('購入手続きへ');
+    const checkoutButton = screen.getByRole('button', { name: 'Checkout' });
     await user.click(checkoutButton);
 
     expect(mockNavigate).toHaveBeenCalledWith('/login', {
@@ -81,7 +101,7 @@ describe('CartPage - 購入手続き', () => {
     });
   });
 
-  it('ログイン済みで「購入手続きへ」をクリックするとアラート表示', async () => {
+  it('ログイン済みで Checkout をクリックすると /checkout にリダイレクト', async () => {
     mockIsAuthenticated = true;
     const user = userEvent.setup();
 
@@ -91,9 +111,39 @@ describe('CartPage - 購入手続き', () => {
       </MemoryRouter>
     );
 
-    const checkoutButton = screen.getByText('購入手続きへ');
+    const checkoutButton = screen.getByRole('button', { name: 'Checkout' });
     await user.click(checkoutButton);
 
-    expect(window.alert).toHaveBeenCalledWith('購入手続き機能は Phase 4 で実装します');
+    expect(mockNavigate).toHaveBeenCalledWith('/checkout');
+  });
+
+  it('Remove ボタンをクリックすると removeFromCart が呼ばれる', async () => {
+    const user = userEvent.setup();
+
+    render(
+      <MemoryRouter>
+        <CartPage />
+      </MemoryRouter>
+    );
+
+    const removeButton = screen.getByRole('button', { name: 'Remove' });
+    await user.click(removeButton);
+
+    expect(mockRemoveFromCart).toHaveBeenCalledWith('1');
+  });
+
+  it('Clear Cart ボタンをクリックすると clearCart が呼ばれる', async () => {
+    const user = userEvent.setup();
+
+    render(
+      <MemoryRouter>
+        <CartPage />
+      </MemoryRouter>
+    );
+
+    const clearButton = screen.getByRole('button', { name: 'Clear Cart' });
+    await user.click(clearButton);
+
+    expect(mockClearCart).toHaveBeenCalled();
   });
 });

@@ -10,7 +10,6 @@ const SignUpPage = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  // サインアップ処理
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
@@ -20,119 +19,117 @@ const SignUpPage = () => {
       await signUp({
         username: email,
         password,
-        options: {
-          userAttributes: {
-            email,
-          },
-        },
+        options: { userAttributes: { email } },
       });
       setStep('confirm');
     } catch (err) {
-      setError(err instanceof Error ? err.message : '登録に失敗しました');
+      setError(err instanceof Error ? err.message : 'Registration failed');
     } finally {
       setLoading(false);
     }
   };
 
-  // 確認コード検証
   const handleConfirm = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     setLoading(true);
 
     try {
-      await confirmSignUp({
-        username: email,
-        confirmationCode,
-      });
-      alert('登録が完了しました！ログインしてください。');
+      await confirmSignUp({ username: email, confirmationCode });
+      alert('Registration complete! Please sign in.');
       window.location.href = '/login';
     } catch (err) {
-      setError(err instanceof Error ? err.message : '確認に失敗しました');
+      setError(err instanceof Error ? err.message : 'Confirmation failed');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div style={{ maxWidth: '400px', margin: '2rem auto', padding: '1rem' }}>
-      <h1>新規登録</h1>
+    <div className="auth-page">
+      <div className="auth-card">
+        <div className="auth-header">
+          {step === 'signUp' ? (
+            <>
+              <h1>Create account</h1>
+              <p>Start shopping with ShopX</p>
+            </>
+          ) : (
+            <>
+              <h1>Verify email</h1>
+              <p>Enter the code sent to your email</p>
+            </>
+          )}
+        </div>
 
-      {error && (
-        <div style={{ color: 'red', marginBottom: '1rem' }}>{error}</div>
-      )}
+        {error && <div className="alert alert-error mb-lg">{error}</div>}
 
-      {step === 'signUp' ? (
-        <form onSubmit={handleSignUp}>
-          <div style={{ marginBottom: '1rem' }}>
-            <label>メールアドレス</label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              style={{ width: '100%', padding: '0.5rem', marginTop: '0.25rem' }}
-            />
-          </div>
-          <div style={{ marginBottom: '1rem' }}>
-            <label>パスワード（8文字以上、大小英字+数字）</label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              minLength={8}
-              style={{ width: '100%', padding: '0.5rem', marginTop: '0.25rem' }}
-            />
-          </div>
-          <button
-            type="submit"
-            disabled={loading}
-            style={{
-              width: '100%',
-              padding: '0.75rem',
-              backgroundColor: '#3498db',
-              color: 'white',
-              border: 'none',
-              cursor: loading ? 'not-allowed' : 'pointer',
-            }}
-          >
-            {loading ? '処理中...' : '登録'}
-          </button>
-        </form>
-      ) : (
-        <form onSubmit={handleConfirm}>
-          <p>確認コードを {email} に送信しました。</p>
-          <div style={{ marginBottom: '1rem' }}>
-            <label>確認コード</label>
-            <input
-              type="text"
-              value={confirmationCode}
-              onChange={(e) => setConfirmationCode(e.target.value)}
-              required
-              style={{ width: '100%', padding: '0.5rem', marginTop: '0.25rem' }}
-            />
-          </div>
-          <button
-            type="submit"
-            disabled={loading}
-            style={{
-              width: '100%',
-              padding: '0.75rem',
-              backgroundColor: '#27ae60',
-              color: 'white',
-              border: 'none',
-              cursor: loading ? 'not-allowed' : 'pointer',
-            }}
-          >
-            {loading ? '処理中...' : '確認'}
-          </button>
-        </form>
-      )}
+        {step === 'signUp' ? (
+          <form onSubmit={handleSignUp} className="auth-form">
+            <div className="form-group">
+              <label>Email</label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                placeholder="you@example.com"
+              />
+            </div>
+            <div className="form-group">
+              <label>Password</label>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                minLength={8}
+                placeholder="8+ characters"
+              />
+              <p className="text-sm text-muted mt-sm">
+                Must include uppercase, lowercase, and numbers
+              </p>
+            </div>
+            <button
+              type="submit"
+              disabled={loading}
+              className="btn btn-primary btn-lg"
+              style={{ width: '100%', marginTop: '0.5rem' }}
+            >
+              {loading ? 'Creating...' : 'Create Account'}
+            </button>
+          </form>
+        ) : (
+          <form onSubmit={handleConfirm} className="auth-form">
+            <div className="alert alert-info mb-lg">
+              Code sent to <strong>{email}</strong>
+            </div>
+            <div className="form-group">
+              <label>Confirmation Code</label>
+              <input
+                type="text"
+                value={confirmationCode}
+                onChange={(e) => setConfirmationCode(e.target.value)}
+                required
+                placeholder="123456"
+                style={{ textAlign: 'center', letterSpacing: '0.3em', fontSize: '1.25rem' }}
+              />
+            </div>
+            <button
+              type="submit"
+              disabled={loading}
+              className="btn btn-primary btn-lg"
+              style={{ width: '100%' }}
+            >
+              {loading ? 'Verifying...' : 'Verify'}
+            </button>
+          </form>
+        )}
 
-      <p style={{ marginTop: '1rem' }}>
-        すでにアカウントをお持ちですか？ <Link to="/login">ログイン</Link>
-      </p>
+        <div className="auth-footer">
+          Already have an account? <Link to="/login">Sign in</Link>
+        </div>
+      </div>
     </div>
   );
 };

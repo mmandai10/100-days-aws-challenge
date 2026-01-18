@@ -16,13 +16,19 @@
     "noEmit": true,
     "jsx": "react-jsx",
 
-    /* Linting */
+    /* Linting - 基本 */
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true,
-    "noUncheckedSideEffectImports": true
+    "noUncheckedSideEffectImports": true,
+
+    /* Linting - 追加の厳格オプション */
+    "noImplicitReturns": true,
+    "noUncheckedIndexedAccess": true
+    // "exactOptionalPropertyTypes": true,  // 厳しすぎるので無効
+    // "noPropertyAccessFromIndexSignature": true  // 環境変数で問題になるので無効
   },
   "include": ["src"]
 }

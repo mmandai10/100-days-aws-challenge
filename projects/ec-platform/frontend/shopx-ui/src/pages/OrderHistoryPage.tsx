@@ -1,16 +1,14 @@
 import { useState, useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, Link } from 'react-router-dom';
 import { getOrders } from '../api/orders';
 import type { Order } from '../api/orders';
 
 const OrderHistoryPage = () => {
   const location = useLocation();
-  const navigate = useNavigate();
   const [orders, setOrders] = useState<Order[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // 新規注文完了時のメッセージ
   const newOrderId = location.state?.newOrderId;
 
   useEffect(() => {
@@ -19,7 +17,7 @@ const OrderHistoryPage = () => {
         const data = await getOrders();
         setOrders(data);
       } catch (err) {
-        setError(err instanceof Error ? err.message : '注文履歴の取得に失敗しました');
+        setError(err instanceof Error ? err.message : 'Failed to load orders');
       } finally {
         setIsLoading(false);
       }
@@ -28,144 +26,114 @@ const OrderHistoryPage = () => {
     loadOrders();
   }, []);
 
-  // ステータスの日本語表示
   const getStatusLabel = (status: string) => {
-    const statusMap: Record<string, string> = {
-      pending: '処理中',
-      confirmed: '確定',
-      shipped: '発送済み',
-      delivered: '配達完了',
-      cancelled: 'キャンセル'
+    const map: Record<string, string> = {
+      pending: 'Processing',
+      processing: 'Preparing',
+      shipped: 'Shipped',
+      delivered: 'Delivered',
+      cancelled: 'Cancelled'
     };
-    return statusMap[status] || status;
+    return map[status] || status;
   };
 
-  // 日付フォーマット
   const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleString('ja-JP', {
+    return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit'
+      month: 'short',
+      day: 'numeric'
     });
   };
 
   if (isLoading) {
-    return <div style={{ padding: '20px', textAlign: 'center' }}>読み込み中...</div>;
+    return (
+      <div className="loading-container">
+        <div className="spinner"></div>
+      </div>
+    );
   }
 
   if (error) {
     return (
-      <div style={{ padding: '20px', textAlign: 'center' }}>
-        <p style={{ color: 'red' }}>{error}</p>
-        <button onClick={() => window.location.reload()}>再読み込み</button>
+      <div className="container">
+        <div className="alert alert-error">{error}</div>
+        <button onClick={() => window.location.reload()} className="btn btn-primary">
+          Reload
+        </button>
       </div>
     );
   }
 
   return (
-    <div style={{ padding: '20px', maxWidth: '900px', margin: '0 auto' }}>
-      <h2>注文履歴</h2>
+    <div className="container" style={{ maxWidth: '800px', padding: '2rem' }}>
+      <h1 className="section-title" style={{ marginBottom: '2rem' }}>Orders</h1>
 
-      {/* 新規注文完了メッセージ */}
       {newOrderId && (
-        <div style={{
-          padding: '15px',
-          backgroundColor: '#e8f5e9',
-          color: '#2e7d32',
-          borderRadius: '8px',
-          marginBottom: '20px'
-        }}>
-          ✅ 注文が完了しました！（注文番号: {newOrderId}）
+        <div className="alert alert-success mb-xl">
+          Order placed successfully! Order ID: {newOrderId.slice(0, 8)}...
         </div>
       )}
 
       {orders.length === 0 ? (
-        <div style={{ textAlign: 'center', padding: '40px' }}>
-          <p>注文履歴がありません</p>
-          <button
-            onClick={() => navigate('/products')}
-            style={{ padding: '10px 20px', marginTop: '10px' }}
-          >
-            商品一覧へ
-          </button>
+        <div className="empty-state">
+          <h3>No orders yet</h3>
+          <p>Your order history will appear here</p>
+          <Link to="/products" className="btn btn-primary">
+            Start Shopping
+          </Link>
         </div>
       ) : (
         <div>
           {orders.map((order) => (
-            <div
-              key={order.orderId}
-              style={{
-                border: '1px solid #ddd',
-                borderRadius: '8px',
-                marginBottom: '20px',
-                overflow: 'hidden'
-              }}
-            >
-              {/* 注文ヘッダー */}
-              <div style={{
-                backgroundColor: '#f5f5f5',
-                padding: '15px',
-                display: 'flex',
-                justifyContent: 'space-between',
-                flexWrap: 'wrap',
-                gap: '10px'
-              }}>
-                <div>
-                  <strong>注文番号:</strong> {order.orderId}
-                </div>
-                <div>
-                  <strong>注文日:</strong> {formatDate(order.createdAt)}
-                </div>
-                <div>
-                  <strong>ステータス:</strong>{' '}
-                  <span style={{
-                    padding: '3px 8px',
-                    backgroundColor: order.status === 'pending' ? '#fff3e0' : '#e8f5e9',
-                    borderRadius: '4px'
-                  }}>
-                    {getStatusLabel(order.status)}
+            <div key={order.orderId} className="order-card">
+              <div className="order-header">
+                <div className="flex items-center gap-md">
+                  <span className="badge">{getStatusLabel(order.status)}</span>
+                  <span className="text-sm text-muted">
+                    {order.orderId.slice(0, 8)}...
                   </span>
                 </div>
+                <span className="text-sm text-muted">
+                  {formatDate(order.createdAt)}
+                </span>
               </div>
 
-              {/* 注文内容 */}
-              <div style={{ padding: '15px' }}>
+              <div className="order-items">
                 {order.items.map((item, index) => (
-                  <div
-                    key={index}
-                    style={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      padding: '8px 0',
-                      borderBottom: index < order.items.length - 1 ? '1px solid #eee' : 'none'
-                    }}
-                  >
-                    <span>{item.name} × {item.quantity}</span>
-                    <span>¥{(item.price * item.quantity).toLocaleString()}</span>
+                  <div key={index} className="order-item">
+                    <div className="order-item-image">
+                      <img src={item.imageUrl || 'https://via.placeholder.com/48'} alt={item.name} />
+                    </div>
+                    <div style={{ flex: 1 }}>
+                      <p style={{ margin: 0, fontSize: '0.875rem' }}>{item.name}</p>
+                      <p className="text-sm text-muted" style={{ margin: 0 }}>
+                        ¥{item.price.toLocaleString()} × {item.quantity}
+                      </p>
+                    </div>
+                    <div className="font-medium text-sm">
+                      ¥{(item.price * item.quantity).toLocaleString()}
+                    </div>
                   </div>
                 ))}
 
-                {/* 配送先 */}
-                <div style={{ marginTop: '15px', padding: '10px', backgroundColor: '#fafafa', borderRadius: '4px' }}>
-                  <strong>配送先:</strong>
-                  <p style={{ margin: '5px 0' }}>
-                    {order.shippingAddress.name}<br />
-                    〒{order.shippingAddress.postalCode}<br />
-                    {order.shippingAddress.address}
-                  </p>
-                </div>
-
-                {/* 合計 */}
-                <div style={{
-                  marginTop: '15px',
-                  textAlign: 'right',
-                  fontSize: '1.2em',
-                  fontWeight: 'bold'
+                <div style={{ 
+                  display: 'flex', 
+                  justifyContent: 'space-between',
+                  alignItems: 'flex-start',
+                  marginTop: '1rem',
+                  paddingTop: '1rem',
+                  borderTop: '1px solid var(--color-border)'
                 }}>
-                  合計: ¥{order.totalAmount.toLocaleString()}
+                  <div className="text-sm">
+                    <span className="text-muted">Ship to: </span>
+                    {order.shippingAddress.name}, {order.shippingAddress.address}
+                  </div>
+                  <div className="text-right">
+                    <span className="text-sm text-muted">Total</span>
+                    <p className="font-medium" style={{ margin: 0 }}>
+                      ¥{order.totalAmount.toLocaleString()}
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>

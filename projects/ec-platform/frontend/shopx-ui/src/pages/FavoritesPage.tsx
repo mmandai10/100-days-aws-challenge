@@ -1,19 +1,16 @@
 import { useState, useEffect } from 'react';
 import { Link, Navigate } from 'react-router-dom';
 import { fetchAuthSession } from 'aws-amplify/auth';
-import ProductCard from '../components/ProductCard';
 import type { Product } from '../types/product';
 import { fetchFavorites, removeFavorite } from '../api/favorites';
 import { useAuth } from '../context/AuthContext';
 
 const FavoritesPage = () => {
   const { isAuthenticated, isLoading: authLoading } = useAuth();
-  
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // トークン取得
   const getToken = async (): Promise<string | null> => {
     try {
       const session = await fetchAuthSession();
@@ -23,7 +20,6 @@ const FavoritesPage = () => {
     }
   };
 
-  // お気に入り一覧を取得
   useEffect(() => {
     const loadFavorites = async () => {
       if (!isAuthenticated) {
@@ -34,7 +30,7 @@ const FavoritesPage = () => {
       try {
         const token = await getToken();
         if (!token) {
-          setError('認証エラー');
+          setError('Authentication error');
           setLoading(false);
           return;
         }
@@ -42,7 +38,7 @@ const FavoritesPage = () => {
         const data = await fetchFavorites(token);
         setProducts(data);
       } catch (err) {
-        setError('お気に入りの取得に失敗しました');
+        setError('Failed to load favorites');
         console.error(err);
       } finally {
         setLoading(false);
@@ -54,7 +50,6 @@ const FavoritesPage = () => {
     }
   }, [isAuthenticated, authLoading]);
 
-  // お気に入りから削除
   const handleRemove = async (productId: string) => {
     try {
       const token = await getToken();
@@ -63,84 +58,81 @@ const FavoritesPage = () => {
       await removeFavorite(token, productId);
       setProducts(prev => prev.filter(p => p.id !== productId));
     } catch (err) {
-      console.error('削除エラー:', err);
+      console.error('Remove error:', err);
     }
   };
 
-  // 認証チェック中
   if (authLoading) {
-    return <div>読み込み中...</div>;
+    return (
+      <div className="loading-container">
+        <div className="spinner"></div>
+      </div>
+    );
   }
 
-  // 未ログイン
   if (!isAuthenticated) {
-    return <Navigate to="/signin" replace />;
+    return <Navigate to="/login" replace />;
   }
 
-  // ローディング中
   if (loading) {
-    return <div>読み込み中...</div>;
+    return (
+      <div className="loading-container">
+        <div className="spinner"></div>
+      </div>
+    );
   }
 
-  // エラー時
   if (error) {
-    return <div style={{ color: 'red' }}>{error}</div>;
+    return (
+      <div className="container">
+        <div className="alert alert-error">{error}</div>
+      </div>
+    );
   }
 
   return (
-    <div>
-      <h1>お気に入り</h1>
+    <div className="container" style={{ padding: '2rem' }}>
+      <div className="section-header">
+        <h1 className="section-title">Favorites</h1>
+        {products.length > 0 && (
+          <span className="text-muted">{products.length} items</span>
+        )}
+      </div>
 
       {products.length === 0 ? (
-        <div>
-          <p>お気に入りの商品はありません</p>
-          <Link to="/products">商品一覧を見る</Link>
+        <div className="empty-state">
+          <h3>No favorites yet</h3>
+          <p>Save products you like by clicking the heart icon</p>
+          <Link to="/products" className="btn btn-primary">
+            Browse Products
+          </Link>
         </div>
       ) : (
-        <>
-          <p style={{ color: '#666', marginBottom: '1rem' }}>
-            {products.length}件のお気に入り
-          </p>
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
-            gap: '1rem',
-          }}>
-            {products.map((product) => (
-              <div key={product.id} style={{ position: 'relative' }}>
-                <Link
-                  to={`/products/${product.id}`}
-                  style={{ textDecoration: 'none', color: 'inherit' }}
-                >
-                  <ProductCard
-                    name={product.name}
-                    price={product.price}
-                    imageUrl={product.imageUrl}
+        <div className="favorites-grid">
+          {products.map((product) => (
+            <div key={product.id} style={{ position: 'relative' }}>
+              <Link to={`/products/${product.id}`} className="product-card">
+                <div className="product-card-image">
+                  <img
+                    src={product.imageUrl || 'https://via.placeholder.com/300'}
+                    alt={product.name}
                   />
-                </Link>
-                <button
-                  type="button"
-                  onClick={() => handleRemove(product.id)}
-                  style={{
-                    position: 'absolute',
-                    top: '0.5rem',
-                    right: '0.5rem',
-                    background: 'rgba(255,255,255,0.9)',
-                    border: 'none',
-                    borderRadius: '50%',
-                    width: '2rem',
-                    height: '2rem',
-                    cursor: 'pointer',
-                    fontSize: '1rem',
-                  }}
-                  title="お気に入りから削除"
-                >
-                  ❤️
-                </button>
-              </div>
-            ))}
-          </div>
-        </>
+                </div>
+                <div className="product-card-category">{product.category}</div>
+                <h3 className="product-card-title">{product.name}</h3>
+                <div className="product-card-price">¥{product.price.toLocaleString()}</div>
+              </Link>
+              <button
+                type="button"
+                onClick={() => handleRemove(product.id)}
+                className="product-card-favorite"
+                title="Remove from favorites"
+              >
+                ×
+              </button>
+            </div>
+          ))}
+        </div>
       )}
     </div>
   );

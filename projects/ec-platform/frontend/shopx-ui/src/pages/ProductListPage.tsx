@@ -1,46 +1,33 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import ProductCard from '../components/ProductCard';
-import type { Product } from '../types/product';
-import type { Category } from '../types/product';
+import { Link, useSearchParams } from 'react-router-dom';
+import type { Product, Category } from '../types/product';
 import { searchProducts, fetchCategories } from '../api/products';
 
-// 入力フィールドの共通スタイル
-const inputStyle: React.CSSProperties = {
-  padding: '0.5rem',
-  fontSize: '1rem',
-  border: '1px solid #ccc',
-  borderRadius: '4px',
-  boxSizing: 'border-box',
-};
-
 const ProductListPage = () => {
-  // フィルター状態
-  const [selectedCategory, setSelectedCategory] = useState('');
+  const [searchParams] = useSearchParams();
+  
+  const [selectedCategory, setSelectedCategory] = useState(searchParams.get('category') || '');
   const [searchKeyword, setSearchKeyword] = useState('');
   const [minPrice, setMinPrice] = useState('');
   const [maxPrice, setMaxPrice] = useState('');
 
-  // データ状態
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // カテゴリ一覧を取得
   useEffect(() => {
     const loadCategories = async () => {
       try {
         const data = await fetchCategories();
         setCategories(data);
       } catch (err) {
-        console.error('カテゴリ取得エラー:', err);
+        console.error('Category error:', err);
       }
     };
     loadCategories();
   }, []);
 
-  // 商品検索を実行
   const executeSearch = async (params: {
     category?: string;
     keyword?: string;
@@ -58,19 +45,19 @@ const ProductListPage = () => {
       setProducts(data);
       setError(null);
     } catch (err) {
-      setError('商品の取得に失敗しました');
+      setError('Failed to load products');
       console.error(err);
     } finally {
       setLoading(false);
     }
   };
 
-  // 初回ロード
   useEffect(() => {
-    executeSearch({});
-  }, []);
+    const category = searchParams.get('category') || '';
+    setSelectedCategory(category);
+    executeSearch({ category });
+  }, [searchParams]);
 
-  // 検索ボタンクリック
   const handleSearch = () => {
     executeSearch({
       category: selectedCategory,
@@ -80,7 +67,6 @@ const ProductListPage = () => {
     });
   };
 
-  // フィルタークリア
   const handleClear = () => {
     setSelectedCategory('');
     setSearchKeyword('');
@@ -89,60 +75,39 @@ const ProductListPage = () => {
     executeSearch({});
   };
 
-  // Enterキーで検索
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
       handleSearch();
     }
   };
 
-  if (error) {
-    return <div style={{ color: 'red' }}>{error}</div>;
-  }
-
   return (
-    <div>
-      <h1>商品一覧</h1>
+    <div className="container" style={{ padding: '2rem' }}>
+      <div className="section-header">
+        <h1 className="section-title">Products</h1>
+      </div>
 
-      {/* 検索・フィルターエリア */}
-      <div style={{ 
-        marginBottom: '1.5rem',
-        padding: '1rem',
-        backgroundColor: '#f5f5f5',
-        borderRadius: '8px'
-      }}>
-        <div style={{ 
-          display: 'flex',
-          gap: '1rem',
-          flexWrap: 'wrap',
-          alignItems: 'flex-end'
-        }}>
-          {/* キーワード検索 */}
-          <div style={{ width: '220px' }}>
-            <label style={{ display: 'block', marginBottom: '0.25rem', fontSize: '0.875rem' }}>
-              キーワード
-            </label>
+      {/* Filters */}
+      <div className="search-filters">
+        <div className="search-row">
+          <div className="form-group keyword">
+            <label>Search</label>
             <input
               type="text"
               value={searchKeyword}
               onChange={(e) => setSearchKeyword(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder="商品名・説明で検索..."
-              style={{ ...inputStyle, width: '100%' }}
+              placeholder="Search products..."
             />
           </div>
 
-          {/* カテゴリフィルター */}
-          <div style={{ width: '150px' }}>
-            <label style={{ display: 'block', marginBottom: '0.25rem', fontSize: '0.875rem' }}>
-              カテゴリ
-            </label>
+          <div className="form-group">
+            <label>Category</label>
             <select
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
-              style={{ ...inputStyle, width: '100%' }}
             >
-              <option value="">すべて</option>
+              <option value="">All</option>
               {categories.map((cat) => (
                 <option key={cat.categoryId} value={cat.categoryId}>
                   {cat.name}
@@ -151,104 +116,79 @@ const ProductListPage = () => {
             </select>
           </div>
 
-          {/* 価格帯フィルター */}
-          <div>
-            <label style={{ display: 'block', marginBottom: '0.25rem', fontSize: '0.875rem' }}>
-              価格帯
-            </label>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <input
-                type="text"
-                inputMode="numeric"
-                pattern="[0-9]*"
-                value={minPrice}
-                onChange={(e) => setMinPrice(e.target.value.replace(/[^0-9]/g, ''))}
-                onKeyDown={handleKeyDown}
-                placeholder="最小"
-                style={{ ...inputStyle, width: '100px' }}
-              />
-              <span>〜</span>
-              <input
-                type="text"
-                inputMode="numeric"
-                pattern="[0-9]*"
-                value={maxPrice}
-                onChange={(e) => setMaxPrice(e.target.value.replace(/[^0-9]/g, ''))}
-                onKeyDown={handleKeyDown}
-                placeholder="最大"
-                style={{ ...inputStyle, width: '100px' }}
-              />
-              <span>円</span>
-            </div>
+          <div className="form-group">
+            <label>Min Price</label>
+            <input
+              type="text"
+              inputMode="numeric"
+              value={minPrice}
+              onChange={(e) => setMinPrice(e.target.value.replace(/[^0-9]/g, ''))}
+              onKeyDown={handleKeyDown}
+              placeholder="¥0"
+            />
           </div>
 
-          {/* ボタン */}
-          <div style={{ display: 'flex', gap: '0.5rem' }}>
-            <button
-              type="button"
-              onClick={handleSearch}
-              style={{
-                padding: '0.5rem 1rem',
-                fontSize: '1rem',
-                backgroundColor: '#007bff',
-                color: 'white',
-                border: 'none',
-                borderRadius: '4px',
-                cursor: 'pointer'
-              }}
-            >
-              検索
-            </button>
-            <button
-              type="button"
-              onClick={handleClear}
-              style={{
-                padding: '0.5rem 1rem',
-                fontSize: '1rem',
-                backgroundColor: '#6c757d',
-                color: 'white',
-                border: 'none',
-                borderRadius: '4px',
-                cursor: 'pointer'
-              }}
-            >
-              クリア
-            </button>
+          <div className="form-group">
+            <label>Max Price</label>
+            <input
+              type="text"
+              inputMode="numeric"
+              value={maxPrice}
+              onChange={(e) => setMaxPrice(e.target.value.replace(/[^0-9]/g, ''))}
+              onKeyDown={handleKeyDown}
+              placeholder="¥999,999"
+            />
           </div>
         </div>
 
-        {/* 検索結果数 */}
-        <div style={{ marginTop: '0.75rem', color: '#666', height: '1.5rem' }}>
-          {loading ? '検索中...' : `${products.length}件の商品が見つかりました`}
+        <div className="flex gap-md mt-lg items-center justify-between">
+          <span className="text-sm text-muted">
+            {loading ? 'Loading...' : `${products.length} products`}
+          </span>
+          <div className="flex gap-sm">
+            <button type="button" onClick={handleSearch} className="btn btn-primary">
+              Search
+            </button>
+            <button type="button" onClick={handleClear} className="btn btn-secondary">
+              Clear
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* 商品一覧 */}
+      {error && <div className="alert alert-error">{error}</div>}
+
       {loading ? (
-        <div>読み込み中...</div>
+        <div className="loading-container">
+          <div className="spinner"></div>
+        </div>
+      ) : products.length === 0 ? (
+        <div className="empty-state">
+          <h3>No products found</h3>
+          <p>Try adjusting your filters</p>
+          <button onClick={handleClear} className="btn btn-primary mt-md">
+            Clear Filters
+          </button>
+        </div>
       ) : (
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
-          gap: '1rem',
-        }}>
-          {products.length === 0 ? (
-            <p>商品がありません</p>
-          ) : (
-            products.map((product) => (
-              <Link
-                key={product.id}
-                to={`/products/${product.id}`}
-                style={{ textDecoration: 'none', color: 'inherit' }}
-              >
-                <ProductCard
-                  name={product.name}
-                  price={product.price}
-                  imageUrl={product.imageUrl}
+        <div className="grid grid-4">
+          {products.map((product) => (
+            <Link
+              key={product.id}
+              to={`/products/${product.id}`}
+              className="product-card"
+            >
+              <div className="product-card-image">
+                <img
+                  src={product.imageUrl || 'https://via.placeholder.com/300'}
+                  alt={product.name}
                 />
-              </Link>
-            ))
-          )}
+              </div>
+              <div className="product-card-category">{product.category || 'Uncategorized'}</div>
+              <h3 className="product-card-title">{product.name}</h3>
+              <div className="product-card-price">¥{product.price.toLocaleString()}</div>
+            </Link>
+          ))}
         </div>
       )}
     </div>

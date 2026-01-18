@@ -8,7 +8,6 @@ import { fetchReviews, createReview, type Review } from '../api/reviews';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 
-// 星評価コンポーネント
 const StarRating = ({ 
   rating, 
   onRate, 
@@ -21,23 +20,21 @@ const StarRating = ({
   const [hover, setHover] = useState(0);
   
   return (
-    <span>
+    <div className="star-input" style={{ display: 'inline-flex' }}>
       {[1, 2, 3, 4, 5].map((star) => (
-        <span
+        <button
+          type="button"
           key={star}
           onClick={() => !readonly && onRate?.(star)}
           onMouseEnter={() => !readonly && setHover(star)}
           onMouseLeave={() => !readonly && setHover(0)}
-          style={{
-            cursor: readonly ? 'default' : 'pointer',
-            fontSize: '1.25rem',
-            color: star <= (hover || rating) ? '#f1c40f' : '#ddd'
-          }}
+          className={star <= (hover || rating) ? 'active' : ''}
+          disabled={readonly}
         >
           ★
-        </span>
+        </button>
       ))}
-    </span>
+    </div>
   );
 };
 
@@ -46,24 +43,21 @@ const ProductDetailPage = () => {
   const { addToCart } = useCart();
   const { isAuthenticated } = useAuth();
   
-  // 商品状態
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [addedMessage, setAddedMessage] = useState(false);
+  const [quantity, setQuantity] = useState(1);
   
-  // お気に入り状態
   const [isFavorite, setIsFavorite] = useState(false);
   const [favoriteLoading, setFavoriteLoading] = useState(false);
   
-  // レビュー状態
   const [reviews, setReviews] = useState<Review[]>([]);
   const [averageRating, setAverageRating] = useState(0);
   const [newRating, setNewRating] = useState(0);
   const [newComment, setNewComment] = useState('');
   const [reviewSubmitting, setReviewSubmitting] = useState(false);
 
-  // トークン取得
   const getToken = async (): Promise<string | null> => {
     try {
       const session = await fetchAuthSession();
@@ -73,32 +67,28 @@ const ProductDetailPage = () => {
     }
   };
 
-  // データ取得
   useEffect(() => {
     const loadData = async () => {
       if (!id) {
-        setError('商品IDが指定されていません');
+        setError('Product ID not specified');
         setLoading(false);
         return;
       }
 
       try {
-        // 商品取得
         const data = await fetchProductById(id);
         if (data) {
           setProduct(data);
         } else {
-          setError('商品が見つかりません');
+          setError('Product not found');
           setLoading(false);
           return;
         }
 
-        // レビュー取得
         const reviewData = await fetchReviews(id);
         setReviews(reviewData.reviews);
         setAverageRating(reviewData.averageRating);
 
-        // ログイン済みならお気に入り状態チェック
         if (isAuthenticated) {
           const token = await getToken();
           if (token) {
@@ -107,7 +97,7 @@ const ProductDetailPage = () => {
           }
         }
       } catch (err) {
-        setError('商品の取得に失敗しました');
+        setError('Failed to load product');
         console.error(err);
       } finally {
         setLoading(false);
@@ -117,16 +107,16 @@ const ProductDetailPage = () => {
     loadData();
   }, [id, isAuthenticated]);
 
-  // カートに追加
   const handleAddToCart = () => {
     if (product) {
-      addToCart(product);
+      for (let i = 0; i < quantity; i++) {
+        addToCart(product);
+      }
       setAddedMessage(true);
       setTimeout(() => setAddedMessage(false), 2000);
     }
   };
 
-  // お気に入り切り替え
   const handleToggleFavorite = async () => {
     if (!product || !isAuthenticated) return;
     
@@ -143,13 +133,12 @@ const ProductDetailPage = () => {
         setIsFavorite(true);
       }
     } catch (err) {
-      console.error('お気に入り操作エラー:', err);
+      console.error('Favorite error:', err);
     } finally {
       setFavoriteLoading(false);
     }
   };
 
-  // レビュー投稿
   const handleSubmitReview = async () => {
     if (!id || !isAuthenticated || newRating === 0) return;
     
@@ -160,188 +149,154 @@ const ProductDetailPage = () => {
 
       await createReview(token, id, newRating, newComment);
       
-      // レビュー一覧を再取得
       const reviewData = await fetchReviews(id);
       setReviews(reviewData.reviews);
       setAverageRating(reviewData.averageRating);
       
-      // フォームリセット
       setNewRating(0);
       setNewComment('');
     } catch (err) {
-      console.error('レビュー投稿エラー:', err);
+      console.error('Review error:', err);
     } finally {
       setReviewSubmitting(false);
     }
   };
 
   if (loading) {
-    return <div>読み込み中...</div>;
+    return (
+      <div className="loading-container">
+        <div className="spinner"></div>
+      </div>
+    );
   }
 
   if (error || !product) {
     return (
-      <div>
-        <h1>{error || '商品が見つかりません'}</h1>
-        <Link to="/products">商品一覧に戻る</Link>
+      <div className="container">
+        <div className="empty-state">
+          <h3>{error || 'Product not found'}</h3>
+          <Link to="/products" className="btn btn-primary mt-lg">
+            Back to Products
+          </Link>
+        </div>
       </div>
     );
   }
 
   return (
-    <div>
-      <Link to="/products">← 商品一覧に戻る</Link>
-      
-      <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginTop: '1rem' }}>
-        <h1 style={{ margin: 0 }}>{product.name}</h1>
-        
-        {isAuthenticated && (
-          <button
-            type="button"
-            onClick={handleToggleFavorite}
-            disabled={favoriteLoading}
-            style={{
-              background: 'none',
-              border: 'none',
-              cursor: favoriteLoading ? 'wait' : 'pointer',
-              fontSize: '1.5rem',
-              padding: '0.25rem',
-            }}
-            title={isFavorite ? 'お気に入りから削除' : 'お気に入りに追加'}
-          >
-            {isFavorite ? '❤️' : '🤍'}
-          </button>
-        )}
+    <div className="product-detail">
+      <div className="product-gallery">
+        <div className="product-main-image">
+          <img
+            src={product.imageUrl || 'https://via.placeholder.com/500'}
+            alt={product.name}
+          />
+        </div>
+        <Link to="/products" className="text-sm text-muted">
+          ← Back to Products
+        </Link>
       </div>
 
-      {/* 平均評価 */}
-      {reviews.length > 0 && (
-        <div style={{ marginTop: '0.5rem' }}>
-          <StarRating rating={Math.round(averageRating)} readonly />
-          <span style={{ marginLeft: '0.5rem', color: '#666' }}>
-            {averageRating} ({reviews.length}件のレビュー)
-          </span>
-        </div>
-      )}
-
-      <img
-        src={product.imageUrl || 'https://placehold.co/400x300?text=No+Image'}
-        alt={product.name}
-        style={{ borderRadius: '8px', marginTop: '1rem', maxWidth: '400px' }}
-      />
-      <p style={{ fontSize: '0.9rem', color: '#666' }}>
-        カテゴリ: {product.category}
-      </p>
-      <p style={{ fontSize: '1.5rem', color: '#e74c3c', fontWeight: 'bold' }}>
-        ¥{product.price.toLocaleString()}
-      </p>
-      <p>{product.description}</p>
-      
-      <button
-        type="button"
-        onClick={handleAddToCart}
-        style={{
-          backgroundColor: '#3498db',
-          color: 'white',
-          border: 'none',
-          padding: '0.75rem 2rem',
-          borderRadius: '4px',
-          cursor: 'pointer',
-          fontSize: '1rem',
-        }}
-      >
-        カートに追加
-      </button>
-      
-      {addedMessage && (
-        <p style={{ color: '#27ae60', marginTop: '0.5rem' }}>
-          ✓ カートに追加しました！
-        </p>
-      )}
-
-      {/* レビューセクション */}
-      <div style={{ marginTop: '3rem', borderTop: '1px solid #eee', paddingTop: '2rem' }}>
-        <h2>レビュー</h2>
+      <div className="product-info">
+        <span className="badge mb-md">{product.category}</span>
         
-        {/* レビュー投稿フォーム */}
-        {isAuthenticated ? (
-          <div style={{ 
-            backgroundColor: '#f9f9f9', 
-            padding: '1rem', 
-            borderRadius: '8px',
-            marginBottom: '2rem'
-          }}>
-            <h3 style={{ marginTop: 0 }}>レビューを書く</h3>
-            <div style={{ marginBottom: '1rem' }}>
-              <span>評価: </span>
-              <StarRating rating={newRating} onRate={setNewRating} />
-            </div>
-            <textarea
-              value={newComment}
-              onChange={(e) => setNewComment(e.target.value)}
-              placeholder="コメントを入力（任意）"
-              style={{
-                width: '100%',
-                minHeight: '80px',
-                padding: '0.5rem',
-                fontSize: '1rem',
-                border: '1px solid #ccc',
-                borderRadius: '4px',
-                boxSizing: 'border-box',
-                resize: 'vertical'
-              }}
-            />
+        <h1>{product.name}</h1>
+
+        {reviews.length > 0 && (
+          <div className="flex items-center gap-sm mb-md">
+            <StarRating rating={Math.round(averageRating)} readonly />
+            <span className="text-muted text-sm">
+              {averageRating.toFixed(1)} ({reviews.length} reviews)
+            </span>
+          </div>
+        )}
+
+        <div className="product-price">¥{product.price.toLocaleString()}</div>
+
+        <p className="product-description">{product.description}</p>
+
+        <div className="product-actions">
+          <div className="quantity-selector">
+            <button type="button" onClick={() => setQuantity(q => Math.max(1, q - 1))}>−</button>
+            <span>{quantity}</span>
+            <button type="button" onClick={() => setQuantity(q => q + 1)}>+</button>
+          </div>
+          
+          <button onClick={handleAddToCart} className="btn btn-primary btn-lg" style={{ flex: 1 }}>
+            Add to Cart
+          </button>
+          
+          {isAuthenticated && (
             <button
               type="button"
-              onClick={handleSubmitReview}
-              disabled={newRating === 0 || reviewSubmitting}
-              style={{
-                marginTop: '0.5rem',
-                padding: '0.5rem 1rem',
-                backgroundColor: newRating === 0 ? '#ccc' : '#27ae60',
-                color: 'white',
-                border: 'none',
-                borderRadius: '4px',
-                cursor: newRating === 0 ? 'not-allowed' : 'pointer',
-              }}
+              onClick={handleToggleFavorite}
+              disabled={favoriteLoading}
+              className="btn btn-secondary"
+              style={{ opacity: favoriteLoading ? 0.5 : 1 }}
             >
-              {reviewSubmitting ? '送信中...' : 'レビューを投稿'}
+              {isFavorite ? '♥' : '♡'}
             </button>
-          </div>
-        ) : (
-          <p style={{ color: '#666' }}>
-            レビューを投稿するには<Link to="/login">ログイン</Link>してください
-          </p>
+          )}
+        </div>
+        
+        {addedMessage && (
+          <div className="alert alert-success">Added to cart</div>
         )}
 
-        {/* レビュー一覧 */}
-        {reviews.length === 0 ? (
-          <p style={{ color: '#666' }}>まだレビューはありません</p>
-        ) : (
-          <div>
-            {reviews.map((review) => (
-              <div 
-                key={review.reviewId}
-                style={{
-                  borderBottom: '1px solid #eee',
-                  paddingBottom: '1rem',
-                  marginBottom: '1rem'
-                }}
-              >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                  <StarRating rating={review.rating} readonly />
-                  <strong>{review.userName}</strong>
-                  <span style={{ color: '#999', fontSize: '0.875rem' }}>
-                    {new Date(review.createdAt).toLocaleDateString('ja-JP')}
-                  </span>
-                </div>
-                {review.comment && (
-                  <p style={{ marginTop: '0.5rem', marginBottom: 0 }}>{review.comment}</p>
-                )}
+        {/* Reviews */}
+        <div className="reviews-section">
+          <h2 style={{ fontSize: '1.25rem', marginBottom: '1.5rem' }}>Reviews</h2>
+          
+          {isAuthenticated ? (
+            <div className="review-form">
+              <h4 style={{ marginTop: 0, marginBottom: '1rem', fontSize: '0.875rem' }}>Write a review</h4>
+              <div className="mb-md">
+                <StarRating rating={newRating} onRate={setNewRating} />
               </div>
-            ))}
-          </div>
-        )}
+              <div className="form-group">
+                <textarea
+                  value={newComment}
+                  onChange={(e) => setNewComment(e.target.value)}
+                  placeholder="Share your thoughts (optional)"
+                  rows={3}
+                />
+              </div>
+              <button
+                type="button"
+                onClick={handleSubmitReview}
+                disabled={newRating === 0 || reviewSubmitting}
+                className="btn btn-primary"
+              >
+                {reviewSubmitting ? 'Submitting...' : 'Submit Review'}
+              </button>
+            </div>
+          ) : (
+            <div className="alert alert-info mb-lg">
+              <Link to="/login">Sign in</Link> to write a review
+            </div>
+          )}
+
+          {reviews.length === 0 ? (
+            <p className="text-muted">No reviews yet</p>
+          ) : (
+            <div>
+              {reviews.map((review) => (
+                <div key={review.reviewId} className="review-card">
+                  <div className="flex items-center justify-between mb-sm">
+                    <div className="flex items-center gap-sm">
+                      <StarRating rating={review.rating} readonly />
+                      <span className="font-medium text-sm">{review.userName}</span>
+                    </div>
+                    <span className="text-sm text-muted">
+                      {new Date(review.createdAt).toLocaleDateString()}
+                    </span>
+                  </div>
+                  {review.comment && <p style={{ margin: 0 }}>{review.comment}</p>}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

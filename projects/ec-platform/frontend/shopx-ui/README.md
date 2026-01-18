@@ -1,73 +1,129 @@
-# React + TypeScript + Vite
+# 🛍️ ShopX - AI搭載ECプラットフォーム
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+100 Days AWS Challenge で作成したフルスタックECサイトです。
 
-Currently, two official plugins are available:
+![ShopX Screenshot](https://via.placeholder.com/800x400?text=ShopX+EC+Platform)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## ✨ 主な機能
 
-## React Compiler
+### 顧客向け機能
+- 🔍 **商品検索** - キーワード、カテゴリ、価格帯でフィルタリング
+- 🛒 **ショッピングカート** - 商品追加・削除、数量変更
+- 💳 **注文・決済** - チェックアウトフロー（モック決済）
+- 📦 **注文履歴** - 過去の注文確認、ステータス追跡
+- ❤️ **お気に入り** - 気になる商品を保存
+- ⭐ **レビュー機能** - 星評価とコメント投稿
+- 🤖 **AIアシスタント** - Claude APIによる商品レコメンド
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### 管理者機能
+- 📊 **ダッシュボード** - CloudWatch連携監視
+- 📝 **商品管理** - CRUD操作
+- 📋 **注文管理** - ステータス更新
 
-## Expanding the ESLint configuration
+## 🛠️ 技術スタック
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### フロントエンド
+- **React 19** + TypeScript
+- **Vite** - ビルドツール
+- **React Router** - ルーティング
+- **AWS Amplify** - 認証・ホスティング
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+### バックエンド
+- **AWS Lambda** (Node.js) - サーバーレスAPI
+- **API Gateway** - REST API
+- **DynamoDB** - NoSQLデータベース
+- **Cognito** - 認証・認可
+- **S3** - 静的ファイルホスティング
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+### AI/ML
+- **Claude API** (Anthropic) - AIチャットアシスタント
+- **Tool Use** - 商品検索ツール連携
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### インフラ
+- **SAM (Serverless Application Model)** - IaC
+- **CloudWatch** - 監視・ログ
+
+## 📁 プロジェクト構成
+
+```
+ec-platform/
+├── frontend/
+│   └── shopx-ui/           # Reactフロントエンド
+│       ├── src/
+│       │   ├── api/        # API クライアント
+│       │   ├── components/ # 共通コンポーネント
+│       │   ├── context/    # React Context
+│       │   ├── pages/      # ページコンポーネント
+│       │   └── types/      # TypeScript型定義
+│       └── package.json
+│
+└── backend-node/
+    └── shopx-api/          # Lambda関数
+        ├── src/handlers/   # APIハンドラー
+        ├── scripts/        # ユーティリティスクリプト
+        └── template.yaml   # SAMテンプレート
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 🚀 ローカル開発
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### 必要条件
+- Node.js 18+
+- AWS CLI
+- SAM CLI
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### フロントエンド起動
+
+```bash
+cd frontend/shopx-ui
+npm install
+npm run dev
 ```
+
+### バックエンドデプロイ
+
+```bash
+cd backend-node/shopx-api
+sam build
+sam deploy --guided
+```
+
+## 🌐 デプロイ済み環境
+
+- **フロントエンド**: AWS Amplify Hosting
+- **API**: API Gateway + Lambda
+- **データベース**: DynamoDB
+
+## 📱 画面一覧
+
+| ページ | パス | 説明 |
+|--------|------|------|
+| ホーム | `/` | ランディングページ |
+| 商品一覧 | `/products` | 検索・フィルター |
+| 商品詳細 | `/products/:id` | 詳細・レビュー |
+| カート | `/cart` | カート管理 |
+| チェックアウト | `/checkout` | 注文確定 |
+| 注文履歴 | `/orders` | 履歴確認 |
+| お気に入り | `/favorites` | 保存商品 |
+| AIチャット | `/chat` | レコメンド |
+| 管理画面 | `/admin` | 商品・注文管理 |
+| ログイン | `/login` | 認証 |
+| 新規登録 | `/signup` | アカウント作成 |
+
+## 🎯 学習ポイント
+
+このプロジェクトで学んだこと：
+
+1. **サーバーレスアーキテクチャ** - Lambda + API Gateway + DynamoDB
+2. **認証・認可** - Cognito User Pool + JWT
+3. **Single Table Design** - DynamoDBのベストプラクティス
+4. **AI統合** - Claude API + Tool Use
+5. **IaC** - SAMによるインフラ管理
+6. **モニタリング** - CloudWatchダッシュボード
+
+## 📄 ライセンス
+
+MIT
+
+---
+
+**100 Days AWS Challenge** - Day 27 完了 🎉
