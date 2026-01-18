@@ -42,9 +42,9 @@ describe('ProductListPage', () => {
   it('カテゴリドロップダウンが表示される', async () => {
     renderWithRouter();
 
-    // カテゴリが読み込まれるまで待つ
+    // カテゴリが読み込まれるまで待つ（findByRole は非同期で待機する）
     expect(await screen.findByRole('option', { name: 'All' })).toBeInTheDocument();
-    expect(screen.getByRole('option', { name: 'Electronics' })).toBeInTheDocument();
+    expect(await screen.findByRole('option', { name: 'Electronics' })).toBeInTheDocument();
   });
 
   it('Electronicsを選択するとElectronics商品のみ表示される', async () => {
