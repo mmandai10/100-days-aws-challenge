@@ -41,3 +41,9 @@ projects/ec-platform/frontend/shopx-ui-old/
 
 projects/ec-platform/frontend/shopx-ui-old/
 nul
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars

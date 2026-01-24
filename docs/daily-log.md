@@ -991,3 +991,38 @@ React UI → Lambda (/chat) → Claude API (Tool Use)
 - docs/learning-roadmap.md（v5.0）
 
 **次回:** Day 30 - Terraform インストール + 基本コンセプト
+
+---
+
+### Day 30 (2026-01-24)
+
+**テーマ:** Terraform 基礎
+
+**完了したこと:**
+- Terraform v1.14.3 インストール（winget）
+- AWS Provider 設定
+- S3 バケット作成・削除
+- tfstate の理解
+
+**学んだコマンド:**
+| コマンド | 役割 |
+|----------|------|
+| `terraform init` | 初期化（プラグイン DL） |
+| `terraform plan` | プレビュー（何が作られるか確認） |
+| `terraform apply` | リソース作成 |
+| `terraform destroy` | リソース削除 |
+
+**SAM vs Terraform:**
+- SAM = インフラ + コード（サーバーレス向けオールインワン）
+- Terraform = インフラのみ（汎用・マルチクラウド）
+
+**tfstate とは:**
+- Terraform が「今何を管理しているか」を記録するファイル
+- Git にコミットしない（機密情報含む可能性）
+- チーム開発では S3 に保存して共有
+
+**成果物:**
+- projects/personal-assistant/terraform/main.tf
+- projects/personal-assistant/terraform/.gitignore
+
+**次回:** Day 31 - 変数、出力、ファイル分割
