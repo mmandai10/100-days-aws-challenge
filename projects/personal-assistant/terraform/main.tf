@@ -1,6 +1,5 @@
 # main.tf
 
-# AWS Provider 設定
 terraform {
   required_providers {
     aws = {
@@ -11,15 +10,16 @@ terraform {
 }
 
 provider "aws" {
-  region = "ap-northeast-1"
+  region = var.aws_region
 }
 
 # S3 バケット作成
 resource "aws_s3_bucket" "test_bucket" {
-  bucket = "my-terraform-test-bucket-20260124"
+  bucket = "${var.project_name}-${var.environment}-bucket"
 
   tags = {
-    Name        = "Terraform Test"
-    Environment = "Dev"
+    Name        = "${var.project_name}-bucket"
+    Environment = var.environment
+    Project     = var.project_name
   }
 }

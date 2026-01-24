@@ -1026,3 +1026,36 @@ React UI → Lambda (/chat) → Claude API (Tool Use)
 - projects/personal-assistant/terraform/.gitignore
 
 **次回:** Day 31 - 変数、出力、ファイル分割
+
+---
+
+### Day 31 (2026-01-24)
+
+**テーマ:** Terraform 変数とファイル分割
+
+**完了したこと:**
+- variables.tf で変数定義
+- outputs.tf で出力定義
+- main.tf の変数化リファクタリング
+
+**ファイル構成（ベストプラクティス）:**
+```
+terraform/
+├── main.tf        # リソース定義
+├── variables.tf   # 変数定義
+├── outputs.tf     # 出力定義
+└── terraform.tfvars  # 変数の値
+```
+
+**学んだこと:**
+- `var.変数名` で変数を参照
+- `"${var.xxx}-${var.yyy}"` で文字列補間
+- 変数化は複数環境・チーム開発で威力を発揮
+- 証跡観点: tfvars は機密なければ Git 管理OK
+
+**成果物:**
+- projects/personal-assistant/terraform/variables.tf
+- projects/personal-assistant/terraform/outputs.tf
+- projects/personal-assistant/terraform/main.tf（更新）
+
+**次回:** Day 32 - Personal AI Assistant インフラ設計
