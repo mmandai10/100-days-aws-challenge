@@ -1059,3 +1059,61 @@ terraform/
 - projects/personal-assistant/terraform/main.tf（更新）
 
 **次回:** Day 32 - Personal AI Assistant インフラ設計
+
+---
+
+### Day 32 (2026-01-24)
+
+**テーマ:** DevOps AI コックピット - アーキテクチャ設計
+
+**完了したこと:**
+- プロジェクト方向性の再定義（汎用チャットボット → 実務課題解決ツール）
+- DevOps AI コックピット のコンセプト設計
+- アーキテクチャ設計ドキュメント作成
+- Terraform モジュール構成設計
+- ディレクトリ構造作成
+- テスト用S3バケット削除（クリーンアップ）
+
+**DevOps AI コックピット とは:**
+```
+【MCP層（対話操作）】
+- GitHub MCP: PR/Issue/コミット操作
+- AWS MCP: コスト確認、ログ分析（将来）
+- Slack MCP: 通知、会話要約（将来）
+
+【Bot層（自動化）】
+- 日報自動生成: GitHub活動 → AI → Slack通知
+- インシデント対応: アラート → 原因分析 → 通知（将来）
+- コスト監視: 異常検知 → 通知（将来）
+```
+
+**Phase 1 スコープ（Day 29-50）:**
+| 機能 | 実装方式 |
+|------|----------|
+| MCP Server | ローカル（Node.js） |
+| GitHub連携 | MCP Tools |
+| 日報Bot | Lambda + EventBridge |
+
+**Terraform モジュール構成:**
+```
+terraform/modules/
+├── lambda/        # Lambda関数
+├── api-gateway/   # APIエンドポイント
+├── dynamodb/      # データストア
+├── eventbridge/   # 定期実行
+└── secrets/       # トークン管理
+```
+
+**学んだこと:**
+- Bot vs MCP の違い（一方向 vs 双方向）
+- ローカルMCP vs クラウドMCP のトレードオフ
+- Terraform モジュール化のメリット（再利用、見通し、チーム開発）
+- 設計ドキュメントの重要性
+
+**成果物:**
+- docs/architecture.md（設計ドキュメント）
+- terraform/modules/（5モジュール分のディレクトリ）
+- mcp-server/（MCPサーバー用ディレクトリ）
+- bots/daily-report/（日報Bot用ディレクトリ）
+
+**次回:** Day 33 - Secrets Manager モジュール実装
