@@ -65,6 +65,11 @@ module "lambda" {
   secret_arns         = module.secrets.all_secret_arns
   dynamodb_table_arn  = module.dynamodb.daily_reports_table_arn
   dynamodb_table_name = module.dynamodb.daily_reports_table_name
+
+  # Secrets Manager シークレット名
+  github_token_secret_name      = module.secrets.github_token_name
+  anthropic_api_key_secret_name = module.secrets.anthropic_api_key_name
+  slack_webhook_secret_name     = module.secrets.slack_webhook_name
 }
 
 # EventBridge（定期実行）

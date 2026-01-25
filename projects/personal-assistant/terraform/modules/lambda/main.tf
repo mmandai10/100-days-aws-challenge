@@ -82,8 +82,12 @@ resource "aws_lambda_function" "daily_report" {
 
   environment {
     variables = {
-      DYNAMODB_TABLE = var.dynamodb_table_name
-      ENVIRONMENT    = var.environment
+      DYNAMODB_TABLE                 = var.dynamodb_table_name
+      ENVIRONMENT                    = var.environment
+      GITHUB_TOKEN_SECRET_NAME       = var.github_token_secret_name
+      ANTHROPIC_API_KEY_SECRET_NAME  = var.anthropic_api_key_secret_name
+      SLACK_WEBHOOK_SECRET_NAME      = var.slack_webhook_secret_name
+      GITHUB_USERNAME                = "mmandai10"
     }
   }
 

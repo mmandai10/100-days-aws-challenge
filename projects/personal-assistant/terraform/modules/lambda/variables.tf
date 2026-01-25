@@ -31,3 +31,19 @@ variable "dynamodb_table_name" {
   description = "Name of DynamoDB table"
   type        = string
 }
+
+# Secrets Manager シークレット名
+variable "github_token_secret_name" {
+  description = "Name of GitHub token secret"
+  type        = string
+}
+
+variable "anthropic_api_key_secret_name" {
+  description = "Name of Anthropic API key secret"
+  type        = string
+}
+
+variable "slack_webhook_secret_name" {
+  description = "Name of Slack webhook secret"
+  type        = string
+}
