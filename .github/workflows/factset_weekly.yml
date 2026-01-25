@@ -1,0 +1,59 @@
+name: FactSet Weekly Earnings Report Summary
+
+on:
+  # 毎週月曜日 朝8時（日本時間）に実行
+  # cron形式: 分 時 日 月 曜日 (UTCなので日本時間-9時間)
+  schedule:
+    - cron: '0 23 * * 0'  # UTC日曜23:00 = 日本時間月曜08:00
+  
+  # 手動実行も可能
+  workflow_dispatch:
+    inputs:
+      force_run:
+        description: '強制実行（キャッシュ無視）'
+        required: false
+        default: 'false'
+
+jobs:
+  generate-summary:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install anthropic requests pdfplumber
+      
+      - name: Run FactSet Summary Script
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          SMTP_SERVER: ${{ secrets.SMTP_SERVER }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+          TO_EMAIL: ${{ secrets.TO_EMAIL }}
+        run: |
+          python scripts/factset_summary.py
+      
+      - name: Upload report artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: factset-reports
+          path: reports/
+          retention-days: 30
+      
+      - name: Commit summary to repo (optional)
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add reports/ || true
+          git diff --staged --quiet || git commit -m "📊 Add weekly FactSet summary $(date +%Y-%m-%d)"
+          git push || true
