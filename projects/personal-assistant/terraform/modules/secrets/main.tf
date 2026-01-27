@@ -1,38 +1,28 @@
-# modules/secrets/main.tf
-# Secrets Manager リソース定義
+# ===========================================
+# Secrets Manager モジュール - メインリソース
+# ===========================================
 
-# -----------------------------------------------------------------------------
-# GitHub Token
-# -----------------------------------------------------------------------------
+# GitHub Token を保存するシークレット
 resource "aws_secretsmanager_secret" "github_token" {
   name        = "${var.project_name}-${var.environment}-github-token"
-  description = "GitHub Personal Access Token for API access"
+  description = "GitHub Personal Access Token for ${var.project_name}"
 
-  tags = merge(var.tags, {
-    Name = "${var.project_name}-github-token"
-  })
+  # 削除時の待機期間（本番では30日推奨、開発では0で即削除可能）
+  recovery_window_in_days = var.environment == "prod" ? 30 : 0
+
+  tags = {
+    Project     = var.project_name
+    Environment = var.environment
+    ManagedBy   = "terraform"
+  }
 }
 
-# -----------------------------------------------------------------------------
-# Slack Webhook URL
-# -----------------------------------------------------------------------------
-resource "aws_secretsmanager_secret" "slack_webhook" {
-  name        = "${var.project_name}-${var.environment}-slack-webhook"
-  description = "Slack Incoming Webhook URL for notifications"
+# シークレットの値を設定
+resource "aws_secretsmanager_secret_version" "github_token" {
+  secret_id = aws_secretsmanager_secret.github_token.id
 
-  tags = merge(var.tags, {
-    Name = "${var.project_name}-slack-webhook"
-  })
-}
-
-# -----------------------------------------------------------------------------
-# Anthropic API Key
-# -----------------------------------------------------------------------------
-resource "aws_secretsmanager_secret" "anthropic_api_key" {
-  name        = "${var.project_name}-${var.environment}-anthropic-api-key"
-  description = "Anthropic API Key for Claude API access"
-
-  tags = merge(var.tags, {
-    Name = "${var.project_name}-anthropic-api-key"
+  # JSON形式で保存（将来的に複数の値を追加可能）
+  secret_string = jsonencode({
+    token = var.github_token
   })
 }

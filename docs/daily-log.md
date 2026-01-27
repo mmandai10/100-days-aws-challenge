@@ -1117,3 +1117,108 @@ terraform/modules/
 - bots/daily-report/（日報Bot用ディレクトリ）
 
 **次回:** Day 33 - Secrets Manager モジュール実装
+
+---
+
+### Day 33 (2026-01-27)
+
+**テーマ:** Secrets Manager モジュール実装
+
+**完了したこと:**
+- Secrets Manager の概念理解
+- Terraform モジュール作成（variables.tf, main.tf, outputs.tf）
+
+**Secrets Manager とは:**
+- API キーやパスワードを暗号化して保存するサービス
+- Lambda から実行時に取得（キャッシュで高速化）
+- 自動ローテーション機能あり（定期的にパスワード自動変更）
+- Lambda 以外でも使える（EC2, ECS, オンプレ等）
+
+**モジュール構成:**
+```
+terraform/modules/secrets/
+├── variables.tf  # 入力（project_name, environment, github_token）
+├── main.tf       # リソース（secret + secret_version）
+└── outputs.tf    # 出力（secret_arn, secret_name）
+```
+
+**学んだこと:**
+- `sensitive = true`: terraform plan/apply 時に値をマスク
+- secret（箱）と secret_version（中身）を分離 → ローテーション対応
+- `recovery_window_in_days`: 削除時の待機期間（prod=30日, dev=0日）
+- 出力の用途: ARN は IAM ポリシー用、Name は Lambda コード用
+
+**成果物:**
+- terraform/modules/secrets/variables.tf
+- terraform/modules/secrets/main.tf
+- terraform/modules/secrets/outputs.tf
+
+**次回:** Day 34 - Lambda モジュール実装
+
+---
+
+### Day 34 (2026-01-27)
+
+**テーマ:** Lambda モジュール実装
+
+**完了したこと:**
+- Lambda モジュール作成（Terraform）
+- シンプル版日報Bot Lambda 作成
+- IAM Role + ポリシー設定
+- 動作確認成功（GitHub API 呼び出し）
+
+**Lambda の処理フロー:**
+```
+Lambda 起動
+    ↓
+Secrets Manager から GitHub Token 取得
+    ↓
+GitHub API で今日のコミット取得
+    ↓
+結果を返す
+```
+
+**モジュール構成:**
+```
+terraform/modules/lambda/
+├── main.tf       # Lambda + IAM Role + CloudWatch Logs
+├── variables.tf  # 入力変数
+└── outputs.tf    # 出力（function_name, function_arn）
+
+bots/daily-report-simple/
+└── index.mjs     # シンプル版 Lambda コード
+```
+
+**学んだこと:**
+- IAM Role: Lambda が「何をできるか」を定義
+- assume_role_policy: 「誰がこの Role を使えるか」（Lambda サービス）
+- インラインポリシー: マネージドポリシー上限（10個）回避策
+- archive_file: Terraform で Lambda コードを ZIP 化
+- 環境変数で設定を Lambda に渡す
+
+**作成されたリソース:**
+| リソース | 名前 |
+|----------|------|
+| Secrets Manager | personal-assistant-dev-github-token |
+| Lambda | personal-assistant-dev-daily-report |
+| IAM Role | personal-assistant-dev-daily-report-role |
+| CloudWatch Logs | /aws/lambda/personal-assistant-dev-daily-report |
+
+**動作確認結果:**
+```json
+{
+  "statusCode": 200,
+  "message": "GitHub activity retrieved successfully",
+  "date": "2026-01-27",
+  "commitCount": 0,
+  "commits": []
+}
+```
+
+**成果物:**
+- terraform/modules/lambda/main.tf
+- terraform/modules/lambda/variables.tf
+- terraform/modules/lambda/outputs.tf
+- bots/daily-report-simple/index.mjs
+
+**次回:** Day 35 - EventBridge で定期実行 or DynamoDB で履歴保存

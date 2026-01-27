@@ -1,49 +1,33 @@
-# modules/lambda/variables.tf
+# ===========================================
+# Lambda モジュール - 入力変数
+# ===========================================
 
 variable "project_name" {
-  description = "Project name for resource naming"
+  description = "プロジェクト名"
   type        = string
 }
 
 variable "environment" {
-  description = "Environment (dev/stg/prod)"
+  description = "環境名（dev/staging/prod）"
   type        = string
 }
 
-variable "tags" {
-  description = "Common tags for all resources"
-  type        = map(string)
-  default     = {}
-}
-
-# 他モジュールからの依存
-variable "secret_arns" {
-  description = "List of Secrets Manager ARNs to access"
-  type        = list(string)
-}
-
-variable "dynamodb_table_arn" {
-  description = "ARN of DynamoDB table"
-  type        = string
-}
-
-variable "dynamodb_table_name" {
-  description = "Name of DynamoDB table"
-  type        = string
-}
-
-# Secrets Manager シークレット名
 variable "github_token_secret_name" {
-  description = "Name of GitHub token secret"
+  description = "GitHub Token の Secrets Manager 名"
   type        = string
 }
 
-variable "anthropic_api_key_secret_name" {
-  description = "Name of Anthropic API key secret"
+variable "github_token_secret_arn" {
+  description = "GitHub Token の Secrets Manager ARN（IAM ポリシー用）"
   type        = string
 }
 
-variable "slack_webhook_secret_name" {
-  description = "Name of Slack webhook secret"
+variable "github_username" {
+  description = "GitHub ユーザー名"
+  type        = string
+}
+
+variable "github_repo" {
+  description = "GitHub リポジトリ名"
   type        = string
 }

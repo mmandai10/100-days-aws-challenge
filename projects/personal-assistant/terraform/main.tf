@@ -20,68 +20,41 @@ provider "aws" {
   region = var.aws_region
 }
 
-# -----------------------------------------------------------------------------
-# ローカル変数（共通タグ）
-# -----------------------------------------------------------------------------
-locals {
-  common_tags = {
-    Project     = var.project_name
-    Environment = var.environment
-    ManagedBy   = "Terraform"
-  }
-}
-
 # =============================================================================
 # Modules
 # =============================================================================
 
-# Secrets Manager（トークン管理）
+# Secrets Manager（GitHub Token 管理）
 module "secrets" {
   source = "./modules/secrets"
 
   project_name = var.project_name
   environment  = var.environment
-  tags         = local.common_tags
+  github_token = var.github_token
 }
 
-# DynamoDB（データストア）
-module "dynamodb" {
-  source = "./modules/dynamodb"
-
-  project_name = var.project_name
-  environment  = var.environment
-  tags         = local.common_tags
-}
-
-# Lambda（日報生成）
+# Lambda（日報生成 - シンプル版）
 module "lambda" {
   source = "./modules/lambda"
 
   project_name = var.project_name
   environment  = var.environment
-  tags         = local.common_tags
 
-  # 他モジュールからの依存を渡す
-  secret_arns         = module.secrets.all_secret_arns
-  dynamodb_table_arn  = module.dynamodb.daily_reports_table_arn
-  dynamodb_table_name = module.dynamodb.daily_reports_table_name
+  # Secrets Manager からの情報
+  github_token_secret_name = module.secrets.secret_name
+  github_token_secret_arn  = module.secrets.secret_arn
 
-  # Secrets Manager シークレット名
-  github_token_secret_name      = module.secrets.github_token_name
-  anthropic_api_key_secret_name = module.secrets.anthropic_api_key_name
-  slack_webhook_secret_name     = module.secrets.slack_webhook_name
+  # GitHub 設定
+  github_username = var.github_username
+  github_repo     = var.github_repo
 }
 
-# EventBridge（定期実行）
-module "eventbridge" {
-  source = "./modules/eventbridge"
+# -----------------------------------------------------------------------------
+# 以下は後で実装
+# -----------------------------------------------------------------------------
 
-  project_name = var.project_name
-  environment  = var.environment
-  tags         = local.common_tags
+# # DynamoDB（データストア）
+# module "dynamodb" { ... }
 
-  # Lambda への依存
-  lambda_function_arn  = module.lambda.daily_report_function_arn
-  lambda_function_name = module.lambda.daily_report_function_name
-  schedule_enabled     = false  # 開発中は無効
-}
+# # EventBridge（定期実行）
+# module "eventbridge" { ... }

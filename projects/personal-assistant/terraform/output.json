@@ -1,1 +1,1 @@
-{"statusCode":500,"body":"{\"message\":\"Failed to generate daily report\",\"error\":\"Secrets Manager can't find the specified secret value for staging label: AWSCURRENT\"}"}
+{"statusCode":200,"body":"{\"message\":\"GitHub activity retrieved successfully\",\"date\":\"2026-01-27\",\"commitCount\":0,\"commits\":[]}"}
