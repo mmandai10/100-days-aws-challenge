@@ -63,7 +63,49 @@ resource "aws_iam_role_policy" "lambda_secrets" {
         Action = [
           "secretsmanager:GetSecretValue"
         ]
-        Resource = var.github_token_secret_arn
+        Resource = compact([var.github_token_secret_arn, var.claude_api_key_secret_arn])
+      }
+    ]
+  })
+}
+
+# DynamoDB 書き込み権限
+resource "aws_iam_role_policy" "lambda_dynamodb" {
+  name  = "dynamodb-write"
+  role  = aws_iam_role.lambda_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "dynamodb:PutItem",
+          "dynamodb:GetItem",
+          "dynamodb:Query"
+        ]
+        Resource = var.dynamodb_table_arn != "" ? var.dynamodb_table_arn : "arn:aws:dynamodb:*:*:table/dummy"
+      }
+    ]
+  })
+}
+
+# SES メール送信権限
+resource "aws_iam_role_policy" "lambda_ses" {
+  count = var.notification_email != "" ? 1 : 0
+  name  = "ses-send"
+  role  = aws_iam_role.lambda_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "ses:SendEmail",
+          "ses:SendRawEmail"
+        ]
+        Resource = "*"
       }
     ]
   })
@@ -94,9 +136,12 @@ resource "aws_lambda_function" "daily_report" {
 
   environment {
     variables = {
-      GITHUB_TOKEN_SECRET_NAME = var.github_token_secret_name
-      GITHUB_USERNAME          = var.github_username
-      GITHUB_REPO              = var.github_repo
+      GITHUB_TOKEN_SECRET_NAME     = var.github_token_secret_name
+      GITHUB_USERNAME              = var.github_username
+      GITHUB_REPO                  = var.github_repo
+      CLAUDE_API_KEY_SECRET_NAME   = var.claude_api_key_secret_name
+      DYNAMODB_TABLE_NAME          = var.dynamodb_table_name
+      NOTIFICATION_EMAIL           = var.notification_email
     }
   }
 

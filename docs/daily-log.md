@@ -1222,3 +1222,50 @@ bots/daily-report-simple/
 - bots/daily-report-simple/index.mjs
 
 **次回:** Day 35 - EventBridge で定期実行 or DynamoDB で履歴保存
+
+---
+
+### Day 35 (2026-01-27)
+
+**テーマ:** EventBridge + Claude API + DynamoDB 統合
+
+**完了したこと:**
+- EventBridge モジュール有効化（毎日 18:00 JST 定期実行）
+- Claude API 統合（日報を AI 生成）
+- DynamoDB モジュール有効化（日報履歴保存）
+- Lambda コード更新（全機能統合）
+
+**システム構成:**
+```
+EventBridge (18:00 JST) → Lambda → GitHub API → Claude API → DynamoDB
+```
+
+**DynamoDB テーブル設計:**
+```
+PK: REPO#mmandai10/100-days-aws-challenge
+SK: DATE#2026-01-27
+---
+date, commitCount, commits, report, createdAt, ttl
+```
+
+**学んだこと:**
+- EventBridge cron 式: UTC で指定（18:00 JST = 09:00 UTC）
+- Terraform count は動的値に依存できない（apply 後に決まる値）
+- DynamoDB TTL: 古いデータを自動削除（90日後）
+- compact() 関数: 空文字列を除外したリストを作成
+
+**作成されたリソース:**
+| リソース | 名前 |
+|----------|------|
+| EventBridge | personal-assistant-dev-daily-report-schedule |
+| Secrets Manager | personal-assistant-dev-claude-api-key |
+| DynamoDB | personal-assistant-dev-daily-reports |
+| IAM Policy | dynamodb-write |
+
+**成果物:**
+- terraform/main.tf（DynamoDB + EventBridge モジュール有効化）
+- terraform/modules/secrets/（Claude API Key 追加）
+- terraform/modules/lambda/（DynamoDB 権限 + 環境変数追加）
+- bots/daily-report-simple/index.mjs（Claude + DynamoDB 統合）
+
+**次回:** Day 36 - EventBridge 有効化 & 本番運用開始

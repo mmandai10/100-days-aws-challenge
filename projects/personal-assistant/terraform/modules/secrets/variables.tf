@@ -18,3 +18,10 @@ variable "github_token" {
   type        = string
   sensitive   = true  # terraform plan/apply 時にマスクされる
 }
+
+variable "claude_api_key" {
+  description = "Anthropic Claude API Key"
+  type        = string
+  sensitive   = true
+  default     = ""  # オプション（設定されていない場合は空）
+}

@@ -2,12 +2,12 @@
 # EventBridge スケジュール（定期実行）
 
 # -----------------------------------------------------------------------------
-# EventBridge ルール（毎日22:00 JST）
+# EventBridge ルール（毎日18:00 JST）
 # -----------------------------------------------------------------------------
 resource "aws_cloudwatch_event_rule" "daily_report_schedule" {
   name                = "${var.project_name}-${var.environment}-daily-report-schedule"
-  description         = "Trigger daily report generation at 22:00 JST"
-  schedule_expression = "cron(0 13 * * ? *)"  # UTC 13:00 = JST 22:00
+  description         = "Trigger daily report generation at 18:00 JST"
+  schedule_expression = "cron(0 9 * * ? *)"  # UTC 09:00 = JST 18:00
   state               = var.schedule_enabled ? "ENABLED" : "DISABLED"
 
   # tags = var.tags  # 権限の問題で一時的に無効化

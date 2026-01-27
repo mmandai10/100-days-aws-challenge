@@ -35,3 +35,16 @@ variable "github_repo" {
   type        = string
   default     = "100-days-aws-challenge"
 }
+
+variable "claude_api_key" {
+  description = "Anthropic Claude API Key"
+  type        = string
+  sensitive   = true
+  default     = ""
+}
+
+variable "notification_email" {
+  description = "通知先メールアドレス（SES）"
+  type        = string
+  default     = ""
+}

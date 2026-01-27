@@ -26,3 +26,30 @@ resource "aws_secretsmanager_secret_version" "github_token" {
     token = var.github_token
   })
 }
+
+# ===========================================
+# Claude API Key
+# ===========================================
+
+resource "aws_secretsmanager_secret" "claude_api_key" {
+  count       = var.claude_api_key != "" ? 1 : 0
+  name        = "${var.project_name}-${var.environment}-claude-api-key"
+  description = "Anthropic Claude API Key for ${var.project_name}"
+
+  recovery_window_in_days = var.environment == "prod" ? 30 : 0
+
+  tags = {
+    Project     = var.project_name
+    Environment = var.environment
+    ManagedBy   = "terraform"
+  }
+}
+
+resource "aws_secretsmanager_secret_version" "claude_api_key" {
+  count     = var.claude_api_key != "" ? 1 : 0
+  secret_id = aws_secretsmanager_secret.claude_api_key[0].id
+
+  secret_string = jsonencode({
+    api_key = var.claude_api_key
+  })
+}
