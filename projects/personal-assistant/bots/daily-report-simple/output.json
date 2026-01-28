@@ -1,0 +1,1 @@
+{"statusCode":500,"body":"{\"message\":\"Failed to generate daily report\",\"error\":\"User: arn:aws:sts::294659522793:assumed-role/personal-assistant-dev-daily-report-role/personal-assistant-dev-daily-report is not authorized to perform: secretsmanager:GetSecretValue on resource: invalid-secret because no identity-based policy allows the secretsmanager:GetSecretValue action\"}"}

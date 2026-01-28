@@ -1,0 +1,11 @@
+{
+  "Records": [
+    {
+      "Sns": {
+        "Type": "Notification",
+        "Timestamp": "2026-01-28T12:00:00.000Z",
+        "Message": "{\"AlarmName\":\"personal-assistant-dev-daily-report-errors\",\"AlarmDescription\":\"Lambda function error\",\"NewStateValue\":\"ALARM\",\"OldStateValue\":\"OK\",\"NewStateReason\":\"Threshold Crossed: 1 error detected\",\"Trigger\":{\"Namespace\":\"AWS/Lambda\",\"MetricName\":\"Errors\",\"Dimensions\":[{\"name\":\"FunctionName\",\"value\":\"personal-assistant-dev-daily-report\"}]}}"
+      }
+    }
+  ]
+}

@@ -51,14 +51,25 @@ AI時代のエンジニアとして、コードを書くだけでなく：
 
 ### スケジュール
 
-| Day | テーマ | 内容 |
-|-----|--------|------|
-| 29-32 | Terraform 基礎 | インストール、AWS Provider、基本リソース |
-| 33-36 | Terraform 実践 | モジュール化、状態管理、ベストプラクティス |
-| 37-40 | AI エージェント設計 | Claude API 復習、Tool Use、エージェント設計 |
-| 41-44 | MCP サーバー構築 | MCP 完成、ツール連携（GitHub/カレンダー等） |
-| 45-48 | インフラ構築 | Lambda, API Gateway, DynamoDB を Terraform で |
-| 49-50 | デプロイ + 仕上げ | CI/CD、ドキュメント |
+| Day | テーマ | 内容 | 状態 |
+|-----|--------|------|------|
+| 29-32 | Terraform 基礎 | インストール、AWS Provider、基本リソース | 完了 |
+| 33-36 | 日報Bot | Secrets Manager, Lambda, DynamoDB, EventBridge, SES | 完了 |
+| 37-38 | インシデント対応Bot | CloudWatch Alarm → SNS → Lambda → Claude分析 → 通知 | 進行中 |
+| 39-40 | コスト監視Bot | Cost Explorer API → 異常検知 → 通知 | |
+| 41-44 | MCP サーバー構築 | GitHub MCP、AWS MCP、対話的ツール操作 | |
+| 45-48 | インフラ拡張 | API Gateway、追加機能 | |
+| 49-50 | デプロイ + 仕上げ | CI/CD、ドキュメント | |
+
+### DevOps AI Cockpit 機能一覧
+
+| 機能 | 種別 | トリガー | 処理内容 |
+|------|------|----------|----------|
+| 日報Bot | Bot | EventBridge (18:00 JST) | GitHub活動 → Claude分析 → メール通知 |
+| インシデント対応Bot | Bot | CloudWatch Alarm | ログ取得 → Claude原因分析 → メール通知 |
+| コスト監視Bot | Bot | EventBridge (毎朝) | Cost Explorer → 異常検知 → メール通知 |
+| GitHub MCP | MCP | ユーザー対話 | PR/Issue/コミット操作 |
+| AWS MCP | MCP | ユーザー対話 | コスト確認、ログ分析 |
 
 ### AWS サービス
 - Lambda

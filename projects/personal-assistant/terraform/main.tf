@@ -74,8 +74,8 @@ module "eventbridge" {
   lambda_function_arn  = module.lambda.function_arn
   lambda_function_name = module.lambda.function_name
 
-  # 開発中は無効（手動テスト用）
-  schedule_enabled = false
+  # 本番運用：毎日18時に自動実行
+  schedule_enabled = true
 }
 
 # DynamoDB（日報履歴保存）
@@ -84,4 +84,137 @@ module "dynamodb" {
 
   project_name = var.project_name
   environment  = var.environment
+}
+
+# =============================================================================
+# Incident Analyzer Bot (Day 37-38)
+# =============================================================================
+
+# SNS Topic（アラーム通知用）
+module "sns" {
+  source = "./modules/sns"
+
+  project_name         = var.project_name
+  environment          = var.environment
+  lambda_function_arn  = aws_lambda_function.incident_analyzer.arn
+  lambda_function_name = aws_lambda_function.incident_analyzer.function_name
+}
+
+# CloudWatch Alarm（日報Botのエラー監視）
+module "cloudwatch_alarm" {
+  source = "./modules/cloudwatch-alarm"
+
+  project_name         = var.project_name
+  environment          = var.environment
+  lambda_function_name = module.lambda.function_name
+  sns_topic_arn        = module.sns.topic_arn
+  error_threshold      = 0  # Errors > 0 で ALARM
+}
+
+# Incident Analyzer Lambda 用の ZIP
+data "archive_file" "incident_analyzer" {
+  type        = "zip"
+  source_file = "${path.module}/../bots/incident-analyzer/index.mjs"
+  output_path = "${path.module}/../bots/incident-analyzer.zip"
+}
+
+# Incident Analyzer Lambda IAM Role
+resource "aws_iam_role" "incident_analyzer" {
+  name = "${var.project_name}-${var.environment}-incident-analyzer-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Action = "sts:AssumeRole"
+      Effect = "Allow"
+      Principal = {
+        Service = "lambda.amazonaws.com"
+      }
+    }]
+  })
+}
+
+# CloudWatch Logs 権限
+resource "aws_iam_role_policy" "incident_analyzer_logs" {
+  name = "cloudwatch-logs"
+  role = aws_iam_role.incident_analyzer.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "logs:CreateLogGroup",
+          "logs:CreateLogStream",
+          "logs:PutLogEvents"
+        ]
+        Resource = "arn:aws:logs:*:*:*"
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "logs:FilterLogEvents",
+          "logs:GetLogEvents",
+          "logs:DescribeLogStreams"
+        ]
+        Resource = "arn:aws:logs:*:*:log-group:/aws/lambda/*"
+      }
+    ]
+  })
+}
+
+# Secrets Manager 権限（Claude API Key）
+resource "aws_iam_role_policy" "incident_analyzer_secrets" {
+  name = "secrets-manager"
+  role = aws_iam_role.incident_analyzer.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Effect   = "Allow"
+      Action   = "secretsmanager:GetSecretValue"
+      Resource = module.secrets.claude_api_key_arn
+    }]
+  })
+}
+
+# SES 権限
+resource "aws_iam_role_policy" "incident_analyzer_ses" {
+  name = "ses-send"
+  role = aws_iam_role.incident_analyzer.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Effect   = "Allow"
+      Action   = "ses:SendEmail"
+      Resource = "*"
+    }]
+  })
+}
+
+# Incident Analyzer Lambda 関数
+resource "aws_lambda_function" "incident_analyzer" {
+  function_name    = "${var.project_name}-${var.environment}-incident-analyzer"
+  filename         = data.archive_file.incident_analyzer.output_path
+  source_code_hash = data.archive_file.incident_analyzer.output_base64sha256
+  handler          = "index.handler"
+  runtime          = "nodejs20.x"
+  role             = aws_iam_role.incident_analyzer.arn
+  timeout          = 60
+  memory_size      = 256
+
+  environment {
+    variables = {
+      CLAUDE_API_KEY_SECRET_NAME = module.secrets.claude_api_key_name
+      NOTIFICATION_EMAIL         = var.notification_email
+    }
+  }
+}
+
+# CloudWatch Log Group
+resource "aws_cloudwatch_log_group" "incident_analyzer" {
+  name              = "/aws/lambda/${aws_lambda_function.incident_analyzer.function_name}"
+  retention_in_days = 14
 }

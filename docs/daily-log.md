@@ -1268,4 +1268,124 @@ date, commitCount, commits, report, createdAt, ttl
 - terraform/modules/lambda/（DynamoDB 権限 + 環境変数追加）
 - bots/daily-report-simple/index.mjs（Claude + DynamoDB 統合）
 
-**次回:** Day 36 - EventBridge 有効化 & 本番運用開始
+**次回:** Day 36 - SES メール通知
+
+---
+
+### Day 36 (2026-01-27)
+
+**テーマ:** SES メール通知機能追加
+
+**完了したこと:**
+- SES メールアドレス認証（mitsuharu.mmandai10@gmail.com）
+- IAM ユーザーに SES 権限追加
+- Lambda に SES 送信機能追加
+- Terraform で SES 権限・環境変数を設定
+- メール送信テスト成功
+
+**システム構成（完成版）:**
+```
+EventBridge (18:00 JST)
+    ↓
+Lambda
+    ↓
+GitHub API → Claude API
+    ↓
+DynamoDB（保存）+ SES（メール送信）
+    ↓
+Gmail に日報が届く
+```
+
+**学んだこと:**
+- SES サンドボックス: 認証済みメールアドレスにのみ送信可能
+- SES からのメールは迷惑メールフォルダに入りやすい
+- Lambda の IAM ロールに ses:SendEmail 権限が必要
+- Terraform の count で条件付きリソース作成
+
+**作成されたリソース:**
+| リソース | 名前 |
+|----------|------|
+| IAM Policy | ses-send |
+| 環境変数 | NOTIFICATION_EMAIL |
+
+**成果物:**
+- terraform/modules/lambda/main.tf（SES 権限追加）
+- terraform/modules/lambda/variables.tf（notification_email 追加）
+- bots/daily-report-simple/index.mjs（SES 送信機能追加）
+
+**次回:** Day 37 - MCP サーバー or 別機能
+
+---
+
+### Day 37 (2026-01-28)
+
+**テーマ:** Incident Analyzer Bot 構築
+
+**完了したこと:**
+- SNS モジュール作成（Topic、Lambda サブスクリプション、Lambda 実行権限）
+- CloudWatch Alarm モジュール作成（Errors、Duration）
+- incident-analyzer Lambda 作成（SNS → ログ取得 → Claude 分析）
+- トラブルシューティング（IAM権限、アラーム閾値、テストエラー出力方法）
+- Claude による自動分析成功確認
+- 会社への引き継ぎドキュメント作成
+
+**学んだこと:**
+- SNS Topic = メーリングリストの概念（Publisher → Topic → 複数 Subscriber）
+- CloudWatch Alarm の閾値設定（GreaterThanThreshold: 0 で 1件以上で発火）
+- Lambda のエラーカウント: try-catch 内でハンドリングすると「成功」扱い
+- Terraform の count 制約（apply 時に決まる値には依存できない）
+- アラームから動的にログ取得先を判定（namespace + dimensions）
+
+**トラブルシューティング:**
+| 問題 | 原因 | 解決 |
+|------|------|------|
+| Lambda が SNS からトリガーされない | IAM 権限不足 | sns:*, cloudwatch:* 追加 |
+| アラームが ALARM にならない | threshold=1.0 で 2件以上必要 | threshold=0 に変更 |
+| Lambda エラーがカウントされない | try-catch 内は「成功」 | handler 冒頭で throw |
+
+**作成したリソース:**
+| リソース | 名前 |
+|----------|------|
+| SNS Topic | personal-assistant-dev-alarms |
+| CloudWatch Alarm | personal-assistant-dev-daily-report-errors |
+| Lambda | personal-assistant-dev-incident-analyzer |
+
+**アーキテクチャ:**
+```
+Lambda エラー発生
+    ↓
+CloudWatch Metrics (Errors > 0)
+    ↓
+CloudWatch Alarm → ALARM
+    ↓
+SNS Topic
+    ↓
+incident-analyzer Lambda
+    ↓
+CloudWatch Logs API（過去15分のエラーログ取得）
+    ↓
+Claude API（原因分析）
+    ↓
+ログ出力（メール通知は未設定）
+```
+
+**Claude 分析結果サンプル:**
+```
+### 原因の推定
+テスト目的で意図的にエラーを発生させたため。
+
+### 影響範囲
+開発環境での意図的なテストエラーのため、本番サービスへの影響はなし。
+
+### 推奨対応
+1. テスト完了確認
+2. アラーム状態の正常化
+3. テスト手順の整備
+```
+
+**成果物:**
+- terraform/modules/sns/（main.tf, variables.tf, outputs.tf）
+- terraform/modules/cloudwatch-alarm/（main.tf, variables.tf, outputs.tf）
+- bots/incident-analyzer/index.mjs
+
+**次回:** Day 38 - コスト監視Bot or MCP サーバー
