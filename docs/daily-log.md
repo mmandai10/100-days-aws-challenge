@@ -1669,3 +1669,71 @@ OpenSearch Collection: ai-knowledge-base-dev
 - projects/knowledge-base/sample-docs/*.md（4 ファイル）
 
 **次回:** Day 43 - MCP に Knowledge Bases 検索ツールを追加
+
+---
+
+### Day 43-44 (2026-02-01)
+
+**テーマ:** MCP ツール追加 + フロントエンド作成 + 基本設計書完成
+
+**完了したこと:**
+
+1. **MCP サーバー v1.3.0**
+   - search_knowledge_base ツール追加（RAG 検索）
+   - @aws-sdk/client-bedrock-agent-runtime 導入
+   - Claude Desktop からナレッジ検索が可能に
+
+2. **基本設計書作成**
+   - システム概要、アーキテクチャ図
+   - 機能設計、データ設計、非機能要件
+   - API 設計、コスト試算（約 $370/月）
+   - Teams 連携設計（Azure Bot Service 経由）
+   - CI/CD パイプライン設計（GitHub Actions）
+
+3. **フロントエンド作成（React + Vite）**
+   - チャット UI（デモモード動作確認済み）
+   - サンプル質問ボタン
+   - 出典表示機能
+   - レスポンシブ対応
+
+4. **Lambda API 設計**
+   - Knowledge Bases 呼び出し Lambda
+   - API Gateway + CloudFront 構成
+   - Terraform 設定ファイル作成
+
+5. **インフラ削除（コスト対策）**
+   - OpenSearch Serverless を terraform destroy
+   - S3 バケット削除
+
+**作成したファイル:**
+```
+projects/knowledge-base/
+├── docs/basic-design.md        # 基本設計書
+├── frontend/                   # React フロントエンド
+│   ├── src/App.tsx
+│   ├── src/index.css
+│   └── package.json
+├── lambda/                     # API バックエンド
+│   ├── src/index.ts
+│   └── package.json
+├── terraform/api-frontend.tf   # API + フロントエンド用（削除済み）
+└── DEPLOY.md                   # デプロイ手順
+
+projects/personal-assistant/mcp-server/
+└── src/index.ts               # v1.3.0（13ツール）
+```
+
+**学んだこと:**
+- React: コンポーネントベースの UI ライブラリ（Facebook 製）
+- Vite: 高速なフロントエンドビルドツール（フランス語で「速い」）
+- OpenSearch Serverless: 名前は Serverless だが最低 2 OCU が常時稼働（$350/月）
+- フロントエンドは「見た目」、バックエンドの Knowledge Bases は同じものを使用
+
+**コスト教訓:**
+- OpenSearch Serverless は使わないときは必ず destroy
+- 代替案: Aurora + pgvector（$50/月〜）、Pinecone（無料枠あり）
+
+**GitHub 公開:**
+- 基本設計書: https://github.com/mmandai10/100-days-aws-challenge/blob/main/projects/knowledge-base/docs/basic-design.md
+
+**次回:** Phase 2 の整理、または Phase 3（コンテナ/Java）へ
