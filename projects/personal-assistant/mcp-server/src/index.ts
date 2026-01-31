@@ -436,11 +436,176 @@ server.tool(
   }
 );
 
+// =====================================================
+// Tool 10: ファイル内テキスト検索
+// =====================================================
+server.tool(
+  "search_files",
+  "リポジトリ内のファイルからテキストを検索します（grep）",
+  {
+    query: z.string().describe("検索するテキスト"),
+    filePattern: z.string().default("*").describe("ファイルパターン（例: *.ts, *.md）"),
+  },
+  async ({ query, filePattern }) => {
+    try {
+      // Windows の findstr を使用（大文字小文字区別なし）
+      const { stdout } = await execAsync(
+        `findstr /S /I /N /C:"${query}" ${filePattern}`,
+        { cwd: REPO_PATH, maxBuffer: 1024 * 1024 }
+      );
+
+      const lines = stdout.trim().split("\n").slice(0, 20); // 最大20件
+      const results = lines.map(line => {
+        const colonIndex = line.indexOf(":");
+        const secondColonIndex = line.indexOf(":", colonIndex + 1);
+        return {
+          file: line.substring(0, colonIndex),
+          line: line.substring(colonIndex + 1, secondColonIndex),
+          content: line.substring(secondColonIndex + 1).trim(),
+        };
+      });
+
+      return {
+        content: [
+          {
+            type: "text" as const,
+            text: `検索結果 "${query}" (${results.length}件):\n${JSON.stringify(results, null, 2)}`,
+          },
+        ],
+      };
+    } catch (error: any) {
+      if (error.code === 1) {
+        return {
+          content: [
+            {
+              type: "text" as const,
+              text: `"${query}" は見つかりませんでした`,
+            },
+          ],
+        };
+      }
+      return {
+        content: [
+          {
+            type: "text" as const,
+            text: `エラー: ${error.message}`,
+          },
+        ],
+      };
+    }
+  }
+);
+
+// =====================================================
+// Tool 11: 今日の日付・曜日を取得
+// =====================================================
+server.tool(
+  "get_today",
+  "今日の日付、曜日、時刻を取得します",
+  {},
+  async () => {
+    const now = new Date();
+    const weekdays = ["日", "月", "火", "水", "木", "金", "土"];
+    
+    const info = {
+      date: now.toISOString().split("T")[0],
+      weekday: weekdays[now.getDay()],
+      time: now.toTimeString().split(" ")[0],
+      timestamp: now.toISOString(),
+      dayOfYear: Math.floor(
+        (now.getTime() - new Date(now.getFullYear(), 0, 0).getTime()) / (1000 * 60 * 60 * 24)
+      ),
+    };
+
+    return {
+      content: [
+        {
+          type: "text" as const,
+          text: `今日: ${info.date} (${info.weekday}) ${info.time}\n${JSON.stringify(info, null, 2)}`,
+        },
+      ],
+    };
+  }
+);
+
+// =====================================================
+// Tool 12: プロジェクト統計
+// =====================================================
+server.tool(
+  "project_stats",
+  "プロジェクトの統計情報（ファイル数、コード行数など）を取得します",
+  {},
+  async () => {
+    try {
+      // ファイル数をカウント（.git 除外）
+      const { stdout: fileCount } = await execAsync(
+        `dir /S /B /A-D | find /C /V ""`,
+        { cwd: REPO_PATH }
+      );
+
+      // TypeScript ファイル数
+      const { stdout: tsCount } = await execAsync(
+        `dir /S /B *.ts 2>nul | find /C /V ""`,
+        { cwd: REPO_PATH }
+      ).catch(() => ({ stdout: "0" }));
+
+      // JavaScript ファイル数
+      const { stdout: jsCount } = await execAsync(
+        `dir /S /B *.js *.mjs 2>nul | find /C /V ""`,
+        { cwd: REPO_PATH }
+      ).catch(() => ({ stdout: "0" }));
+
+      // Markdown ファイル数
+      const { stdout: mdCount } = await execAsync(
+        `dir /S /B *.md 2>nul | find /C /V ""`,
+        { cwd: REPO_PATH }
+      ).catch(() => ({ stdout: "0" }));
+
+      // Git コミット数
+      const { stdout: commitCount } = await runGitCommand(
+        "git rev-list --count HEAD"
+      );
+
+      // 最終コミット日
+      const { stdout: lastCommit } = await runGitCommand(
+        "git log -1 --format=%ci"
+      );
+
+      const stats = {
+        totalFiles: parseInt(fileCount.trim()) || 0,
+        typeScriptFiles: parseInt(tsCount.trim()) || 0,
+        javaScriptFiles: parseInt(jsCount.trim()) || 0,
+        markdownFiles: parseInt(mdCount.trim()) || 0,
+        totalCommits: parseInt(commitCount.trim()) || 0,
+        lastCommitDate: lastCommit.trim(),
+      };
+
+      return {
+        content: [
+          {
+            type: "text" as const,
+            text: `プロジェクト統計:\n${JSON.stringify(stats, null, 2)}`,
+          },
+        ],
+      };
+    } catch (error: any) {
+      return {
+        content: [
+          {
+            type: "text" as const,
+            text: `エラー: ${error.message}`,
+          },
+        ],
+      };
+    }
+  }
+);
+
 // サーバー起動
 async function main() {
   const transport = new StdioServerTransport();
   await server.connect(transport);
-  console.error("GitHub MCP Server v1.1.0 started (with Git tools)");
+  console.error("GitHub MCP Server v1.2.0 started (with Git + Utility tools)");
 }
 
 main().catch(console.error);
