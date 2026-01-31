@@ -1736,4 +1736,34 @@ projects/personal-assistant/mcp-server/
 **GitHub 公開:**
 - 基本設計書: https://github.com/mmandai10/100-days-aws-challenge/blob/main/projects/knowledge-base/docs/basic-design.md
 
-**次回:** Phase 2 の整理、または Phase 3（コンテナ/Java）へ
+**次回:** Phase 2（コンテナ基礎）Day 45 から開始
+
+---
+
+### ロードマップ更新 (2026-02-01)
+
+**変更内容:**
+- 100 Days Challenge → **200 Days Challenge** に拡張
+- ロードマップ v5.0 → **v6.0** に更新
+- 認定資格 **4つ** を目標に追加
+
+**新しい Phase 構成:**
+| Phase | Day | テーマ |
+|-------|-----|--------|
+| 0 | 1-28 | ShopX EC Platform ✅ |
+| 1 | 29-44 | AI アシスタント + MCP + RAG ✅ |
+| 2 | 45-65 | コンテナ基礎（Docker, ECS）← 次 |
+| 3 | 66-90 | Kubernetes & EKS |
+| 4 | 91-110 | CI/CD マスター |
+| 5 | 111-140 | Agentic AI 実践 |
+| 6 | 141-160 | 監視 & 運用 |
+| 7 | 161-185 | 総合プロジェクト |
+| 8 | 186-200 | 認定資格 & 仕上げ |
+
+**認定資格目標:**
+1. AWS Certified Developer - Associate（Day 111）
+2. AWS Certified AI Practitioner（Day 141）
+3. AWS Certified Solutions Architect - Associate（Day 185）
+4. AWS Certified GenAI Developer - Professional（Day 195）
+
+**次回 Day 45:** Docker 入門から開始！
