@@ -3,6 +3,10 @@ import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 import { z } from "zod";
 import { exec } from "child_process";
 import { promisify } from "util";
+import {
+  BedrockAgentRuntimeClient,
+  RetrieveAndGenerateCommand,
+} from "@aws-sdk/client-bedrock-agent-runtime";
 
 const execAsync = promisify(exec);
 
@@ -14,6 +18,15 @@ const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
 const GITHUB_OWNER = process.env.GITHUB_OWNER || "mmandai10";
 const GITHUB_REPO = process.env.GITHUB_REPO || "100-days-aws-challenge";
 const REPO_PATH = process.env.REPO_PATH || "C:\\100-days-aws-challenge";
+
+// Bedrock Knowledge Bases 設定
+const KNOWLEDGE_BASE_ID = process.env.KNOWLEDGE_BASE_ID || "SDTDA89LQD";
+const BEDROCK_REGION = process.env.BEDROCK_REGION || "us-east-1";
+const BEDROCK_MODEL_ARN = process.env.BEDROCK_MODEL_ARN || 
+  "arn:aws:bedrock:us-east-1::foundation-model/amazon.nova-pro-v1:0";
+
+// Bedrock クライアント
+const bedrockClient = new BedrockAgentRuntimeClient({ region: BEDROCK_REGION });
 
 // GitHub API リクエスト用ヘルパー
 async function githubFetch(endpoint: string) {
@@ -45,7 +58,7 @@ async function runGitCommand(command: string): Promise<{ stdout: string; stderr:
 // MCP サーバー作成
 const server = new McpServer({
   name: "github-assistant",
-  version: "1.1.0",
+  version: "1.3.0",
 });
 
 // =====================================================
@@ -601,11 +614,83 @@ server.tool(
   }
 );
 
+// =====================================================
+// Tool 13: Knowledge Bases 検索（RAG）
+// =====================================================
+server.tool(
+  "search_knowledge_base",
+  "ナレッジベースからドキュメントを検索して回答を生成します（RAG）",
+  {
+    query: z.string().describe("検索する質問文（日本語OK）"),
+  },
+  async ({ query }) => {
+    try {
+      const command = new RetrieveAndGenerateCommand({
+        input: { text: query },
+        retrieveAndGenerateConfiguration: {
+          type: "KNOWLEDGE_BASE",
+          knowledgeBaseConfiguration: {
+            knowledgeBaseId: KNOWLEDGE_BASE_ID,
+            modelArn: BEDROCK_MODEL_ARN,
+          },
+        },
+      });
+
+      const response = await bedrockClient.send(command);
+
+      // 回答テキスト
+      const answer = response.output?.text || "回答を生成できませんでした";
+
+      // 出典情報を抽出
+      const citations: string[] = [];
+      if (response.citations) {
+        for (const citation of response.citations) {
+          if (citation.retrievedReferences) {
+            for (const ref of citation.retrievedReferences) {
+              const uri = ref.location?.s3Location?.uri;
+              if (uri) {
+                // S3 URI からファイル名を抽出
+                const fileName = uri.split("/").pop() || uri;
+                if (!citations.includes(fileName)) {
+                  citations.push(fileName);
+                }
+              }
+            }
+          }
+        }
+      }
+
+      const result = {
+        answer,
+        sources: citations,
+      };
+
+      return {
+        content: [
+          {
+            type: "text" as const,
+            text: `【回答】\n${answer}\n\n【出典】\n${citations.length > 0 ? citations.join("\n") : "なし"}`,
+          },
+        ],
+      };
+    } catch (error: any) {
+      return {
+        content: [
+          {
+            type: "text" as const,
+            text: `エラー: ${error.message}`,
+          },
+        ],
+      };
+    }
+  }
+);
+
 // サーバー起動
 async function main() {
   const transport = new StdioServerTransport();
   await server.connect(transport);
-  console.error("GitHub MCP Server v1.2.0 started (with Git + Utility tools)");
+  console.error("GitHub MCP Server v1.3.0 started (with Knowledge Bases)");
 }
 
 main().catch(console.error);

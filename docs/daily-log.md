@@ -1617,4 +1617,55 @@ Claude → MCP Server → git push
 
 **Day 40 完了！**
 
-**次回:** Day 41 - AWS コスト確認ツールを MCP に追加、Cost Monitor テスト
+---
+
+### Day 42 (2026-02-01)
+
+**テーマ:** Phase 2 開始 - Bedrock Knowledge Bases で RAG 構築
+
+**完了したこと:**
+1. Phase 2 プロジェクト作成（knowledge-base/）
+2. アーキテクチャ設計書作成
+3. Terraform で Knowledge Bases 環境構築
+   - S3 バケット（ドキュメント保存）
+   - OpenSearch Serverless（ベクトルDB）
+   - IAM ロール・ポリシー
+   - Bedrock Knowledge Base + Data Source
+4. OpenSearch インデックス手動作成（awscurl使用）
+5. サンプルドキュメント 4 件をアップロード・同期
+6. RAG クエリ成功（日本語・英語）
+
+**作成したリソース:**
+```
+Knowledge Base ID: SDTDA89LQD
+S3 Bucket: ai-knowledge-base-dev-docs-qh1m62zn
+OpenSearch Collection: ai-knowledge-base-dev
+リージョン: us-east-1
+```
+
+**サンプルドキュメント:**
+| ファイル | 内容 |
+|----------|------|
+| lambda-troubleshooting.md | Lambda のよくあるエラーと解決策 |
+| dynamodb-patterns.md | Single Table Design、GSI の使い方 |
+| terraform-basics.md | 基本コマンド、ベストプラクティス |
+| mcp-guide.md | MCP サーバーの作り方 |
+
+**学んだこと:**
+- RAG は「検索（Retrieve）」と「生成（Generate）」の 2 段階
+- Knowledge Bases は Embedding + 検索を自動化、回答生成には LLM（Claude/Nova）が必要
+- OpenSearch Serverless はコレクション作成後、インデックスを別途作成する必要がある
+- Embedding の仕組み: 同じ文脈に出現する単語は似たベクトルになる（学習による）
+- CLI で API を叩くと出典（citations）が返る、コンソール UI では表示されない
+
+**トラブルシューティング:**
+- OpenSearch インデックス未作成エラー → awscurl で手動作成
+- PowerShell の JSON エスケープ問題 → ファイルに保存して file:// で渡す
+- Bedrock モデルアクセス → Anthropic フォーム提出後 15 分待機、または Nova を使用
+
+**成果物:**
+- projects/knowledge-base/terraform/*.tf（7 ファイル）
+- projects/knowledge-base/docs/architecture.md
+- projects/knowledge-base/sample-docs/*.md（4 ファイル）
+
+**次回:** Day 43 - MCP に Knowledge Bases 検索ツールを追加
