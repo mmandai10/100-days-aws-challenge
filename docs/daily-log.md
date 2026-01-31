@@ -1510,3 +1510,64 @@ mcp-server/
 - TypeScript ビルド（npm run build）
 - Claude Desktop 設定に追加
 - 動作確認
+
+---
+
+### Day 40 (2026-01-31)
+
+**テーマ:** MCP に Git 操作ツール追加
+
+**完了したこと:**
+- git_status ツール実装（変更ファイル一覧）
+- git_commit ツール実装（ステージング + コミット）
+- git_push ツール実装（リモートに push）
+- git_log ツール実装（ローカルコミット履歴）
+- Claude から直接 Git 操作の動作確認成功
+
+**追加したツール:**
+| ツール | 機能 |
+|--------|------|
+| `git_status` | 変更ファイル一覧表示 |
+| `git_commit` | git add -A + git commit |
+| `git_push` | git push origin {branch} |
+| `git_log` | 最近のコミット履歴表示 |
+
+**技術ポイント:**
+- `child_process.exec` で Git コマンド実行
+- `promisify` で async/await 対応
+- `cwd` オプションでリポジトリパス指定
+- エラーハンドリング（nothing to commit 等）
+
+**実現したワークフロー:**
+```
+ユーザー: 「コミットして」
+    ↓
+Claude → MCP Server → git add + git commit
+    ↓
+Claude → MCP Server → git push
+    ↓
+ユーザー: 完了確認
+```
+
+**学んだこと:**
+- MCP は GitHub API（リモート操作）と git コマンド（ローカル操作）の両方を統合できる
+- TypeScript で child_process を使う際は promisify が便利
+- コミットメッセージのエスケープ処理が必要（ダブルクォート）
+
+**成果物:**
+- mcp-server/src/index.ts（v1.1.0: Git ツール追加）
+
+**MCP サーバー機能一覧（v1.1.0）:**
+| カテゴリ | ツール | 機能 |
+|----------|--------|------|
+| GitHub API | list_prs | PR 一覧取得 |
+| GitHub API | list_issues | Issue 一覧取得 |
+| GitHub API | list_commits | リモートコミット取得 |
+| GitHub API | create_issue | Issue 作成 |
+| GitHub API | get_repo_info | リポジトリ情報取得 |
+| Git コマンド | git_status | 変更状態確認 |
+| Git コマンド | git_commit | コミット実行 |
+| Git コマンド | git_push | プッシュ実行 |
+| Git コマンド | git_log | ローカル履歴表示 |
+
+**次回:** Day 41 - AWS コスト確認ツールを MCP に追加
