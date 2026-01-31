@@ -1571,3 +1571,50 @@ Claude → MCP Server → git push
 | Git コマンド | git_log | ローカル履歴表示 |
 
 **次回:** Day 41 - AWS コスト確認ツールを MCP に追加
+
+---
+
+### Day 40 続き (2026-01-31)
+
+**追加作業:**
+
+**1. MCP ユーティリティツール追加（3種）:**
+| ツール | 機能 |
+|--------|------|
+| `search_files` | ファイル内テキスト検索（Windows findstr） |
+| `get_today` | 今日の日付・曜日・時刻取得 |
+| `project_stats` | プロジェクト統計（ファイル数、コミット数） |
+
+**2. README 整備:**
+- プロジェクト全体の README.md 更新（進捗、成果物、技術スタック）
+- MCP サーバー用 README.md 新規作成（セットアップ手順、使い方）
+
+**3. Phase 1 振り返り:**
+- docs/phase1-summary.md 作成
+- 達成したこと、学んだ技術、苦労したポイントを整理
+
+**MCP サーバー機能一覧（v1.2.0）:**
+| カテゴリ | ツール | 機能 |
+|----------|--------|------|
+| GitHub API | list_prs | PR 一覧取得 |
+| GitHub API | list_issues | Issue 一覧取得 |
+| GitHub API | list_commits | リモートコミット取得 |
+| GitHub API | create_issue | Issue 作成 |
+| GitHub API | get_repo_info | リポジトリ情報取得 |
+| Git コマンド | git_status | 変更状態確認 |
+| Git コマンド | git_commit | コミット実行 |
+| Git コマンド | git_push | プッシュ実行 |
+| Git コマンド | git_log | ローカル履歴表示 |
+| ユーティリティ | search_files | ファイル内検索 |
+| ユーティリティ | get_today | 日付・時刻取得 |
+| ユーティリティ | project_stats | プロジェクト統計 |
+
+**成果物:**
+- mcp-server/src/index.ts（v1.2.0: ユーティリティ追加）
+- mcp-server/README.md（新規）
+- README.md（更新）
+- docs/phase1-summary.md（新規）
+
+**Day 40 完了！**
+
+**次回:** Day 41 - AWS コスト確認ツールを MCP に追加、Cost Monitor テスト
