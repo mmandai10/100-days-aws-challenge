@@ -1389,3 +1389,124 @@ Claude API（原因分析）
 - bots/incident-analyzer/index.mjs
 
 **次回:** Day 38 - コスト監視Bot or MCP サーバー
+
+---
+
+### Day 38 (2026-01-30)
+
+**テーマ:** コスト監視Bot
+
+**完了したこと:**
+- Cost Explorer API の概念理解
+- cost-monitor Lambda 作成（コスト取得 + 異常検知 + Claude分析 + SES通知）
+- Terraform 設定追加（IAM、EventBridge、Lambda）
+- Cost Explorer 有効化（AWS コンソール）
+
+**システム構成:**
+```
+EventBridge (毎朝 9:00 JST)
+    ↓
+Lambda (cost-monitor)
+    ↓
+Cost Explorer API（過去2日分のコスト取得）
+    ↓
+異常検知（前日比 50% 以上で警告）
+    ↓
+Claude API（コスト分析レポート生成）
+    ↓
+SES（メール通知）
+```
+
+**Cost Explorer API:**
+- GetCostAndUsage: 指定期間のコストをサービス別に取得
+- us-east-1 リージョン限定（グローバルサービス）
+- 有効化後、データ利用可能まで最大24時間
+
+**Lambda コードの機能:**
+| 関数 | 役割 |
+|------|------|
+| `getCosts()` | Cost Explorer API でサービス別コスト取得 |
+| `formatCostData()` | API レスポンスを整形 |
+| `detectAnomaly()` | 前日比 50% 以上増加で警告フラグ |
+| `analyzeWithClaude()` | Claude でコスト分析レポート生成 |
+| `sendEmail()` | SES でメール通知 |
+
+**学んだこと:**
+- Cost Explorer API は us-east-1 のみ対応
+- 有効化に24時間かかる場合がある
+- Granularity: DAILY / MONTHLY / HOURLY
+- GroupBy で SERVICE 別に分解可能
+
+**作成されたリソース:**
+| リソース | 名前 |
+|----------|------|
+| Lambda | personal-assistant-dev-cost-monitor |
+| IAM Role | personal-assistant-dev-cost-monitor-role |
+| EventBridge | personal-assistant-dev-cost-monitor-schedule |
+
+**成果物:**
+- bots/cost-monitor/index.mjs
+- terraform/main.tf（Cost Monitor セクション追加）
+
+**次回:** Day 39 - MCP サーバー構築（Cost Explorer 24時間待ちのため）
+
+---
+
+### Day 39 (2026-01-31)
+
+**テーマ:** MCP サーバー構築
+
+**完了したこと:**
+- MCP の概念復習（Bot vs MCP の違い）
+- GitHub MCP サーバー作成（TypeScript）
+- 5つのツール実装（PR/Issue/Commit 操作）
+- 依存関係インストール
+
+**Bot vs MCP の違い:**
+```
+【Bot】一方向・自動化
+EventBridge → Lambda → 処理 → 通知
+（定期実行、トリガー駆動）
+
+【MCP】双方向・対話的
+Claude ←→ MCP Server ←→ 外部サービス
+（ユーザーの指示で都度実行）
+```
+
+**実装したツール:**
+| ツール | 機能 |
+|--------|------|
+| `list_prs` | PR 一覧取得（state, limit 指定可） |
+| `list_issues` | Issue 一覧取得（PR除外） |
+| `list_commits` | 最近のコミット取得 |
+| `create_issue` | 新規 Issue 作成 |
+| `get_repo_info` | リポジトリ情報取得 |
+
+**MCP サーバー構成:**
+```
+mcp-server/
+├── package.json      # 依存関係定義
+├── tsconfig.json     # TypeScript 設定
+└── src/
+    └── index.ts      # MCP サーバー本体
+```
+
+**使用ライブラリ:**
+- `@modelcontextprotocol/sdk`: MCP 公式 SDK
+- `zod`: スキーマバリデーション
+
+**学んだこと:**
+- MCP Server は stdio 経由で Claude と通信
+- `server.tool()` でツールを定義
+- zod でパラメータスキーマを定義
+- console.error() で stderr にログ出力（stdout は MCP 通信用）
+
+**成果物:**
+- mcp-server/package.json
+- mcp-server/tsconfig.json
+- mcp-server/src/index.ts
+
+**次のステップ:**
+- TypeScript ビルド（npm run build）
+- Claude Desktop 設定に追加
+- 動作確認
