@@ -1,0 +1,9 @@
+{
+  "name": "day46-node-app",
+  "version": "1.0.0",
+  "description": "Day 46 - Node.js Docker practice",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  }
+}
