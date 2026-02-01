@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  # フロントエンド（nginx）
+  frontend:
+    build: ./frontend
+    ports:
+      - "8080:80"    # ホストの 8080 → コンテナの 80
+    depends_on:
+      - backend      # backend が先に起動
+    networks:
+      - app-network
+
+  # バックエンド（Node.js API）
+  backend:
+    build: ./backend
+    ports:
+      - "3000:3000"  # API も外部公開（開発用）
+    environment:
+      - NODE_ENV=development
+    networks:
+      - app-network
+
+# コンテナ間通信用ネットワーク
+networks:
+  app-network:
+    driver: bridge
