@@ -1,0 +1,246 @@
+{
+  "block": "南関東",
+  "prefectures": ["神奈川県", "千葉県", "山梨県"],
+  "totalSeats": 23,
+  "prediction": [
+    { "party": "自民", "fullName": "自由民主党", "seats": 8, "color": "#E53935" },
+    { "party": "中道", "fullName": "中道改革連合", "seats": 4, "color": "#1E88E5" },
+    { "party": "維新", "fullName": "日本維新の会", "seats": 2, "color": "#43A047" },
+    { "party": "国民", "fullName": "国民民主党", "seats": 2, "color": "#FB8C00" },
+    { "party": "みらい", "fullName": "チームみらい", "seats": 2, "color": "#00ACC1" },
+    { "party": "共産", "fullName": "日本共産党", "seats": 1, "color": "#C62828" },
+    { "party": "れいわ", "fullName": "れいわ新選組", "seats": 1, "color": "#EC407A" },
+    { "party": "参政", "fullName": "参政党", "seats": 1, "color": "#FF7043" },
+    { "party": "保守", "fullName": "日本保守党", "seats": 1, "color": "#5D4037" },
+    { "party": "減税", "fullName": "減税日本・ゆうこく連合", "seats": 1, "color": "#7B1FA2" }
+  ],
+  "electedCandidates": [
+    {
+      "rank": 1,
+      "party": "自民",
+      "name": "坂井学",
+      "district": "神奈川5区",
+      "type": "惜敗復活",
+      "sekihaiRate": 92.5,
+      "comment": "前職6回。戸塚・泉区で中道に惜敗も高い惜敗率で復活"
+    },
+    {
+      "rank": 2,
+      "party": "自民",
+      "name": "古川直季",
+      "district": "神奈川6区",
+      "type": "惜敗復活",
+      "sekihaiRate": 91.8,
+      "comment": "前職2回。保土ケ谷・旭区で一騎打ちに敗れるも僅差"
+    },
+    {
+      "rank": 3,
+      "party": "自民",
+      "name": "鈴木馨祐",
+      "district": "神奈川7区",
+      "type": "惜敗復活",
+      "sekihaiRate": 90.2,
+      "comment": "前職6回。港北区で中谷氏に惜敗"
+    },
+    {
+      "rank": 4,
+      "party": "自民",
+      "name": "三谷英弘",
+      "district": "神奈川8区",
+      "type": "惜敗復活",
+      "sekihaiRate": 88.5,
+      "comment": "前職4回。緑区・青葉区で江田氏に敗れるも復活"
+    },
+    {
+      "rank": 5,
+      "party": "自民",
+      "name": "星野剛士",
+      "district": "神奈川12区",
+      "type": "惜敗復活",
+      "sekihaiRate": 87.3,
+      "comment": "前職5回。藤沢市で阿部氏に惜敗"
+    },
+    {
+      "rank": 6,
+      "party": "自民",
+      "name": "丸田康一郎",
+      "district": "神奈川13区",
+      "type": "惜敗復活",
+      "sekihaiRate": 86.1,
+      "comment": "新人。甘利元幹事長の地盤継承も太氏に敗れる"
+    },
+    {
+      "rank": 7,
+      "party": "自民",
+      "name": "山際大志郎",
+      "district": "神奈川18区",
+      "type": "惜敗復活",
+      "sekihaiRate": 84.7,
+      "comment": "前職7回。中原・高津区の激戦で宗野氏に惜敗"
+    },
+    {
+      "rank": 8,
+      "party": "自民",
+      "name": "金沢結衣",
+      "district": "神奈川20区",
+      "type": "惜敗復活",
+      "sekihaiRate": 83.2,
+      "comment": "新人。厚木・海老名で大塚氏に接戦の末敗れる"
+    },
+    {
+      "rank": 1,
+      "party": "中道",
+      "name": "角田秀穂",
+      "district": "比例単独",
+      "type": "単独1位",
+      "sekihaiRate": null,
+      "comment": "旧公明党出身。前職3回。名簿1位で当選確実"
+    },
+    {
+      "rank": 2,
+      "party": "中道",
+      "name": "沼崎満子",
+      "district": "比例単独",
+      "type": "単独2位",
+      "sekihaiRate": null,
+      "comment": "旧公明党出身。前職1回。名簿2位で当選"
+    },
+    {
+      "rank": 3,
+      "party": "中道",
+      "name": "原田直樹",
+      "district": "比例単独",
+      "type": "単独3位",
+      "sekihaiRate": null,
+      "comment": "旧公明党出身。新人。名簿3位で当選"
+    },
+    {
+      "rank": 4,
+      "party": "中道",
+      "name": "長友克洋",
+      "district": "神奈川14区",
+      "type": "惜敗復活",
+      "sekihaiRate": 91.5,
+      "comment": "前職1回。相模原で赤間氏に惜敗も高い惜敗率"
+    },
+    {
+      "rank": 1,
+      "party": "維新",
+      "name": "鈴木敦",
+      "district": "神奈川10区",
+      "type": "惜敗復活",
+      "sekihaiRate": 78.5,
+      "comment": "前職1回。川崎市川崎区で田中氏に敗れる"
+    },
+    {
+      "rank": 2,
+      "party": "維新",
+      "name": "藤巻健太",
+      "district": "神奈川14区",
+      "type": "惜敗復活",
+      "sekihaiRate": 65.2,
+      "comment": "元職1回。相模原で自民・中道に続く3位"
+    },
+    {
+      "rank": 1,
+      "party": "国民",
+      "name": "浅尾慶一郎",
+      "district": "神奈川4区",
+      "type": "惜敗復活",
+      "sekihaiRate": 72.3,
+      "comment": "元職4回。鎌倉市で三つ巴の戦い"
+    },
+    {
+      "rank": 2,
+      "party": "国民",
+      "name": "杉村康之",
+      "district": "神奈川19区",
+      "type": "惜敗復活",
+      "sekihaiRate": 58.4,
+      "comment": "新人。宮前区・都筑区で古屋氏に大差"
+    },
+    {
+      "rank": 1,
+      "party": "みらい",
+      "name": "竹田恒泰",
+      "district": "比例単独",
+      "type": "単独1位",
+      "sekihaiRate": null,
+      "comment": "作家・憲法学者。党の顔として名簿上位"
+    },
+    {
+      "rank": 2,
+      "party": "みらい",
+      "name": "宮崎政久",
+      "district": "比例単独",
+      "type": "単独2位",
+      "sekihaiRate": null,
+      "comment": "元自民党衆院議員。名簿2位で当選"
+    },
+    {
+      "rank": 1,
+      "party": "共産",
+      "name": "斉藤和子",
+      "district": "比例単独",
+      "type": "単独1位",
+      "sekihaiRate": null,
+      "comment": "元職。千葉県委員会副委員長"
+    },
+    {
+      "rank": 1,
+      "party": "れいわ",
+      "name": "三好りょう",
+      "district": "神奈川15区",
+      "type": "惜敗復活",
+      "sekihaiRate": 35.2,
+      "comment": "新人。河野太郎氏の牙城に挑戦"
+    },
+    {
+      "rank": 1,
+      "party": "参政",
+      "name": "神谷宗幣",
+      "district": "比例単独",
+      "type": "単独1位",
+      "sekihaiRate": null,
+      "comment": "党代表。参院議員からの鞍替え"
+    },
+    {
+      "rank": 1,
+      "party": "保守",
+      "name": "小坂英二",
+      "district": "比例単独",
+      "type": "単独1位",
+      "sekihaiRate": null,
+      "comment": "荒川区議。南関東の党の顔"
+    },
+    {
+      "rank": 1,
+      "party": "減税",
+      "name": "原口一博",
+      "district": "比例単独",
+      "type": "単独1位",
+      "sekihaiRate": null,
+      "comment": "元総務大臣。佐賀から鞍替え"
+    }
+  ],
+  "kanagawaFocus": {
+    "description": "神奈川県関連の比例当選者",
+    "candidates": [
+      { "party": "自民", "name": "坂井学", "district": "神奈川5区", "sekihaiRate": 92.5 },
+      { "party": "自民", "name": "古川直季", "district": "神奈川6区", "sekihaiRate": 91.8 },
+      { "party": "自民", "name": "鈴木馨祐", "district": "神奈川7区", "sekihaiRate": 90.2 },
+      { "party": "自民", "name": "三谷英弘", "district": "神奈川8区", "sekihaiRate": 88.5 },
+      { "party": "自民", "name": "星野剛士", "district": "神奈川12区", "sekihaiRate": 87.3 },
+      { "party": "自民", "name": "丸田康一郎", "district": "神奈川13区", "sekihaiRate": 86.1 },
+      { "party": "自民", "name": "山際大志郎", "district": "神奈川18区", "sekihaiRate": 84.7 },
+      { "party": "自民", "name": "金沢結衣", "district": "神奈川20区", "sekihaiRate": 83.2 },
+      { "party": "中道", "name": "長友克洋", "district": "神奈川14区", "sekihaiRate": 91.5 },
+      { "party": "維新", "name": "鈴木敦", "district": "神奈川10区", "sekihaiRate": 78.5 },
+      { "party": "維新", "name": "藤巻健太", "district": "神奈川14区", "sekihaiRate": 65.2 },
+      { "party": "国民", "name": "浅尾慶一郎", "district": "神奈川4区", "sekihaiRate": 72.3 },
+      { "party": "国民", "name": "杉村康之", "district": "神奈川19区", "sekihaiRate": 58.4 },
+      { "party": "れいわ", "name": "三好りょう", "district": "神奈川15区", "sekihaiRate": 35.2 }
+    ]
+  },
+  "analysis": "南関東ブロックは自民が8議席で最大勢力を維持。中道改革連合は旧公明党出身者を名簿上位（1-3位）に配置し、3名が比例単独で当選確実。残り1議席は神奈川14区で惜敗した長友氏が高い惜敗率で復活当選の見込み。維新は与党入りしたものの比例票は伸び悩み2議席。国民民主は浅尾元衆院議員が復活。新興勢力のチームみらい、参政党、日本保守党、減税日本がそれぞれ1-2議席を確保し、多党化が顕著。"
+}

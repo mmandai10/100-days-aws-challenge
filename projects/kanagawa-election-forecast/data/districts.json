@@ -1,0 +1,262 @@
+{
+  "districts": [
+    {
+      "id": 1,
+      "name": "神奈川1区",
+      "areas": ["横浜市中区", "横浜市磯子区", "横浜市金沢区"],
+      "candidates": [
+        { "name": "松本純", "party": "自民", "status": "元", "times": 8 },
+        { "name": "篠原豪", "party": "中道", "status": "前", "times": 3 },
+        { "name": "浅川義治", "party": "参政", "status": "新", "times": 0 }
+      ],
+      "prediction": "中道",
+      "intensity": "接戦",
+      "analysis": "前回立憲の篠原氏が勝利。中道改革連合として組織力強化。自民・松本氏は返り咲きを狙うが、都市部の逆風が続く。"
+    },
+    {
+      "id": 2,
+      "name": "神奈川2区",
+      "areas": ["横浜市西区", "横浜市南区", "横浜市港南区"],
+      "candidates": [
+        { "name": "鈴木馨祐", "party": "自民", "status": "新", "times": 0 },
+        { "name": "岡本英子", "party": "中道", "status": "新", "times": 0 },
+        { "name": "高橋みほ", "party": "参政", "status": "新", "times": 0 }
+      ],
+      "prediction": "自民",
+      "intensity": "接戦",
+      "analysis": "菅義偉元首相の引退を受けた選挙区。後継の鈴木氏が組織を引き継ぐが、新人同士の戦いで予断を許さない。"
+    },
+    {
+      "id": 3,
+      "name": "神奈川3区",
+      "areas": ["横浜市鶴見区", "横浜市神奈川区"],
+      "candidates": [
+        { "name": "中西健治", "party": "自民", "status": "前", "times": 2 },
+        { "name": "小林丈人", "party": "中道", "status": "新", "times": 0 },
+        { "name": "木佐木大助", "party": "共産", "status": "新", "times": 0 }
+      ],
+      "prediction": "自民",
+      "intensity": "やや自民優勢",
+      "analysis": "中西氏が地盤を固める。中道新人の挑戦を受けるが、現職の優位は揺るがない見通し。"
+    },
+    {
+      "id": 4,
+      "name": "神奈川4区",
+      "areas": ["横浜市栄区", "鎌倉市", "逗子市", "三浦郡"],
+      "candidates": [
+        { "name": "山本朋広", "party": "自民", "status": "元", "times": 5 },
+        { "name": "早稲田ゆき", "party": "中道", "status": "前", "times": 3 },
+        { "name": "浅尾慶一郎", "party": "国民", "status": "元", "times": 4 }
+      ],
+      "prediction": "中道",
+      "intensity": "激戦",
+      "analysis": "前回勝利の早稲田氏が優位。自民・山本氏、国民・浅尾氏との三つ巴で票が分散する可能性。"
+    },
+    {
+      "id": 5,
+      "name": "神奈川5区",
+      "areas": ["横浜市戸塚区", "横浜市泉区"],
+      "candidates": [
+        { "name": "坂井学", "party": "自民", "status": "前", "times": 6 },
+        { "name": "山崎誠", "party": "中道", "status": "前", "times": 4 },
+        { "name": "高谷清彦", "party": "参政", "status": "新", "times": 0 }
+      ],
+      "prediction": "中道",
+      "intensity": "接戦",
+      "analysis": "前回は山崎氏が勝利。坂井氏は比例復活も、都市部での自民逆風が続く中、山崎氏が再選有利。"
+    },
+    {
+      "id": 6,
+      "name": "神奈川6区",
+      "areas": ["横浜市保土ケ谷区", "横浜市旭区"],
+      "candidates": [
+        { "name": "古川直季", "party": "自民", "status": "前", "times": 2 },
+        { "name": "青柳陽一郎", "party": "中道", "status": "前", "times": 4 }
+      ],
+      "prediction": "中道",
+      "intensity": "一騎打ち",
+      "analysis": "与野党一騎打ち。前回勝利の青柳氏が組織力を活かし優位。古川氏は巻き返しを図る。"
+    },
+    {
+      "id": 7,
+      "name": "神奈川7区",
+      "areas": ["横浜市港北区"],
+      "candidates": [
+        { "name": "鈴木けいすけ", "party": "自民", "status": "前", "times": 5 },
+        { "name": "中谷一馬", "party": "中道", "status": "前", "times": 3 }
+      ],
+      "prediction": "中道",
+      "intensity": "一騎打ち",
+      "analysis": "与野党一騎打ち。前回は中谷氏が勝利。港北区の無党派層の動向が鍵。"
+    },
+    {
+      "id": 8,
+      "name": "神奈川8区",
+      "areas": ["横浜市緑区", "横浜市青葉区"],
+      "candidates": [
+        { "name": "三谷英弘", "party": "自民", "status": "前", "times": 3 },
+        { "name": "江田憲司", "party": "中道", "status": "前", "times": 7 }
+      ],
+      "prediction": "中道",
+      "intensity": "一騎打ち",
+      "analysis": "与野党一騎打ち。江田氏は7回当選のベテラン。青葉区の高い投票率が追い風に。"
+    },
+    {
+      "id": 9,
+      "name": "神奈川9区",
+      "areas": ["川崎市多摩区", "川崎市麻生区"],
+      "candidates": [
+        { "name": "中山展宏", "party": "自民", "status": "元", "times": 4 },
+        { "name": "笠浩史", "party": "中道", "status": "前", "times": 7 },
+        { "name": "吉田大成", "party": "維新", "status": "新", "times": 0 }
+      ],
+      "prediction": "中道",
+      "intensity": "接戦",
+      "analysis": "前回勝利の笠氏が優位。自民・中山氏の返り咲きは厳しいか。維新が票を分ける可能性。"
+    },
+    {
+      "id": 10,
+      "name": "神奈川10区",
+      "areas": ["川崎市川崎区", "川崎市幸区"],
+      "candidates": [
+        { "name": "田中和徳", "party": "自民", "status": "前", "times": 9 },
+        { "name": "鈴木敦", "party": "維新", "status": "前", "times": 1 },
+        { "name": "畑野君枝", "party": "共産", "status": "元", "times": 0 }
+      ],
+      "prediction": "自民",
+      "intensity": "与党対決",
+      "analysis": "自民vs維新の与党対決。9回当選の田中氏が経験で上回る。維新・鈴木氏は比例復活狙いか。"
+    },
+    {
+      "id": 11,
+      "name": "神奈川11区",
+      "areas": ["横須賀市", "三浦市"],
+      "candidates": [
+        { "name": "小泉進次郎", "party": "自民", "status": "前", "times": 6 },
+        { "name": "林伸明", "party": "共産", "status": "新", "times": 0 }
+      ],
+      "prediction": "自民",
+      "intensity": "自民優勢",
+      "analysis": "小泉進次郎氏の牙城。知名度・地盤ともに圧倒的で、盤石の戦い。"
+    },
+    {
+      "id": 12,
+      "name": "神奈川12区",
+      "areas": ["藤沢市", "高座郡"],
+      "candidates": [
+        { "name": "星野剛士", "party": "自民", "status": "前", "times": 5 },
+        { "name": "阿部知子", "party": "中道", "status": "前", "times": 8 },
+        { "name": "水戸将史", "party": "維新", "status": "元", "times": 0 }
+      ],
+      "prediction": "中道",
+      "intensity": "接戦",
+      "analysis": "8回当選の阿部氏がやや優位。星野氏は比例復活が続くが、今回も厳しい戦いか。"
+    },
+    {
+      "id": 13,
+      "name": "神奈川13区",
+      "areas": ["横浜市瀬谷区", "大和市", "綾瀬市"],
+      "candidates": [
+        { "name": "甘利明", "party": "自民", "status": "元", "times": 13 },
+        { "name": "太ひでし", "party": "中道", "status": "前", "times": 3 },
+        { "name": "佐々木克己", "party": "参政", "status": "新", "times": 0 }
+      ],
+      "prediction": "中道",
+      "intensity": "接戦",
+      "analysis": "前回落選の甘利氏が返り咲きを狙う。太氏は前回の勢いを維持し、組織戦で優位。"
+    },
+    {
+      "id": 14,
+      "name": "神奈川14区",
+      "areas": ["相模原市緑区", "相模原市中央区", "愛甲郡"],
+      "candidates": [
+        { "name": "赤間二郎", "party": "自民", "status": "前", "times": 5 },
+        { "name": "長友克洋", "party": "中道", "status": "前", "times": 1 },
+        { "name": "藤巻健太", "party": "維新", "status": "元", "times": 1 }
+      ],
+      "prediction": "自民",
+      "intensity": "接戦",
+      "analysis": "赤間氏がやや優位だが、中道・長友氏との接戦。維新・藤巻氏の動向も影響。"
+    },
+    {
+      "id": 15,
+      "name": "神奈川15区",
+      "areas": ["平塚市", "茅ヶ崎市", "中郡（大磯町）"],
+      "candidates": [
+        { "name": "河野太郎", "party": "自民", "status": "前", "times": 10 },
+        { "name": "佐々木ナオミ", "party": "中道", "status": "前", "times": 1 },
+        { "name": "馬場裕之", "party": "参政", "status": "新", "times": 0 }
+      ],
+      "prediction": "自民",
+      "intensity": "自民優勢",
+      "analysis": "河野太郎氏の強固な地盤。デジタル大臣として知名度も高く、安定した戦い。"
+    },
+    {
+      "id": 16,
+      "name": "神奈川16区",
+      "areas": ["相模原市南区", "座間市"],
+      "candidates": [
+        { "name": "義家弘介", "party": "自民", "status": "元", "times": 4 },
+        { "name": "後藤祐一", "party": "中道", "status": "前", "times": 5 }
+      ],
+      "prediction": "中道",
+      "intensity": "一騎打ち",
+      "analysis": "与野党一騎打ち。前回勝利の後藤氏が優位。義家氏は返り咲きを狙う。"
+    },
+    {
+      "id": 17,
+      "name": "神奈川17区",
+      "areas": ["小田原市", "秦野市", "南足柄市", "足柄上郡"],
+      "candidates": [
+        { "name": "牧島かれん", "party": "自民", "status": "前", "times": 4 },
+        { "name": "神山洋介", "party": "中道", "status": "前", "times": 2 },
+        { "name": "露木順一", "party": "国民", "status": "元", "times": 0 }
+      ],
+      "prediction": "自民",
+      "intensity": "接戦",
+      "analysis": "牧島氏がやや優位。デジタル大臣経験を活かし、地元固め。神山氏も追い上げる。"
+    },
+    {
+      "id": 18,
+      "name": "神奈川18区",
+      "areas": ["川崎市中原区", "川崎市高津区"],
+      "candidates": [
+        { "name": "山際大志郎", "party": "自民", "status": "前", "times": 6 },
+        { "name": "三村和也", "party": "中道", "status": "前", "times": 2 },
+        { "name": "鳴海新太郎", "party": "維新", "status": "新", "times": 0 },
+        { "name": "田所けんた", "party": "国民", "status": "新", "times": 0 },
+        { "name": "君嶋千佳子", "party": "共産", "status": "新", "times": 0 },
+        { "name": "斉藤温", "party": "参政", "status": "新", "times": 0 }
+      ],
+      "prediction": "中道",
+      "intensity": "激戦",
+      "analysis": "最多6人が出馬する激戦区。前回勝利の三村氏がやや優位だが、票が分散し予断を許さない。"
+    },
+    {
+      "id": 19,
+      "name": "神奈川19区",
+      "areas": ["川崎市宮前区", "横浜市都筑区"],
+      "candidates": [
+        { "name": "古屋範子", "party": "中道", "status": "前", "times": 7 },
+        { "name": "深作ヘスス", "party": "維新", "status": "新", "times": 0 },
+        { "name": "杉村康之", "party": "国民", "status": "新", "times": 0 }
+      ],
+      "prediction": "中道",
+      "intensity": "中道優勢",
+      "analysis": "旧公明党の古屋氏が中道改革連合から出馬。7回当選の経験と組織力で優位。"
+    },
+    {
+      "id": 20,
+      "name": "神奈川20区",
+      "areas": ["中郡（二宮町）", "足柄下郡", "厚木市", "伊勢原市", "海老名市"],
+      "candidates": [
+        { "name": "甘利明", "party": "自民", "status": "新", "times": 0 },
+        { "name": "大塚小百合", "party": "中道", "status": "前", "times": 1 },
+        { "name": "野内大輔", "party": "参政", "status": "新", "times": 0 }
+      ],
+      "prediction": "中道",
+      "intensity": "接戦",
+      "analysis": "新設区。前回勝利の大塚氏が地盤を固めるが、自民新人との接戦が予想される。"
+    }
+  ]
+}
