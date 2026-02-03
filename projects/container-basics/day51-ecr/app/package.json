@@ -1,0 +1,12 @@
+{
+  "name": "day51-sample-app",
+  "version": "1.0.0",
+  "description": "ECR push sample",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}

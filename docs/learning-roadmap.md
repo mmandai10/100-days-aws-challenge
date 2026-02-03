@@ -388,6 +388,14 @@ C:\100-days-aws-challenge\projects\
 
 ## 学習リソース
 
+### Claude Code 関連
+- Claude-Mem（セッション間メモリプラグイン）: https://github.com/thedotmack/claude-mem
+  - セッション間でコンテキストを自動保持
+  - トークン使用量を最大95%削減
+  - インストール: `/plugin marketplace add thedotmack/claude-mem`
+  - Web UI: http://localhost:37777
+  - Claude Code を使う前に導入を検討
+
 ### コンテナ & Kubernetes
 - Docker 公式: https://docs.docker.com/get-started/
 - ECS Workshop: https://ecsworkshop.com/
