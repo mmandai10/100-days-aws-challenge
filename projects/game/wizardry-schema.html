@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Wizardry Schema v10 - 放置型探索RPG</title>
+  <title>Wizardry Schema v11 - 放置型探索RPG</title>
   <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -102,55 +102,20 @@
       priest: [{name:'ディオス',lv:1,mp:2,pow:0,heal:25},{name:'バディオス',lv:1,mp:2,pow:12},{name:'マウジ',lv:2,mp:3,pow:0,buff:'atk'},{name:'ディアル',lv:3,mp:4,pow:0,heal:40},{name:'バディアル',lv:4,mp:5,pow:25},{name:'マディ',lv:5,mp:8,pow:0,heal:80},{name:'バマディ',lv:6,mp:10,pow:45},{name:'マディアル',lv:7,mp:15,pow:0,healAll:50}]
     };
 
-    // ===== 戦闘描写パターン（大幅拡充） =====
+    // ===== 戦闘描写パターン =====
     const BATTLE_DESC = {
-      encounter: [
-        '前方に影が見える...{enemy}だ！','突然、{enemy}が飛び出してきた！',
-        '暗闘の中から{enemy}が姿を現した！','足音が近づく...{enemy}が現れた！',
-        '不気味な気配...振り向くと{enemy}！','{enemy}が行く手を塞いでいる！'
-      ],
-      attack: [
-        '{name}は剣を振りかざした！','{name}の渾身の一撃！','{name}は素早く斬りかかった！',
-        '{name}は力強く武器を振り下ろした！','{name}の連続攻撃！','{name}は隙を突いて攻撃！',
-        '{name}は正面から斬りつけた！','{name}が武器を構え突進！','{name}は回転斬りを繰り出した！'
-      ],
-      critical: [
-        '【会心】急所に命中！','【会心】見事なクリティカルヒット！','【会心】渾身の一撃が炸裂！'
-      ],
-      miss: [
-        '{name}の攻撃は外れた！','敵は素早く回避した！','{name}は空振りした！',
-        '{name}の攻撃を躱された！','紙一重で避けられた！'
-      ],
-      damage: [
-        '{target}に{dmg}のダメージ！','{target}は{dmg}のダメージを受けた！',
-        '{dmg}ダメージ！{target}がよろめく！','{target}に{dmg}ダメージを与えた！'
-      ],
-      enemyAttack: [
-        '{enemy}が襲いかかってきた！','{enemy}の鋭い攻撃！','{enemy}は牙を剥いた！',
-        '{enemy}の爪が光る！','{enemy}が突進してきた！','{enemy}の凶暴な一撃！',
-        '{enemy}が唸り声を上げ攻撃！','{enemy}の鋭い眼光...そして攻撃！'
-      ],
-      spell: [
-        '{name}は呪文を唱えた...「{spell}」！','「{spell}」！{name}の手から魔力が放たれる！',
-        '{name}は集中し...{spell}を発動！','「{spell}！」光が敵を包む！'
-      ],
-      victory: [
-        '{enemy}を倒した！','{enemy}は崩れ落ちた！','{enemy}は消滅した！',
-        '{enemy}は力尽きた！','{enemy}を打ち倒した！'
-      ],
-      bossAppear: [
-        '【警告】強大な気配を感じる...','地響きとともに{enemy}が現れた！',
-        '闇の中から{enemy}が姿を現した！','【BOSS】{enemy}との対峙！'
-      ],
-      battleStart: [
-        '──── 戦闘開始 ────','═══ BATTLE ═══','▶ 戦闘突入！'
-      ],
-      turn: [
-        '【ターン{n}】','─ 第{n}ターン ─','《Turn {n}》'
-      ],
-      monsterStatus: [
-        '{enemy} HP: {hp}/{maxHp}','[{enemy}の残りHP: {hp}]','{enemy}: {hp}/{maxHp}'
-      ]
+      encounter: ['前方に影が見える...{enemy}だ！','突然、{enemy}が飛び出してきた！','暗闘の中から{enemy}が姿を現した！','足音が近づく...{enemy}が現れた！','不気味な気配...振り向くと{enemy}！','{enemy}が行く手を塞いでいる！'],
+      attack: ['{name}は剣を振りかざした！','{name}の渾身の一撃！','{name}は素早く斬りかかった！','{name}は力強く武器を振り下ろした！','{name}の連続攻撃！','{name}は隙を突いて攻撃！','{name}は正面から斬りつけた！','{name}が武器を構え突進！','{name}は回転斬りを繰り出した！'],
+      critical: ['【会心】急所に命中！','【会心】見事なクリティカルヒット！','【会心】渾身の一撃が炸裂！'],
+      miss: ['{name}の攻撃は外れた！','敵は素早く回避した！','{name}は空振りした！','{name}の攻撃を躱された！','紙一重で避けられた！'],
+      damage: ['{target}に{dmg}のダメージ！','{target}は{dmg}のダメージを受けた！','{dmg}ダメージ！{target}がよろめく！','{target}に{dmg}ダメージを与えた！'],
+      enemyAttack: ['{enemy}が襲いかかってきた！','{enemy}の鋭い攻撃！','{enemy}は牙を剥いた！','{enemy}の爪が光る！','{enemy}が突進してきた！','{enemy}の凶暴な一撃！','{enemy}が唸り声を上げ攻撃！','{enemy}の鋭い眼光...そして攻撃！'],
+      spell: ['{name}は呪文を唱えた...「{spell}」！','「{spell}」！{name}の手から魔力が放たれる！','{name}は集中し...{spell}を発動！','「{spell}！」光が敵を包む！'],
+      victory: ['{enemy}を倒した！','{enemy}は崩れ落ちた！','{enemy}は消滅した！','{enemy}は力尽きた！','{enemy}を打ち倒した！'],
+      bossAppear: ['【警告】強大な気配を感じる...','地響きとともに{enemy}が現れた！','闇の中から{enemy}が姿を現した！','【BOSS】{enemy}との対峙！'],
+      battleStart: ['──── 戦闘開始 ────','═══ BATTLE ═══','▶ 戦闘突入！'],
+      turn: ['【ターン{n}】','─ 第{n}ターン ─','《Turn {n}》'],
+      monsterStatus: ['{enemy} HP: {hp}/{maxHp}','[{enemy}の残りHP: {hp}]','{enemy}: {hp}/{maxHp}']
     };
     const getBattleDesc = (type, params = {}) => {
       const arr = BATTLE_DESC[type];
@@ -159,240 +124,346 @@
       return msg;
     };
 
-    // ===== 装備品 (350+アイテム - 素材段階拡充) =====
+    // ===== 装備品 (450+アイテム - 素材種類大幅拡充) =====
     const ITEMS = {
       weapons: [
-        // === Common (木・骨・石) ===
-        {id:'w001',name:'木の棒',atk:1,price:10,rarity:'common'},
-        {id:'w002',name:'木刀',atk:2,price:25,rarity:'common'},
-        {id:'w003',name:'木の杖',atk:2,price:30,rarity:'common',jobs:['mage','bishop','priest']},
-        {id:'w004',name:'木槌',atk:3,price:35,rarity:'common'},
-        {id:'w005',name:'木の弓',atk:2,price:30,rarity:'common'},
-        {id:'w006',name:'骨のナイフ',atk:2,price:20,rarity:'common'},
-        {id:'w007',name:'骨の槍',atk:3,price:40,rarity:'common'},
-        {id:'w008',name:'骨のこん棒',atk:3,price:35,rarity:'common'},
-        {id:'w009',name:'石の斧',atk:4,price:45,rarity:'common'},
-        {id:'w010',name:'石のハンマー',atk:4,price:50,rarity:'common'},
-        {id:'w011',name:'スリング',atk:2,price:25,rarity:'common'},
-        {id:'w012',name:'クラブ',atk:3,price:30,rarity:'common'},
-        // === Common+ (銅) ===
-        {id:'w020',name:'銅のナイフ',atk:4,price:60,rarity:'common'},
-        {id:'w021',name:'銅の剣',atk:5,price:80,rarity:'common'},
-        {id:'w022',name:'銅の斧',atk:6,price:90,rarity:'common'},
-        {id:'w023',name:'銅の槍',atk:5,price:85,rarity:'common'},
-        {id:'w024',name:'銅のメイス',atk:5,price:80,rarity:'common',jobs:['priest','lord','bishop']},
-        {id:'w025',name:'銅の杖',atk:4,price:70,rarity:'common',jobs:['mage','bishop']},
-        {id:'w026',name:'ショートソード',atk:6,price:100,rarity:'common'},
-        {id:'w027',name:'ダガー',atk:4,price:65,rarity:'common'},
-        {id:'w028',name:'ハンドアクス',atk:6,price:95,rarity:'common'},
-        {id:'w029',name:'フレイル',atk:5,price:75,rarity:'common'},
-        // === Uncommon (青銅・鉄) ===
-        {id:'w101',name:'青銅のナイフ',atk:7,price:180,rarity:'uncommon'},
-        {id:'w102',name:'青銅の剣',atk:9,price:280,rarity:'uncommon'},
-        {id:'w103',name:'青銅の大剣',atk:11,price:380,rarity:'uncommon'},
-        {id:'w104',name:'青銅の斧',atk:10,price:320,rarity:'uncommon'},
-        {id:'w105',name:'青銅の槍',atk:9,price:300,rarity:'uncommon'},
-        {id:'w106',name:'青銅のメイス',atk:8,price:260,rarity:'uncommon',jobs:['priest','lord','bishop']},
-        {id:'w107',name:'青銅の杖',atk:6,price:220,rarity:'uncommon',jobs:['mage','bishop']},
-        {id:'w110',name:'鉄のナイフ',atk:8,price:200,rarity:'uncommon'},
-        {id:'w111',name:'鉄の剣',atk:10,price:300,rarity:'uncommon'},
-        {id:'w112',name:'鉄の大剣',atk:13,price:450,rarity:'uncommon'},
-        {id:'w113',name:'鉄の斧',atk:12,price:400,rarity:'uncommon'},
-        {id:'w114',name:'鉄の槍',atk:11,price:380,rarity:'uncommon'},
-        {id:'w115',name:'鉄のメイス',atk:10,price:340,rarity:'uncommon',jobs:['priest','lord','bishop']},
-        {id:'w116',name:'鉄の杖',atk:7,price:280,rarity:'uncommon',jobs:['mage','bishop']},
-        {id:'w117',name:'鉄の弓',atk:9,price:320,rarity:'uncommon'},
-        {id:'w118',name:'ロングソード',atk:12,price:500,rarity:'uncommon'},
-        {id:'w119',name:'バトルアクス',atk:14,price:600,rarity:'uncommon'},
-        {id:'w120',name:'モーニングスター',atk:11,price:420,rarity:'uncommon'},
-        {id:'w121',name:'ウォーハンマー',atk:16,price:700,rarity:'uncommon'},
-        {id:'w122',name:'ハルバード',atk:15,price:650,rarity:'uncommon'},
-        {id:'w123',name:'クロスボウ',atk:12,price:520,rarity:'uncommon'},
-        {id:'w124',name:'ロングボウ',atk:11,price:480,rarity:'uncommon'},
-        {id:'w125',name:'シミター',atk:10,price:400,rarity:'uncommon'},
-        {id:'w126',name:'サイ',atk:9,price:350,rarity:'uncommon',jobs:['ninja','thief']},
-        {id:'w127',name:'苦無',atk:9,price:380,rarity:'uncommon',jobs:['ninja','thief']},
-        {id:'w128',name:'打刀',atk:13,price:580,rarity:'uncommon',jobs:['samurai','ninja']},
-        {id:'w129',name:'脇差',atk:10,price:420,rarity:'uncommon',jobs:['samurai','ninja']},
-        {id:'w130',name:'錫杖',atk:8,price:400,rarity:'uncommon',jobs:['priest','bishop']},
-        {id:'w131',name:'ウィザードスタッフ',atk:8,price:480,rarity:'uncommon',jobs:['mage','bishop']},
-        // === Rare (鋼・銀) ===
-        {id:'w201',name:'鋼の剣',atk:16,price:1400,rarity:'rare'},
-        {id:'w202',name:'鋼の大剣',atk:20,price:1900,rarity:'rare'},
-        {id:'w203',name:'鋼の斧',atk:19,price:1800,rarity:'rare'},
-        {id:'w204',name:'鋼の槍',atk:18,price:1700,rarity:'rare'},
-        {id:'w205',name:'鋼のメイス',atk:16,price:1500,rarity:'rare',jobs:['priest','lord','bishop']},
-        {id:'w206',name:'鋼の弓',atk:15,price:1400,rarity:'rare'},
-        {id:'w207',name:'鋼のハルバード',atk:22,price:2200,rarity:'rare'},
-        {id:'w210',name:'銀の剣',atk:18,price:2000,rarity:'rare'},
-        {id:'w211',name:'銀の槍',atk:17,price:1900,rarity:'rare'},
-        {id:'w212',name:'銀の弓',atk:16,price:1800,rarity:'rare'},
-        {id:'w213',name:'銀の杖',atk:12,price:1800,rarity:'rare',jobs:['mage','bishop','priest']},
-        {id:'w214',name:'銀のメイス',atk:17,price:1900,rarity:'rare',jobs:['priest','lord','bishop']},
-        {id:'w220',name:'フレイムソード',atk:22,price:2800,rarity:'rare'},
-        {id:'w221',name:'アイスブランド',atk:20,price:2500,rarity:'rare'},
-        {id:'w222',name:'サンダーブレード',atk:21,price:2700,rarity:'rare'},
-        {id:'w223',name:'太刀',atk:24,price:3200,rarity:'rare',jobs:['samurai','ninja']},
-        {id:'w224',name:'忍者刀',atk:21,price:2600,rarity:'rare',jobs:['ninja']},
-        {id:'w225',name:'ホーリーアヴェンジャー',atk:20,price:2400,rarity:'rare',jobs:['priest','lord']},
-        {id:'w226',name:'アークメイジスタッフ',atk:14,price:2500,rarity:'rare',jobs:['mage','bishop']},
-        {id:'w227',name:'アサシンブレード',atk:19,price:2300,rarity:'rare',jobs:['thief','ninja']},
-        {id:'w228',name:'ドラゴンスレイヤー',atk:28,price:4000,rarity:'rare'},
-        {id:'w229',name:'ルーンアクス',atk:26,price:3500,rarity:'rare'},
-        {id:'w230',name:'デーモンスピア',atk:27,price:3800,rarity:'rare'},
-        // === Epic (ミスリル・オリハルコン) ===
-        {id:'w301',name:'ミスリルソード',atk:28,price:6000,rarity:'epic'},
-        {id:'w302',name:'ミスリルの大剣',atk:32,price:7500,rarity:'epic'},
-        {id:'w303',name:'ミスリルの斧',atk:30,price:7000,rarity:'epic'},
-        {id:'w304',name:'ミスリルの槍',atk:29,price:6500,rarity:'epic'},
-        {id:'w305',name:'ミスリルの弓',atk:26,price:6000,rarity:'epic'},
-        {id:'w306',name:'ミスリルメイス',atk:27,price:6500,rarity:'epic',jobs:['priest','lord','bishop']},
-        {id:'w310',name:'オリハルコンソード',atk:36,price:10000,rarity:'epic'},
-        {id:'w311',name:'オリハルコンアクス',atk:38,price:11000,rarity:'epic'},
-        {id:'w312',name:'オリハルコンランス',atk:35,price:9500,rarity:'epic'},
-        {id:'w320',name:'村正',atk:40,price:12000,rarity:'epic',jobs:['samurai','ninja']},
-        {id:'w321',name:'正宗',atk:44,price:15000,rarity:'epic',jobs:['samurai','ninja']},
-        {id:'w322',name:'エクスカリバー',atk:46,price:18000,rarity:'epic',jobs:['lord']},
-        {id:'w323',name:'ミョルニル',atk:42,price:14000,rarity:'epic'},
-        {id:'w324',name:'グングニル',atk:40,price:13000,rarity:'epic'},
-        {id:'w325',name:'アポカリプス',atk:48,price:20000,rarity:'epic'},
-        {id:'w326',name:'ホーリーランス',atk:38,price:12000,rarity:'epic',jobs:['lord','priest']},
-        {id:'w327',name:'シャドウブレード',atk:39,price:13000,rarity:'epic',jobs:['ninja','thief']},
-        {id:'w328',name:'スタッフオブマギ',atk:26,price:16000,rarity:'epic',jobs:['mage','bishop']},
-        {id:'w329',name:'天叢雲剣',atk:50,price:25000,rarity:'epic',jobs:['samurai']},
-        {id:'w330',name:'デスブリンガー',atk:45,price:18000,rarity:'epic'},
-        // === Legendary (神器) - 超レア ===
-        {id:'w401',name:'妖刀ムラマサ',atk:62,price:100000,rarity:'legendary',jobs:['samurai','ninja']},
-        {id:'w402',name:'ロンギヌスの槍',atk:58,price:90000,rarity:'legendary'},
-        {id:'w403',name:'ラグナロク',atk:68,price:150000,rarity:'legendary'},
-        {id:'w404',name:'アルテマウェポン',atk:75,price:200000,rarity:'legendary'},
-        {id:'w405',name:'草薙剣',atk:65,price:120000,rarity:'legendary',jobs:['samurai','lord']},
-        {id:'w406',name:'魔剣ダーインスレイヴ',atk:80,price:250000,rarity:'legendary'},
-        {id:'w407',name:'世界樹の杖',atk:48,price:150000,rarity:'legendary',jobs:['mage','bishop','priest']},
-        {id:'w408',name:'神殺しの剣',atk:88,price:500000,rarity:'legendary'}
+        // ========== 木製武器 (柳→樺→松→楢→樫→黒檀→世界樹) ==========
+        // --- 柳 (最弱・しなやか) ---
+        {id:'w001',name:'柳の棒',atk:1,price:8,rarity:'common'},
+        {id:'w002',name:'柳の杖',atk:1,price:12,rarity:'common',jobs:['mage','bishop','priest']},
+        {id:'w003',name:'柳の弓',atk:2,price:15,rarity:'common'},
+        // --- 樺 (軽い) ---
+        {id:'w004',name:'樺の棒',atk:2,price:15,rarity:'common'},
+        {id:'w005',name:'樺の杖',atk:2,price:20,rarity:'common',jobs:['mage','bishop','priest']},
+        {id:'w006',name:'樺の弓',atk:3,price:25,rarity:'common'},
+        {id:'w007',name:'樺の木刀',atk:3,price:28,rarity:'common'},
+        // --- 松 (バランス) ---
+        {id:'w008',name:'松の棒',atk:3,price:25,rarity:'common'},
+        {id:'w009',name:'松の杖',atk:3,price:30,rarity:'common',jobs:['mage','bishop','priest']},
+        {id:'w010',name:'松の弓',atk:4,price:40,rarity:'common'},
+        {id:'w011',name:'松の木槌',atk:4,price:45,rarity:'common'},
+        // --- 楢 (やや硬い) ---
+        {id:'w012',name:'楢の棒',atk:4,price:40,rarity:'common'},
+        {id:'w013',name:'楢の杖',atk:4,price:50,rarity:'common',jobs:['mage','bishop','priest']},
+        {id:'w014',name:'楢の木刀',atk:5,price:60,rarity:'common'},
+        {id:'w015',name:'楢の弓',atk:5,price:65,rarity:'common'},
+        // --- 樫 (硬い・高品質) ---
+        {id:'w016',name:'樫の棒',atk:5,price:60,rarity:'common'},
+        {id:'w017',name:'樫の杖',atk:5,price:75,rarity:'common',jobs:['mage','bishop','priest']},
+        {id:'w018',name:'樫の木刀',atk:6,price:85,rarity:'common'},
+        {id:'w019',name:'樫の弓',atk:6,price:90,rarity:'common'},
+        {id:'w020',name:'樫の木槌',atk:7,price:100,rarity:'common'},
+        // --- 黒檀 (高級木材) ---
+        {id:'w021',name:'黒檀の杖',atk:8,price:200,rarity:'uncommon',jobs:['mage','bishop','priest']},
+        {id:'w022',name:'黒檀の木刀',atk:10,price:280,rarity:'uncommon'},
+        {id:'w023',name:'黒檀の弓',atk:9,price:250,rarity:'uncommon'},
+        {id:'w024',name:'黒檀の棍',atk:11,price:320,rarity:'uncommon'},
+        // --- 世界樹 (神話級木材・ミスリル級) ---
+        {id:'w025',name:'世界樹の杖',atk:32,price:15000,rarity:'epic',jobs:['mage','bishop','priest']},
+        {id:'w026',name:'世界樹の弓',atk:35,price:18000,rarity:'epic'},
+        {id:'w027',name:'世界樹の棍',atk:38,price:22000,rarity:'epic'},
+        {id:'w028',name:'世界樹の大杖',atk:48,price:80000,rarity:'legendary',jobs:['mage','bishop','priest']},
+
+        // ========== 骨製武器 (ネズミ→狼→熊→トロール→ワイバーン→ドラゴン→巨人→神獣) ==========
+        // --- ネズミの骨 (最弱) ---
+        {id:'w030',name:'ネズミの骨ナイフ',atk:2,price:12,rarity:'common'},
+        {id:'w031',name:'ネズミの骨針',atk:2,price:15,rarity:'common',jobs:['thief','ninja']},
+        // --- 狼の骨 ---
+        {id:'w032',name:'狼の骨ナイフ',atk:4,price:35,rarity:'common'},
+        {id:'w033',name:'狼の牙剣',atk:5,price:50,rarity:'common'},
+        {id:'w034',name:'狼骨の槍',atk:5,price:55,rarity:'common'},
+        // --- 熊の骨 ---
+        {id:'w035',name:'熊の骨棍棒',atk:6,price:70,rarity:'common'},
+        {id:'w036',name:'熊の爪剣',atk:7,price:90,rarity:'common'},
+        {id:'w037',name:'熊骨の大槌',atk:8,price:110,rarity:'common'},
+        // --- 牛の骨 (大型・重い) ---
+        {id:'w038',name:'牛骨の棍棒',atk:7,price:85,rarity:'common'},
+        {id:'w039',name:'牛角の槍',atk:8,price:100,rarity:'common'},
+        // --- トロールの骨 (モンスター) ---
+        {id:'w040',name:'トロール骨の棍棒',atk:12,price:350,rarity:'uncommon'},
+        {id:'w041',name:'トロール骨の大剣',atk:14,price:450,rarity:'uncommon'},
+        {id:'w042',name:'トロール牙の槍',atk:13,price:400,rarity:'uncommon'},
+        // --- ワイバーンの骨 ---
+        {id:'w043',name:'ワイバーン骨の剣',atk:18,price:1200,rarity:'rare'},
+        {id:'w044',name:'ワイバーンの爪剣',atk:20,price:1500,rarity:'rare'},
+        {id:'w045',name:'ワイバーン骨の弓',atk:17,price:1100,rarity:'rare'},
+        // --- ドラゴンの骨 ---
+        {id:'w046',name:'竜骨の剣',atk:26,price:4000,rarity:'rare'},
+        {id:'w047',name:'竜牙の大剣',atk:30,price:5500,rarity:'rare'},
+        {id:'w048',name:'竜骨の槍',atk:28,price:4800,rarity:'rare'},
+        {id:'w049',name:'竜骨の弓',atk:25,price:4200,rarity:'rare'},
+        // --- 巨人の骨 ---
+        {id:'w050',name:'巨人骨の棍棒',atk:36,price:12000,rarity:'epic'},
+        {id:'w051',name:'巨人骨の大剣',atk:40,price:16000,rarity:'epic'},
+        {id:'w052',name:'巨人骨の槍',atk:38,price:14000,rarity:'epic'},
+        // --- 神獣の骨 (神話級・オリハルコン級以上) ---
+        {id:'w053',name:'神獣骨の剣',atk:55,price:60000,rarity:'legendary'},
+        {id:'w054',name:'神獣骨の大剣',atk:65,price:90000,rarity:'legendary'},
+        {id:'w055',name:'神獣骨の槍',atk:60,price:75000,rarity:'legendary'},
+
+        // ========== 石製武器 ==========
+        {id:'w060',name:'石のナイフ',atk:3,price:20,rarity:'common'},
+        {id:'w061',name:'石の斧',atk:5,price:50,rarity:'common'},
+        {id:'w062',name:'石のハンマー',atk:6,price:65,rarity:'common'},
+        {id:'w063',name:'黒曜石のナイフ',atk:7,price:120,rarity:'common'},
+        {id:'w064',name:'黒曜石の剣',atk:9,price:200,rarity:'uncommon'},
+
+        // ========== 銅製武器 (粗銅→精銅→赤銅→白銅) ==========
+        // --- 粗銅 (低品質) ---
+        {id:'w070',name:'粗銅のナイフ',atk:4,price:45,rarity:'common'},
+        {id:'w071',name:'粗銅の剣',atk:5,price:65,rarity:'common'},
+        {id:'w072',name:'粗銅の斧',atk:6,price:75,rarity:'common'},
+        // --- 精銅 (標準) ---
+        {id:'w073',name:'精銅のナイフ',atk:5,price:70,rarity:'common'},
+        {id:'w074',name:'精銅の剣',atk:6,price:90,rarity:'common'},
+        {id:'w075',name:'精銅の斧',atk:7,price:105,rarity:'common'},
+        {id:'w076',name:'精銅の槍',atk:6,price:95,rarity:'common'},
+        {id:'w077',name:'精銅のメイス',atk:6,price:90,rarity:'common',jobs:['priest','lord','bishop']},
+        // --- 赤銅 (やや高品質) ---
+        {id:'w078',name:'赤銅の剣',atk:8,price:150,rarity:'uncommon'},
+        {id:'w079',name:'赤銅の斧',atk:9,price:180,rarity:'uncommon'},
+        {id:'w080',name:'赤銅の槍',atk:8,price:160,rarity:'uncommon'},
+        {id:'w081',name:'赤銅のメイス',atk:8,price:155,rarity:'uncommon',jobs:['priest','lord','bishop']},
+        // --- 白銅 (高品質銅合金) ---
+        {id:'w082',name:'白銅の剣',atk:10,price:250,rarity:'uncommon'},
+        {id:'w083',name:'白銅の斧',atk:11,price:300,rarity:'uncommon'},
+        {id:'w084',name:'白銅の槍',atk:10,price:280,rarity:'uncommon'},
+        {id:'w085',name:'白銅の大剣',atk:13,price:400,rarity:'uncommon'},
+
+        // ========== 青銅製武器 ==========
+        {id:'w090',name:'青銅のナイフ',atk:8,price:200,rarity:'uncommon'},
+        {id:'w091',name:'青銅の剣',atk:11,price:320,rarity:'uncommon'},
+        {id:'w092',name:'青銅の大剣',atk:14,price:450,rarity:'uncommon'},
+        {id:'w093',name:'青銅の斧',atk:12,price:380,rarity:'uncommon'},
+        {id:'w094',name:'青銅の槍',atk:11,price:350,rarity:'uncommon'},
+        {id:'w095',name:'青銅のメイス',atk:10,price:300,rarity:'uncommon',jobs:['priest','lord','bishop']},
+        {id:'w096',name:'青銅のハルバード',atk:15,price:520,rarity:'uncommon'},
+
+        // ========== 鉄製武器 (粗鉄→錬鉄→玉鋼→ダマスカス鋼→隕鉄) ==========
+        // --- 粗鉄 (低品質) ---
+        {id:'w100',name:'粗鉄のナイフ',atk:9,price:220,rarity:'uncommon'},
+        {id:'w101',name:'粗鉄の剣',atk:12,price:350,rarity:'uncommon'},
+        {id:'w102',name:'粗鉄の斧',atk:13,price:400,rarity:'uncommon'},
+        // --- 錬鉄 (標準) ---
+        {id:'w103',name:'錬鉄の剣',atk:14,price:500,rarity:'uncommon'},
+        {id:'w104',name:'錬鉄の大剣',atk:17,price:700,rarity:'uncommon'},
+        {id:'w105',name:'錬鉄の斧',atk:15,price:580,rarity:'uncommon'},
+        {id:'w106',name:'錬鉄の槍',atk:14,price:550,rarity:'uncommon'},
+        {id:'w107',name:'錬鉄のメイス',atk:13,price:480,rarity:'uncommon',jobs:['priest','lord','bishop']},
+        {id:'w108',name:'錬鉄の弓',atk:12,price:450,rarity:'uncommon'},
+        {id:'w109',name:'ロングソード',atk:15,price:600,rarity:'uncommon'},
+        {id:'w110',name:'バトルアクス',atk:17,price:750,rarity:'uncommon'},
+        {id:'w111',name:'ウォーハンマー',atk:19,price:900,rarity:'uncommon'},
+        {id:'w112',name:'ハルバード',atk:18,price:850,rarity:'uncommon'},
+        // --- 玉鋼 (日本刀用高品質鋼) ---
+        {id:'w113',name:'玉鋼の剣',atk:20,price:1800,rarity:'rare'},
+        {id:'w114',name:'玉鋼の打刀',atk:24,price:2800,rarity:'rare',jobs:['samurai','ninja']},
+        {id:'w115',name:'玉鋼の脇差',atk:18,price:2000,rarity:'rare',jobs:['samurai','ninja']},
+        {id:'w116',name:'玉鋼の太刀',atk:28,price:3800,rarity:'rare',jobs:['samurai','ninja']},
+        // --- ダマスカス鋼 (伝説の鋼) ---
+        {id:'w117',name:'ダマスカス鋼の剣',atk:26,price:4500,rarity:'rare'},
+        {id:'w118',name:'ダマスカス鋼の大剣',atk:32,price:6500,rarity:'rare'},
+        {id:'w119',name:'ダマスカスブレード',atk:30,price:5800,rarity:'rare'},
+        {id:'w120',name:'ダマスカスの曲刀',atk:28,price:5200,rarity:'rare'},
+        // --- 隕鉄 (天から降った鉄・魔力を帯びる) ---
+        {id:'w121',name:'隕鉄の剣',atk:34,price:9000,rarity:'epic'},
+        {id:'w122',name:'隕鉄の大剣',atk:40,price:14000,rarity:'epic'},
+        {id:'w123',name:'隕鉄の槍',atk:36,price:11000,rarity:'epic'},
+        {id:'w124',name:'流星剣',atk:42,price:18000,rarity:'epic'},
+        {id:'w125',name:'天鉄の太刀',atk:45,price:22000,rarity:'epic',jobs:['samurai','ninja']},
+
+        // ========== 銀製武器 ==========
+        {id:'w130',name:'銀の剣',atk:22,price:2500,rarity:'rare'},
+        {id:'w131',name:'銀の槍',atk:20,price:2200,rarity:'rare'},
+        {id:'w132',name:'銀の弓',atk:19,price:2000,rarity:'rare'},
+        {id:'w133',name:'銀の杖',atk:14,price:2200,rarity:'rare',jobs:['mage','bishop','priest']},
+        {id:'w134',name:'銀のメイス',atk:20,price:2300,rarity:'rare',jobs:['priest','lord','bishop']},
+        {id:'w135',name:'ホーリーアヴェンジャー',atk:24,price:3200,rarity:'rare',jobs:['priest','lord']},
+
+        // ========== 魔法武器 ==========
+        {id:'w140',name:'フレイムソード',atk:26,price:3500,rarity:'rare'},
+        {id:'w141',name:'アイスブランド',atk:24,price:3200,rarity:'rare'},
+        {id:'w142',name:'サンダーブレード',atk:25,price:3400,rarity:'rare'},
+        {id:'w143',name:'ドラゴンスレイヤー',atk:32,price:5000,rarity:'rare'},
+        {id:'w144',name:'デーモンスピア',atk:30,price:4500,rarity:'rare'},
+        {id:'w145',name:'アサシンブレード',atk:23,price:3000,rarity:'rare',jobs:['thief','ninja']},
+        {id:'w146',name:'忍者刀',atk:25,price:3200,rarity:'rare',jobs:['ninja']},
+
+        // ========== ミスリル製武器 ==========
+        {id:'w150',name:'ミスリルソード',atk:35,price:8000,rarity:'epic'},
+        {id:'w151',name:'ミスリルの大剣',atk:42,price:12000,rarity:'epic'},
+        {id:'w152',name:'ミスリルの斧',atk:38,price:10000,rarity:'epic'},
+        {id:'w153',name:'ミスリルの槍',atk:36,price:9000,rarity:'epic'},
+        {id:'w154',name:'ミスリルの弓',atk:32,price:8500,rarity:'epic'},
+        {id:'w155',name:'ミスリルメイス',atk:34,price:9000,rarity:'epic',jobs:['priest','lord','bishop']},
+        {id:'w156',name:'ミスリルの杖',atk:28,price:12000,rarity:'epic',jobs:['mage','bishop']},
+
+        // ========== オリハルコン製武器 ==========
+        {id:'w160',name:'オリハルコンソード',atk:48,price:25000,rarity:'epic'},
+        {id:'w161',name:'オリハルコンアクス',atk:52,price:30000,rarity:'epic'},
+        {id:'w162',name:'オリハルコンランス',atk:46,price:24000,rarity:'epic'},
+
+        // ========== 伝説・神話武器 ==========
+        {id:'w170',name:'村正',atk:52,price:35000,rarity:'epic',jobs:['samurai','ninja']},
+        {id:'w171',name:'正宗',atk:58,price:50000,rarity:'epic',jobs:['samurai','ninja']},
+        {id:'w172',name:'エクスカリバー',atk:60,price:60000,rarity:'epic',jobs:['lord']},
+        {id:'w173',name:'ミョルニル',atk:55,price:45000,rarity:'epic'},
+        {id:'w174',name:'グングニル',atk:52,price:42000,rarity:'epic'},
+        {id:'w175',name:'天叢雲剣',atk:62,price:70000,rarity:'epic',jobs:['samurai']},
+        // --- レジェンダリー ---
+        {id:'w180',name:'妖刀ムラマサ',atk:72,price:150000,rarity:'legendary',jobs:['samurai','ninja']},
+        {id:'w181',name:'ロンギヌスの槍',atk:68,price:120000,rarity:'legendary'},
+        {id:'w182',name:'ラグナロク',atk:78,price:200000,rarity:'legendary'},
+        {id:'w183',name:'アルテマウェポン',atk:85,price:300000,rarity:'legendary'},
+        {id:'w184',name:'草薙剣',atk:75,price:180000,rarity:'legendary',jobs:['samurai','lord']},
+        {id:'w185',name:'魔剣ダーインスレイヴ',atk:90,price:400000,rarity:'legendary'},
+        {id:'w186',name:'神殺しの剣',atk:99,price:999999,rarity:'legendary'}
       ],
       armors: [
-        // === Common ===
+        // ========== 布・革製防具 ==========
         {id:'a001',name:'布の服',def:1,price:15,rarity:'common'},
         {id:'a002',name:'旅人の服',def:2,price:30,rarity:'common'},
-        {id:'a003',name:'木の盾',def:1,price:20,rarity:'common'},
-        {id:'a004',name:'布のローブ',def:1,price:25,rarity:'common',jobs:['mage','bishop','priest']},
-        {id:'a005',name:'革の帽子',def:1,price:20,rarity:'common'},
-        {id:'a006',name:'革の手袋',def:1,price:15,rarity:'common'},
-        {id:'a007',name:'革のブーツ',def:1,price:18,rarity:'common'},
-        {id:'a008',name:'革鎧',def:3,price:80,rarity:'common'},
-        {id:'a009',name:'ハードレザー',def:4,price:120,rarity:'common'},
-        {id:'a010',name:'スタデッドレザー',def:5,price:150,rarity:'common'},
-        {id:'a011',name:'銅の盾',def:2,price:50,rarity:'common'},
-        {id:'a012',name:'銅のヘルム',def:2,price:45,rarity:'common'},
-        {id:'a013',name:'麻のローブ',def:2,price:40,rarity:'common',jobs:['mage','bishop','priest']},
-        {id:'a014',name:'毛皮のコート',def:3,price:70,rarity:'common'},
-        {id:'a015',name:'バックラー',def:2,price:55,rarity:'common'},
-        // === Uncommon ===
-        {id:'a101',name:'青銅の盾',def:4,price:200,rarity:'uncommon'},
-        {id:'a102',name:'青銅のヘルム',def:4,price:180,rarity:'uncommon'},
-        {id:'a103',name:'青銅の鎧',def:8,price:400,rarity:'uncommon'},
-        {id:'a104',name:'鉄の盾',def:5,price:280,rarity:'uncommon'},
-        {id:'a105',name:'鉄のヘルム',def:5,price:250,rarity:'uncommon'},
-        {id:'a106',name:'鉄の手甲',def:4,price:200,rarity:'uncommon'},
-        {id:'a107',name:'鉄のブーツ',def:4,price:220,rarity:'uncommon'},
-        {id:'a108',name:'チェインメイル',def:10,price:500,rarity:'uncommon',jobs:['fighter','lord','samurai']},
-        {id:'a109',name:'スケイルメイル',def:12,price:600,rarity:'uncommon'},
-        {id:'a110',name:'ブリガンダイン',def:14,price:700,rarity:'uncommon'},
-        {id:'a111',name:'リングメイル',def:9,price:450,rarity:'uncommon'},
-        {id:'a112',name:'マジックローブ',def:5,price:500,rarity:'uncommon',jobs:['mage','bishop','priest']},
-        {id:'a113',name:'忍び装束',def:6,price:450,rarity:'uncommon',jobs:['ninja','thief']},
-        {id:'a114',name:'シーフレザー',def:7,price:480,rarity:'uncommon',jobs:['thief','ninja']},
-        {id:'a115',name:'カイトシールド',def:7,price:380,rarity:'uncommon'},
-        {id:'a116',name:'バンデッドメイル',def:11,price:550,rarity:'uncommon'},
-        {id:'a117',name:'騎士の鎧',def:13,price:650,rarity:'uncommon'},
-        {id:'a118',name:'具足',def:11,price:580,rarity:'uncommon',jobs:['samurai','ninja']},
-        // === Rare ===
-        {id:'a201',name:'鋼の盾',def:10,price:1200,rarity:'rare'},
-        {id:'a202',name:'鋼のヘルム',def:9,price:1000,rarity:'rare'},
-        {id:'a203',name:'鋼の鎧',def:18,price:2200,rarity:'rare'},
-        {id:'a204',name:'鋼のフルプレート',def:22,price:2800,rarity:'rare',jobs:['fighter','lord']},
-        {id:'a205',name:'銀の盾',def:12,price:1800,rarity:'rare'},
-        {id:'a206',name:'銀のヘルム',def:10,price:1500,rarity:'rare'},
-        {id:'a207',name:'銀の鎧',def:16,price:2000,rarity:'rare'},
-        {id:'a210',name:'プレートメイル',def:20,price:2500,rarity:'rare',jobs:['fighter','lord']},
-        {id:'a211',name:'フルプレート',def:24,price:3200,rarity:'rare',jobs:['fighter','lord']},
-        {id:'a212',name:'大鎧',def:20,price:2800,rarity:'rare',jobs:['samurai']},
-        {id:'a213',name:'アークメイジローブ',def:10,price:2200,rarity:'rare',jobs:['mage','bishop','priest']},
-        {id:'a214',name:'シャドウクローク',def:9,price:2000,rarity:'rare',jobs:['ninja','thief']},
-        {id:'a215',name:'タワーシールド',def:14,price:1800,rarity:'rare'},
-        {id:'a216',name:'炎の盾',def:12,price:2000,rarity:'rare'},
-        {id:'a217',name:'ドワーフの鎧',def:20,price:2800,rarity:'rare'},
-        {id:'a218',name:'エルフの軽鎧',def:14,price:2200,rarity:'rare'},
-        {id:'a219',name:'ホーリーローブ',def:12,price:2500,rarity:'rare',jobs:['priest','bishop']},
-        // === Epic ===
-        {id:'a301',name:'ミスリルメイル',def:26,price:7000,rarity:'epic'},
-        {id:'a302',name:'ミスリルフルプレート',def:32,price:10000,rarity:'epic'},
-        {id:'a303',name:'ミスリルの盾',def:18,price:8000,rarity:'epic'},
-        {id:'a304',name:'オリハルコンアーマー',def:38,price:15000,rarity:'epic'},
-        {id:'a305',name:'ドラゴンメイル',def:34,price:12000,rarity:'epic'},
-        {id:'a306',name:'クリスタルメイル',def:30,price:11000,rarity:'epic'},
-        {id:'a307',name:'神威の大鎧',def:36,price:14000,rarity:'epic',jobs:['samurai']},
-        {id:'a308',name:'イージスの盾',def:22,price:12000,rarity:'epic'},
-        {id:'a309',name:'ドラゴンヘルム',def:18,price:9000,rarity:'epic'},
-        {id:'a310',name:'闘神の鎧',def:40,price:18000,rarity:'epic',jobs:['fighter','lord']},
-        {id:'a311',name:'賢者のローブ',def:18,price:13000,rarity:'epic',jobs:['mage','bishop','priest']},
-        {id:'a312',name:'ローブオブロード',def:16,price:12000,rarity:'epic',jobs:['mage','bishop']},
-        {id:'a313',name:'暗殺者のマント',def:14,price:11000,rarity:'epic',jobs:['ninja','thief']},
-        // === Legendary ===
-        {id:'a401',name:'ガーディアンアーマー',def:50,price:100000,rarity:'legendary'},
-        {id:'a402',name:'天照の大鎧',def:55,price:150000,rarity:'legendary',jobs:['samurai','lord']},
-        {id:'a403',name:'神々の鎧',def:65,price:200000,rarity:'legendary'},
-        {id:'a404',name:'ローブオブアーキメイジ',def:28,price:100000,rarity:'legendary',jobs:['mage','bishop']},
-        {id:'a405',name:'ホーリーシールド',def:35,price:90000,rarity:'legendary'},
-        {id:'a406',name:'絶対防御の盾',def:45,price:180000,rarity:'legendary'}
+        {id:'a003',name:'麻のローブ',def:2,price:35,rarity:'common',jobs:['mage','bishop','priest']},
+        {id:'a004',name:'革の帽子',def:1,price:20,rarity:'common'},
+        {id:'a005',name:'革の手袋',def:1,price:15,rarity:'common'},
+        {id:'a006',name:'革のブーツ',def:1,price:18,rarity:'common'},
+        {id:'a007',name:'革鎧',def:4,price:100,rarity:'common'},
+        {id:'a008',name:'ハードレザー',def:5,price:150,rarity:'common'},
+        {id:'a009',name:'スタデッドレザー',def:6,price:200,rarity:'common'},
+
+        // ========== 木製防具 ==========
+        {id:'a010',name:'柳の盾',def:1,price:15,rarity:'common'},
+        {id:'a011',name:'樺の盾',def:2,price:30,rarity:'common'},
+        {id:'a012',name:'松の盾',def:2,price:35,rarity:'common'},
+        {id:'a013',name:'楢の盾',def:3,price:50,rarity:'common'},
+        {id:'a014',name:'樫の盾',def:4,price:80,rarity:'common'},
+        {id:'a015',name:'黒檀の盾',def:7,price:280,rarity:'uncommon'},
+        {id:'a016',name:'世界樹の盾',def:30,price:20000,rarity:'epic'},
+
+        // ========== 骨製防具 ==========
+        {id:'a020',name:'狼骨の兜',def:3,price:60,rarity:'common'},
+        {id:'a021',name:'熊骨の鎧',def:5,price:120,rarity:'common'},
+        {id:'a022',name:'トロール骨の盾',def:9,price:400,rarity:'uncommon'},
+        {id:'a023',name:'トロール骨の鎧',def:14,price:700,rarity:'uncommon'},
+        {id:'a024',name:'竜骨の盾',def:18,price:3500,rarity:'rare'},
+        {id:'a025',name:'竜骨の鎧',def:24,price:5500,rarity:'rare'},
+        {id:'a026',name:'竜骨のヘルム',def:14,price:2800,rarity:'rare'},
+        {id:'a027',name:'巨人骨の盾',def:26,price:12000,rarity:'epic'},
+        {id:'a028',name:'巨人骨の鎧',def:35,price:18000,rarity:'epic'},
+        {id:'a029',name:'神獣骨の盾',def:42,price:70000,rarity:'legendary'},
+        {id:'a030',name:'神獣骨の鎧',def:55,price:100000,rarity:'legendary'},
+
+        // ========== 銅製防具 ==========
+        {id:'a035',name:'粗銅の盾',def:2,price:40,rarity:'common'},
+        {id:'a036',name:'精銅の盾',def:3,price:60,rarity:'common'},
+        {id:'a037',name:'精銅のヘルム',def:3,price:55,rarity:'common'},
+        {id:'a038',name:'赤銅の盾',def:5,price:150,rarity:'uncommon'},
+        {id:'a039',name:'赤銅の鎧',def:8,price:350,rarity:'uncommon'},
+        {id:'a040',name:'白銅の盾',def:6,price:220,rarity:'uncommon'},
+        {id:'a041',name:'白銅の鎧',def:10,price:450,rarity:'uncommon'},
+
+        // ========== 青銅製防具 ==========
+        {id:'a045',name:'青銅の盾',def:5,price:180,rarity:'uncommon'},
+        {id:'a046',name:'青銅のヘルム',def:5,price:160,rarity:'uncommon'},
+        {id:'a047',name:'青銅の鎧',def:10,price:480,rarity:'uncommon'},
+        {id:'a048',name:'青銅のフルプレート',def:14,price:800,rarity:'uncommon'},
+
+        // ========== 鉄製防具 ==========
+        {id:'a050',name:'粗鉄の盾',def:5,price:200,rarity:'uncommon'},
+        {id:'a051',name:'粗鉄のヘルム',def:5,price:180,rarity:'uncommon'},
+        {id:'a052',name:'錬鉄の盾',def:7,price:350,rarity:'uncommon'},
+        {id:'a053',name:'錬鉄のヘルム',def:7,price:320,rarity:'uncommon'},
+        {id:'a054',name:'錬鉄の手甲',def:5,price:250,rarity:'uncommon'},
+        {id:'a055',name:'錬鉄のブーツ',def:5,price:280,rarity:'uncommon'},
+        {id:'a056',name:'チェインメイル',def:12,price:600,rarity:'uncommon',jobs:['fighter','lord','samurai']},
+        {id:'a057',name:'スケイルメイル',def:14,price:750,rarity:'uncommon'},
+        {id:'a058',name:'ブリガンダイン',def:16,price:900,rarity:'uncommon'},
+        {id:'a059',name:'玉鋼の鎧',def:22,price:3500,rarity:'rare',jobs:['samurai']},
+        {id:'a060',name:'ダマスカス鋼の鎧',def:26,price:6000,rarity:'rare'},
+        {id:'a061',name:'隕鉄の盾',def:22,price:8000,rarity:'epic'},
+        {id:'a062',name:'隕鉄の鎧',def:35,price:16000,rarity:'epic'},
+
+        // ========== 銀製防具 ==========
+        {id:'a065',name:'銀の盾',def:14,price:2000,rarity:'rare'},
+        {id:'a066',name:'銀のヘルム',def:12,price:1700,rarity:'rare'},
+        {id:'a067',name:'銀の鎧',def:20,price:3200,rarity:'rare'},
+
+        // ========== 高級防具 ==========
+        {id:'a070',name:'プレートメイル',def:22,price:3000,rarity:'rare',jobs:['fighter','lord']},
+        {id:'a071',name:'フルプレート',def:28,price:4500,rarity:'rare',jobs:['fighter','lord']},
+        {id:'a072',name:'大鎧',def:24,price:3800,rarity:'rare',jobs:['samurai']},
+        {id:'a073',name:'アークメイジローブ',def:12,price:2800,rarity:'rare',jobs:['mage','bishop','priest']},
+        {id:'a074',name:'シャドウクローク',def:10,price:2500,rarity:'rare',jobs:['ninja','thief']},
+        {id:'a075',name:'タワーシールド',def:18,price:2200,rarity:'rare'},
+
+        // ========== ミスリル製防具 ==========
+        {id:'a080',name:'ミスリルメイル',def:32,price:10000,rarity:'epic'},
+        {id:'a081',name:'ミスリルフルプレート',def:40,price:16000,rarity:'epic'},
+        {id:'a082',name:'ミスリルの盾',def:24,price:12000,rarity:'epic'},
+        {id:'a083',name:'ミスリルのヘルム',def:18,price:9000,rarity:'epic'},
+
+        // ========== オリハルコン製防具 ==========
+        {id:'a085',name:'オリハルコンアーマー',def:48,price:35000,rarity:'epic'},
+        {id:'a086',name:'オリハルコンシールド',def:30,price:25000,rarity:'epic'},
+
+        // ========== 伝説防具 ==========
+        {id:'a090',name:'ドラゴンメイル',def:42,price:20000,rarity:'epic'},
+        {id:'a091',name:'神威の大鎧',def:45,price:28000,rarity:'epic',jobs:['samurai']},
+        {id:'a092',name:'闘神の鎧',def:50,price:35000,rarity:'epic',jobs:['fighter','lord']},
+        {id:'a093',name:'イージスの盾',def:28,price:18000,rarity:'epic'},
+        {id:'a094',name:'賢者のローブ',def:22,price:20000,rarity:'epic',jobs:['mage','bishop','priest']},
+        // --- レジェンダリー ---
+        {id:'a095',name:'ガーディアンアーマー',def:60,price:120000,rarity:'legendary'},
+        {id:'a096',name:'天照の大鎧',def:65,price:180000,rarity:'legendary',jobs:['samurai','lord']},
+        {id:'a097',name:'神々の鎧',def:75,price:300000,rarity:'legendary'},
+        {id:'a098',name:'ローブオブアーキメイジ',def:35,price:120000,rarity:'legendary',jobs:['mage','bishop']},
+        {id:'a099',name:'絶対防御の盾',def:55,price:250000,rarity:'legendary'}
       ],
       accessories: [
-        // === Common ===
-        {id:'c001',name:'木のお守り',def:1,price:30,rarity:'common'},
-        {id:'c002',name:'骨の首飾り',atk:1,price:35,rarity:'common'},
-        {id:'c003',name:'銅の指輪',atk:1,price:40,rarity:'common'},
-        {id:'c004',name:'銅の腕輪',def:1,price:45,rarity:'common'},
-        {id:'c005',name:'革のベルト',def:1,price:35,rarity:'common'},
-        {id:'c006',name:'布のバンダナ',def:1,price:20,rarity:'common'},
-        {id:'c007',name:'ガラスの首飾り',price:25,rarity:'common'},
-        {id:'c008',name:'羽根のピアス',price:30,rarity:'common'},
-        // === Uncommon ===
-        {id:'c101',name:'鉄の指輪',atk:2,price:200,rarity:'uncommon'},
-        {id:'c102',name:'鉄の腕輪',def:2,price:220,rarity:'uncommon'},
-        {id:'c103',name:'力の指輪',atk:4,price:400,rarity:'uncommon'},
-        {id:'c104',name:'守りの指輪',def:4,price:400,rarity:'uncommon'},
-        {id:'c105',name:'知恵の指輪',price:450,rarity:'uncommon'},
-        {id:'c106',name:'俊敏の指輪',price:450,rarity:'uncommon'},
-        {id:'c107',name:'幸運のコイン',price:500,rarity:'uncommon'},
-        {id:'c108',name:'冒険者のベルト',atk:2,def:2,price:500,rarity:'uncommon'},
-        {id:'c109',name:'シルバーリング',atk:3,def:3,price:600,rarity:'uncommon'},
-        {id:'c110',name:'狼の牙',atk:5,price:550,rarity:'uncommon'},
-        {id:'c111',name:'熊の爪',atk:5,def:2,price:600,rarity:'uncommon'},
-        {id:'c112',name:'魔除けの護符',def:5,price:550,rarity:'uncommon'},
-        // === Rare ===
-        {id:'c201',name:'戦士の腕輪',atk:8,price:1800,rarity:'rare'},
-        {id:'c202',name:'賢者の首飾り',price:2200,rarity:'rare'},
-        {id:'c203',name:'再生の指輪',price:2500,rarity:'rare'},
-        {id:'c204',name:'炎の護符',def:6,price:1500,rarity:'rare'},
-        {id:'c205',name:'氷の護符',def:6,price:1500,rarity:'rare'},
-        {id:'c206',name:'雷の護符',def:6,price:1500,rarity:'rare'},
-        {id:'c207',name:'金のブレスレット',atk:5,def:5,price:2200,rarity:'rare'},
-        {id:'c208',name:'ミスリルリング',atk:6,def:6,price:2800,rarity:'rare'},
-        {id:'c209',name:'龍の牙',atk:10,price:2500,rarity:'rare'},
-        {id:'c210',name:'フェニックスの羽',def:10,price:2800,rarity:'rare'},
-        // === Epic ===
-        {id:'c301',name:'ドラゴンリング',atk:10,def:10,price:10000,rarity:'epic'},
-        {id:'c302',name:'英雄の証',atk:12,def:12,price:15000,rarity:'epic'},
-        {id:'c303',name:'ベルセルクリング',atk:18,price:14000,rarity:'epic'},
-        {id:'c304',name:'守護者のタリスマン',def:18,price:14000,rarity:'epic'},
-        {id:'c305',name:'フェニックスペンダント',price:18000,rarity:'epic'},
-        {id:'c306',name:'オリハルコンリング',atk:15,def:15,price:20000,rarity:'epic'},
-        // === Legendary ===
-        {id:'c401',name:'王の証',atk:18,def:18,price:120000,rarity:'legendary'},
-        {id:'c402',name:'インフィニティガントレット',atk:25,def:25,price:300000,rarity:'legendary'},
-        {id:'c403',name:'運命の指輪',atk:15,def:15,price:100000,rarity:'legendary'},
-        {id:'c404',name:'神の祝福',atk:20,def:20,price:200000,rarity:'legendary'}
+        // ========== 木・骨製アクセサリー ==========
+        {id:'c001',name:'柳のお守り',def:1,price:20,rarity:'common'},
+        {id:'c002',name:'樫のお守り',def:2,price:50,rarity:'common'},
+        {id:'c003',name:'黒檀のお守り',atk:2,def:2,price:200,rarity:'uncommon'},
+        {id:'c004',name:'狼の牙',atk:3,price:80,rarity:'common'},
+        {id:'c005',name:'熊の爪',atk:5,price:150,rarity:'uncommon'},
+        {id:'c006',name:'竜の牙',atk:12,price:3000,rarity:'rare'},
+        {id:'c007',name:'神獣の牙',atk:25,price:50000,rarity:'legendary'},
+
+        // ========== 金属製アクセサリー ==========
+        {id:'c010',name:'銅の指輪',atk:1,price:40,rarity:'common'},
+        {id:'c011',name:'銅の腕輪',def:1,price:45,rarity:'common'},
+        {id:'c012',name:'赤銅の指輪',atk:3,price:180,rarity:'uncommon'},
+        {id:'c013',name:'白銅の腕輪',def:4,price:250,rarity:'uncommon'},
+        {id:'c014',name:'鉄の指輪',atk:3,price:200,rarity:'uncommon'},
+        {id:'c015',name:'鉄の腕輪',def:3,price:220,rarity:'uncommon'},
+        {id:'c016',name:'銀の指輪',atk:5,def:5,price:800,rarity:'rare'},
+        {id:'c017',name:'金の指輪',atk:6,def:6,price:1500,rarity:'rare'},
+        {id:'c018',name:'ミスリルリング',atk:10,def:10,price:8000,rarity:'epic'},
+        {id:'c019',name:'オリハルコンリング',atk:15,def:15,price:25000,rarity:'epic'},
+
+        // ========== 魔法アクセサリー ==========
+        {id:'c020',name:'力の指輪',atk:5,price:500,rarity:'uncommon'},
+        {id:'c021',name:'守りの指輪',def:5,price:500,rarity:'uncommon'},
+        {id:'c022',name:'知恵の指輪',price:600,rarity:'uncommon'},
+        {id:'c023',name:'俊敏の指輪',price:600,rarity:'uncommon'},
+        {id:'c024',name:'幸運のコイン',price:700,rarity:'uncommon'},
+        {id:'c025',name:'炎の護符',def:8,price:2000,rarity:'rare'},
+        {id:'c026',name:'氷の護符',def:8,price:2000,rarity:'rare'},
+        {id:'c027',name:'雷の護符',def:8,price:2000,rarity:'rare'},
+        {id:'c028',name:'戦士の腕輪',atk:10,price:2500,rarity:'rare'},
+        {id:'c029',name:'フェニックスの羽',def:12,price:3500,rarity:'rare'},
+
+        // ========== 高級アクセサリー ==========
+        {id:'c030',name:'ドラゴンリング',atk:12,def:12,price:15000,rarity:'epic'},
+        {id:'c031',name:'英雄の証',atk:15,def:15,price:22000,rarity:'epic'},
+        {id:'c032',name:'ベルセルクリング',atk:22,price:18000,rarity:'epic'},
+        {id:'c033',name:'守護者のタリスマン',def:22,price:18000,rarity:'epic'},
+
+        // ========== レジェンダリー ==========
+        {id:'c040',name:'王の証',atk:20,def:20,price:150000,rarity:'legendary'},
+        {id:'c041',name:'インフィニティガントレット',atk:30,def:30,price:400000,rarity:'legendary'},
+        {id:'c042',name:'運命の指輪',atk:18,def:18,price:120000,rarity:'legendary'},
+        {id:'c043',name:'神の祝福',atk:25,def:25,price:250000,rarity:'legendary'}
       ],
       consumables: [
         {id:'p001',name:'ポーション',price:50,rarity:'common',heal:30},
@@ -403,55 +474,16 @@
       ]
     };
 
-    // ===== ボス専用ドロップ (5階ごと) =====
+    // ===== ボス専用ドロップ =====
     const BOSS_DROPS = {
-      // 5階ボス
-      'スライムキング': [
-        {id:'bd01',name:'スライムの王冠',atk:3,def:3,price:500,rarity:'uncommon'},
-        {id:'bd02',name:'ゼリー状の盾',def:5,price:400,rarity:'uncommon'}
-      ],
-      // 8階ボス
-      'コボルトロード': [
-        {id:'bd03',name:'コボルトの宝珠',atk:5,def:2,price:800,rarity:'uncommon'},
-        {id:'bd04',name:'略奪者の短剣',atk:10,price:700,rarity:'uncommon'},
-        {id:'bd05',name:'族長の首飾り',atk:4,def:4,price:900,rarity:'rare'}
-      ],
-      // 10階ボス
-      'マスターシーフ': [
-        {id:'bd06',name:'影のマント',def:10,price:1800,rarity:'rare',jobs:['thief','ninja']},
-        {id:'bd07',name:'盗賊のナイフ',atk:15,price:1500,rarity:'rare'},
-        {id:'bd08',name:'幻影のブーツ',def:7,price:1600,rarity:'rare'}
-      ],
-      // 12階ボス
-      'ヴァンパイア': [
-        {id:'bd09',name:'吸血鬼の牙',atk:18,price:2800,rarity:'rare'},
-        {id:'bd10',name:'闇のマント',def:12,price:2500,rarity:'rare'},
-        {id:'bd11',name:'血の指輪',atk:10,def:5,price:3000,rarity:'rare'}
-      ],
-      // 15階ボス
-      'グレーターデーモン': [
-        {id:'bd12',name:'悪魔の角',atk:22,def:8,price:5000,rarity:'epic'},
-        {id:'bd13',name:'魔界の剣',atk:28,price:6000,rarity:'epic'},
-        {id:'bd14',name:'デモンハート',atk:15,def:15,price:5500,rarity:'epic'}
-      ],
-      // 18階ボス
-      'ゴールドドラゴン': [
-        {id:'bd15',name:'黄金の鱗',def:25,price:10000,rarity:'epic'},
-        {id:'bd16',name:'ドラゴンファング',atk:35,price:12000,rarity:'epic'},
-        {id:'bd17',name:'竜の宝玉',atk:18,def:18,price:15000,rarity:'epic'}
-      ],
-      // 20階ボス
-      'エンシェントドラゴン': [
-        {id:'bd18',name:'古竜の心臓',atk:20,def:20,price:18000,rarity:'epic'},
-        {id:'bd19',name:'龍王の爪',atk:42,price:22000,rarity:'epic'},
-        {id:'bd20',name:'時の鱗',atk:25,def:25,price:25000,rarity:'legendary'}
-      ],
-      // 25階ボス
-      'ワードナ': [
-        {id:'bd21',name:'魔除けの護符',atk:30,def:30,price:60000,rarity:'legendary'},
-        {id:'bd22',name:'ワードナの杖',atk:55,price:80000,rarity:'legendary',jobs:['mage','bishop']},
-        {id:'bd23',name:'闇の王冠',atk:35,def:35,price:100000,rarity:'legendary'}
-      ]
+      'スライムキング': [{id:'bd01',name:'スライムの王冠',atk:3,def:3,price:500,rarity:'uncommon'},{id:'bd02',name:'ゼリー状の盾',def:5,price:400,rarity:'uncommon'}],
+      'コボルトロード': [{id:'bd03',name:'コボルトの宝珠',atk:5,def:2,price:800,rarity:'uncommon'},{id:'bd04',name:'略奪者の短剣',atk:10,price:700,rarity:'uncommon'},{id:'bd05',name:'族長の首飾り',atk:4,def:4,price:900,rarity:'rare'}],
+      'マスターシーフ': [{id:'bd06',name:'影のマント',def:10,price:1800,rarity:'rare',jobs:['thief','ninja']},{id:'bd07',name:'盗賊のナイフ',atk:15,price:1500,rarity:'rare'},{id:'bd08',name:'幻影のブーツ',def:7,price:1600,rarity:'rare'}],
+      'ヴァンパイア': [{id:'bd09',name:'吸血鬼の牙',atk:18,price:2800,rarity:'rare'},{id:'bd10',name:'闇のマント',def:12,price:2500,rarity:'rare'},{id:'bd11',name:'血の指輪',atk:10,def:5,price:3000,rarity:'rare'}],
+      'グレーターデーモン': [{id:'bd12',name:'悪魔の角',atk:22,def:8,price:5000,rarity:'epic'},{id:'bd13',name:'魔界の剣',atk:28,price:6000,rarity:'epic'},{id:'bd14',name:'デモンハート',atk:15,def:15,price:5500,rarity:'epic'}],
+      'ゴールドドラゴン': [{id:'bd15',name:'黄金の鱗',def:25,price:10000,rarity:'epic'},{id:'bd16',name:'ドラゴンファング',atk:35,price:12000,rarity:'epic'},{id:'bd17',name:'竜の宝玉',atk:18,def:18,price:15000,rarity:'epic'}],
+      'エンシェントドラゴン': [{id:'bd18',name:'古竜の心臓',atk:20,def:20,price:18000,rarity:'epic'},{id:'bd19',name:'龍王の爪',atk:42,price:22000,rarity:'epic'},{id:'bd20',name:'時の鱗',atk:25,def:25,price:25000,rarity:'legendary'}],
+      'ワードナ': [{id:'bd21',name:'魔除けの護符',atk:30,def:30,price:60000,rarity:'legendary'},{id:'bd22',name:'ワードナの杖',atk:55,price:80000,rarity:'legendary',jobs:['mage','bishop']},{id:'bd23',name:'闇の王冠',atk:35,def:35,price:100000,rarity:'legendary'}]
     };
 
     const DUNGEONS = [
@@ -528,20 +560,17 @@
         setLogs(prev => [...prev.slice(-100), {msg,c}]);
       }, []);
 
-      // セーブ/ロード
       useEffect(() => {
-        const s = localStorage.getItem('wizardrySchemaV10');
+        const s = localStorage.getItem('wizardrySchemaV11');
         if (s) { const d = JSON.parse(s); setParty(d.party||[]); setGold(d.gold||100); setMaxFloors(d.maxFloors||{}); setSettings(d.settings||{bgm:true,sfx:true,bgmVol:50,sfxVol:70}); setBestiary(d.bestiary||{}); setInventory(d.inventory||[]); }
       }, []);
-      useEffect(() => { if (party.length > 0) localStorage.setItem('wizardrySchemaV10', JSON.stringify({party,gold,maxFloors,settings,bestiary,inventory})); }, [party,gold,maxFloors,settings,bestiary,inventory]);
+      useEffect(() => { if (party.length > 0) localStorage.setItem('wizardrySchemaV11', JSON.stringify({party,gold,maxFloors,settings,bestiary,inventory})); }, [party,gold,maxFloors,settings,bestiary,inventory]);
       useEffect(() => { if (logRef.current) logRef.current.scrollTop = logRef.current.scrollHeight; }, [logs]);
       useEffect(() => { soundEngine.toggleBGM(settings.bgm); }, [settings.bgm]);
       useEffect(() => { soundEngine.setBgmVolume(-30 + settings.bgmVol*0.3); }, [settings.bgmVol]);
       useEffect(() => { soundEngine.setSfxVolume(-20 + settings.sfxVol*0.2); }, [settings.sfxVol]);
 
-      // ドロップ (レジェンダリーを超レアに: 0.02%)
       const getDrop = (flr, isBoss = false, bossName = null) => {
-        // ボス専用ドロップ (70%でドロップ)
         if (isBoss && bossName && BOSS_DROPS[bossName]) {
           const drops = BOSS_DROPS[bossName];
           if (Math.random() < 0.7) {
@@ -549,105 +578,65 @@
             return {...drop, uid: Date.now()+Math.random()};
           }
         }
-        
         const r = Math.random();
         let rarity = 'common';
-        // レジェンダリー: 0.02% (flr25以上) - 超超レア
         if (r < 0.0002 && flr >= 25) rarity = 'legendary';
-        // エピック: 1.5% (flr15以上)
         else if (r < 0.015 && flr >= 15) rarity = 'epic';
-        // レア: 6% (flr8以上)
         else if (r < 0.06 && flr >= 8) rarity = 'rare';
-        // アンコモン: 20%
         else if (r < 0.2) rarity = 'uncommon';
-        
         const all = [...ITEMS.weapons,...ITEMS.armors,...ITEMS.accessories];
         const avail = all.filter(i => i.rarity === rarity);
         if (!avail.length) return null;
         return {...avail[Math.floor(Math.random()*avail.length)], uid: Date.now()+Math.random()};
       };
 
-      // ===== 探索ループ (戦闘を基本に: 85%) =====
       useEffect(() => {
         if (!exploring || party.length === 0 || !dungeon) return;
-        
         const interval = setInterval(() => {
           const alive = party.filter(c => c.currentHp > 0);
-          
           if (alive.length === 0) {
-            addLog('', 'normal');
-            addLog('【全滅】パーティは全滅した...', 'damage');
-            addLog('意識が遠のいていく...帰還する...', 'damage');
-            soundEngine.playDeath();
-            setExploring(false);
-            setFloor(1);
-            setParty(p => p.map(c => ({...c, currentHp: Math.floor(c.maxHp*0.5)})));
-            return;
+            addLog('','normal'); addLog('【全滅】パーティは全滅した...','damage'); addLog('意識が遠のいていく...帰還する...','damage');
+            soundEngine.playDeath(); setExploring(false); setFloor(1); setParty(p => p.map(c => ({...c, currentHp: Math.floor(c.maxHp*0.5)}))); return;
           }
-          
           if (alive.some(c => (c.currentHp/c.maxHp)*100 <= retreatHP)) {
-            addLog('', 'normal');
-            addLog(`【撤退判断】HP${retreatHP}%以下を検知...`, 'special');
-            addLog('安全を優先して帰還を開始する...', 'special');
-            setExploring(false);
-            setFloor(1);
-            setParty(p => p.map(c => ({...c, currentHp: c.maxHp, currentMp: c.maxMp})));
-            return;
+            addLog('','normal'); addLog(`【撤退判断】HP${retreatHP}%以下を検知...`,'special'); addLog('安全を優先して帰還を開始する...','special');
+            setExploring(false); setFloor(1); setParty(p => p.map(c => ({...c, currentHp: c.maxHp, currentMp: c.maxMp}))); return;
           }
-          
           const event = Math.random();
           const dngData = DUNGEONS.find(d => d.id === dungeon);
-          
-          // ===== 戦闘 (85% - 基本戦闘) =====
           if (event < 0.85) {
             const monsters = MONSTERS.filter(m => m.dng === dungeon && m.flr <= floor);
-            if (monsters.length === 0) { addLog(`B${floor}F: 静寂が支配している...`, 'normal'); return; }
-            
+            if (monsters.length === 0) { addLog(`B${floor}F: 静寂が支配している...`,'normal'); return; }
             const mon = {...monsters[Math.floor(Math.random()*monsters.length)]};
             const isBoss = mon.boss && floor === mon.flr;
             const monMaxHp = mon.hp;
-            
             let battleLogs = [];
-            battleLogs.push({msg: '', type: 'normal'});
-            
-            // エンカウント描写
+            battleLogs.push({msg:'',type:'normal'});
             if (isBoss) {
               soundEngine.playBoss();
-              battleLogs.push({msg: `━━━━━ B${floor}F BOSS ━━━━━`, type: 'boss'});
-              battleLogs.push({msg: getBattleDesc('bossAppear', {enemy: mon.name}), type: 'boss'});
-              battleLogs.push({msg: `【${mon.name}】HP:${mon.hp} ATK:${mon.atk} DEF:${mon.def}`, type: 'boss'});
+              battleLogs.push({msg:`━━━━━ B${floor}F BOSS ━━━━━`,type:'boss'});
+              battleLogs.push({msg:getBattleDesc('bossAppear',{enemy:mon.name}),type:'boss'});
+              battleLogs.push({msg:`【${mon.name}】HP:${mon.hp} ATK:${mon.atk} DEF:${mon.def}`,type:'boss'});
             } else {
-              battleLogs.push({msg: `───── B${floor}F 戦闘 ─────`, type: 'battle'});
-              battleLogs.push({msg: getBattleDesc('encounter', {enemy: mon.name}), type: 'battle'});
-              battleLogs.push({msg: `[${mon.name}] HP:${mon.hp}`, type: 'normal'});
+              battleLogs.push({msg:`───── B${floor}F 戦闘 ─────`,type:'battle'});
+              battleLogs.push({msg:getBattleDesc('encounter',{enemy:mon.name}),type:'battle'});
+              battleLogs.push({msg:`[${mon.name}] HP:${mon.hp}`,type:'normal'});
             }
-            battleLogs.push({msg: getBattleDesc('battleStart'), type: 'battle'});
-            
-            setBestiary(prev => ({...prev, [mon.name]: {...mon, cnt: (prev[mon.name]?.cnt||0)+1}}));
-            
+            battleLogs.push({msg:getBattleDesc('battleStart'),type:'battle'});
+            setBestiary(prev => ({...prev,[mon.name]:{...mon,cnt:(prev[mon.name]?.cnt||0)+1}}));
             let monHp = mon.hp;
             let mpUsed = {};
             let turnCount = 1;
             let partyDamage = {};
-            
-            // ターン制戦闘
-            while (monHp > 0 && alive.filter(c => (partyDamage[c.id] || 0) < c.currentHp).length > 0 && turnCount <= 5) {
-              battleLogs.push({msg: '', type: 'normal'});
-              battleLogs.push({msg: getBattleDesc('turn', {n: turnCount}), type: 'battle'});
-              
-              // パーティの攻撃
+            while (monHp > 0 && alive.filter(c => (partyDamage[c.id]||0) < c.currentHp).length > 0 && turnCount <= 5) {
+              battleLogs.push({msg:'',type:'normal'});
+              battleLogs.push({msg:getBattleDesc('turn',{n:turnCount}),type:'battle'});
               alive.forEach((char) => {
                 if (monHp <= 0) return;
                 const job = JOBS[char.jobKey];
                 const isCritical = Math.random() < (0.05 + char.luk * 0.005);
                 const isMiss = Math.random() < 0.08;
-                
-                if (isMiss) {
-                  battleLogs.push({msg: getBattleDesc('miss', {name: char.name}), type: 'normal'});
-                  return;
-                }
-                
-                // 魔法攻撃
+                if (isMiss) { battleLogs.push({msg:getBattleDesc('miss',{name:char.name}),type:'normal'}); return; }
                 if (job.spell && char.currentMp >= 2 && Math.random() < 0.35) {
                   const spells = job.spell === 'both' ? [...SPELLS.mage,...SPELLS.priest] : (SPELLS[job.spell]||[]);
                   const atkSpells = spells.filter(s => s.pow > 0 && s.mp <= char.currentMp && s.lv <= Math.floor(char.level/2)+1);
@@ -656,72 +645,56 @@
                     let dmg = spell.pow + Math.floor(char.int * 0.5);
                     if (isCritical) dmg = Math.floor(dmg * 1.5);
                     monHp -= dmg;
-                    mpUsed[char.id] = (mpUsed[char.id] || 0) + spell.mp;
-                    battleLogs.push({msg: getBattleDesc('spell', {name: char.name, spell: spell.name}), type: 'special'});
-                    battleLogs.push({msg: getBattleDesc('damage', {target: mon.name, dmg}), type: isCritical ? 'critical' : 'battle'});
-                    if (isCritical) { battleLogs.push({msg: getBattleDesc('critical'), type: 'critical'}); soundEngine.playCritical(); }
+                    mpUsed[char.id] = (mpUsed[char.id]||0) + spell.mp;
+                    battleLogs.push({msg:getBattleDesc('spell',{name:char.name,spell:spell.name}),type:'special'});
+                    battleLogs.push({msg:getBattleDesc('damage',{target:mon.name,dmg}),type:isCritical?'critical':'battle'});
+                    if (isCritical) { battleLogs.push({msg:getBattleDesc('critical'),type:'critical'}); soundEngine.playCritical(); }
                     else soundEngine.playAttack();
                     return;
                   }
                 }
-                
-                // 通常攻撃
-                battleLogs.push({msg: getBattleDesc('attack', {name: char.name}), type: 'battle'});
+                battleLogs.push({msg:getBattleDesc('attack',{name:char.name}),type:'battle'});
                 let dmg = Math.max(1, char.atk - mon.def + Math.floor(Math.random()*8));
                 if (isCritical) dmg = Math.floor(dmg * 1.5);
                 monHp -= dmg;
-                battleLogs.push({msg: getBattleDesc('damage', {target: mon.name, dmg}), type: isCritical ? 'critical' : 'battle'});
-                if (isCritical) { battleLogs.push({msg: getBattleDesc('critical'), type: 'critical'}); soundEngine.playCritical(); }
+                battleLogs.push({msg:getBattleDesc('damage',{target:mon.name,dmg}),type:isCritical?'critical':'battle'});
+                if (isCritical) { battleLogs.push({msg:getBattleDesc('critical'),type:'critical'}); soundEngine.playCritical(); }
                 else soundEngine.playAttack();
               });
-              
-              // モンスターの状態表示
               if (monHp > 0) {
-                battleLogs.push({msg: getBattleDesc('monsterStatus', {enemy: mon.name, hp: Math.max(0, monHp), maxHp: monMaxHp}), type: 'normal'});
-                
-                // 敵の反撃
+                battleLogs.push({msg:getBattleDesc('monsterStatus',{enemy:mon.name,hp:Math.max(0,monHp),maxHp:monMaxHp}),type:'normal'});
                 soundEngine.playHit();
                 const target = alive[Math.floor(Math.random()*alive.length)];
-                battleLogs.push({msg: getBattleDesc('enemyAttack', {enemy: mon.name}), type: 'damage'});
+                battleLogs.push({msg:getBattleDesc('enemyAttack',{enemy:mon.name}),type:'damage'});
                 const dmg = Math.max(1, mon.atk - target.def + Math.floor(Math.random()*8));
-                partyDamage[target.id] = (partyDamage[target.id] || 0) + dmg;
-                battleLogs.push({msg: `▷ ${target.name}は${dmg}のダメージを受けた！`, type: 'damage'});
-                
-                if (partyDamage[target.id] >= target.currentHp) {
-                  battleLogs.push({msg: `${target.name}は力尽きた...`, type: 'damage'});
-                }
+                partyDamage[target.id] = (partyDamage[target.id]||0) + dmg;
+                battleLogs.push({msg:`▷ ${target.name}は${dmg}のダメージを受けた！`,type:'damage'});
+                if (partyDamage[target.id] >= target.currentHp) battleLogs.push({msg:`${target.name}は力尽きた...`,type:'damage'});
               }
-              
               turnCount++;
             }
-            
-            // 勝利
             if (monHp <= 0) {
-              battleLogs.push({msg: '', type: 'normal'});
-              battleLogs.push({msg: getBattleDesc('victory', {enemy: mon.name}), type: 'item'});
-              battleLogs.push({msg: `═══ VICTORY ═══`, type: 'item'});
-              battleLogs.push({msg: `▶ ${mon.exp}EXP / ${mon.gold}G 獲得！`, type: 'item'});
+              battleLogs.push({msg:'',type:'normal'});
+              battleLogs.push({msg:getBattleDesc('victory',{enemy:mon.name}),type:'item'});
+              battleLogs.push({msg:`═══ VICTORY ═══`,type:'item'});
+              battleLogs.push({msg:`▶ ${mon.exp}EXP / ${mon.gold}G 獲得！`,type:'item'});
               soundEngine.playGold();
               setGold(prev => prev + mon.gold);
-              
-              // ボスドロップ
               if (isBoss) {
-                const drop = getDrop(floor, true, mon.name);
+                const drop = getDrop(floor,true,mon.name);
                 if (drop) {
-                  setInventory(prev => [...prev, drop]);
+                  setInventory(prev => [...prev,drop]);
                   const rarityName = {common:'コモン',uncommon:'アンコモン',rare:'レア',epic:'エピック',legendary:'★レジェンダリー★'}[drop.rarity];
-                  battleLogs.push({msg: `【${rarityName}】${drop.name} をドロップ！`, type: drop.rarity === 'legendary' ? 'boss' : 'item'});
+                  battleLogs.push({msg:`【${rarityName}】${drop.name} をドロップ！`,type:drop.rarity==='legendary'?'boss':'item'});
                 }
               } else if (Math.random() < 0.12) {
                 const drop = getDrop(floor);
                 if (drop) {
-                  setInventory(prev => [...prev, drop]);
+                  setInventory(prev => [...prev,drop]);
                   const rarityName = {common:'コモン',uncommon:'アンコモン',rare:'レア',epic:'エピック',legendary:'★レジェンダリー★'}[drop.rarity];
-                  battleLogs.push({msg: `${drop.name}(${rarityName}) をドロップ！`, type: 'item'});
+                  battleLogs.push({msg:`${drop.name}(${rarityName}) をドロップ！`,type:'item'});
                 }
               }
-              
-              // 経験値 & ダメージ適用 & MP消費
               setParty(prev => prev.map(char => {
                 let updated = {...char};
                 if (mpUsed[char.id]) updated.currentMp = Math.max(0, updated.currentMp - mpUsed[char.id]);
@@ -731,24 +704,19 @@
                   const newExp = updated.exp + expGain;
                   const expNeed = updated.level * 100;
                   if (newExp >= expNeed) {
-                    battleLogs.push({msg: `★ ${char.name} Lv.${updated.level} → Lv.${updated.level+1}！`, type: 'level'});
+                    battleLogs.push({msg:`★ ${char.name} Lv.${updated.level} → Lv.${updated.level+1}！`,type:'level'});
                     soundEngine.playLevelUp();
                     updated = {...updated, exp: newExp - expNeed, level: updated.level + 1,
-                      maxHp: updated.maxHp + 5 + Math.floor(updated.vit*0.5), 
-                      currentHp: updated.maxHp + 5 + Math.floor(updated.vit*0.5),
-                      maxMp: updated.maxMp + 3 + Math.floor(updated.int*0.3), 
-                      currentMp: updated.maxMp + 3 + Math.floor(updated.int*0.3),
+                      maxHp: updated.maxHp + 5 + Math.floor(updated.vit*0.5), currentHp: updated.maxHp + 5 + Math.floor(updated.vit*0.5),
+                      maxMp: updated.maxMp + 3 + Math.floor(updated.int*0.3), currentMp: updated.maxMp + 3 + Math.floor(updated.int*0.3),
                       atk: updated.atk + 2, def: updated.def + 1};
-                  } else {
-                    updated.exp = newExp;
-                  }
+                  } else { updated.exp = newExp; }
                 }
                 return updated;
               }));
             } else {
-              // 敗北/撤退
-              battleLogs.push({msg: '', type: 'normal'});
-              battleLogs.push({msg: `戦闘は長引いている...一時撤退！`, type: 'damage'});
+              battleLogs.push({msg:'',type:'normal'});
+              battleLogs.push({msg:`戦闘は長引いている...一時撤退！`,type:'damage'});
               setParty(prev => prev.map(char => {
                 let updated = {...char};
                 if (mpUsed[char.id]) updated.currentMp = Math.max(0, updated.currentMp - mpUsed[char.id]);
@@ -756,58 +724,42 @@
                 return updated;
               }));
             }
-            
             battleLogs.forEach((log, i) => setTimeout(() => addLog(log.msg, log.type), i * 100));
-          }
-          // ===== 階段 (8%) =====
-          else if (event < 0.93) {
+          } else if (event < 0.93) {
             if (floor < dngData.floors) {
               const newFloor = floor + 1;
               setFloor(newFloor);
-              setMaxFloors(prev => ({...prev, [dungeon]: Math.max(prev[dungeon]||0, newFloor)}));
-              addLog('', 'normal');
-              addLog('下り階段を発見した...', 'item');
-              addLog(`B${newFloor}Fへ降りていく...`, 'item');
-            } else {
-              addLog(`最深部に到達している...これ以上は進めない`, 'normal');
-            }
-          }
-          // ===== 宝箱 (4%) =====
-          else if (event < 0.97) {
-            addLog('', 'normal');
-            addLog('宝箱を発見！慎重に調べる...', 'item');
+              setMaxFloors(prev => ({...prev,[dungeon]:Math.max(prev[dungeon]||0,newFloor)}));
+              addLog('','normal'); addLog('下り階段を発見した...','item'); addLog(`B${newFloor}Fへ降りていく...`,'item');
+            } else { addLog(`最深部に到達している...これ以上は進めない`,'normal'); }
+          } else if (event < 0.97) {
+            addLog('','normal'); addLog('宝箱を発見！慎重に調べる...','item');
             const hasThief = alive.some(c => c.jobKey === 'thief' || c.jobKey === 'ninja');
             if (Math.random() < (hasThief ? 0.1 : 0.25)) {
               const trap = TRAPS[Math.floor(Math.random()*TRAPS.length)];
-              addLog(`罠だ！${trap.name}が発動！`, 'damage');
+              addLog(`罠だ！${trap.name}が発動！`,'damage');
               soundEngine.playHit();
               setParty(p => p.map(c => ({...c, currentHp: Math.max(1, c.currentHp - Math.floor(c.maxHp*trap.dmg))})));
             } else {
               const goldFound = Math.floor(Math.random()*50*floor) + 20;
               setGold(prev => prev + goldFound);
-              addLog(`${goldFound}Gを発見！`, 'item');
+              addLog(`${goldFound}Gを発見！`,'item');
               soundEngine.playGold();
               if (Math.random() < 0.2) {
                 const drop = getDrop(floor);
-                if (drop) { setInventory(prev => [...prev, drop]); addLog(`${drop.name}を発見！`, 'item'); }
+                if (drop) { setInventory(prev => [...prev,drop]); addLog(`${drop.name}を発見！`,'item'); }
               }
             }
-          }
-          // ===== 回復 (3%) =====
-          else {
-            addLog('', 'normal');
-            addLog('神秘的な泉を発見！', 'heal');
-            addLog('清らかな水が傷を癒してくれる...', 'heal');
+          } else {
+            addLog('','normal'); addLog('神秘的な泉を発見！','heal'); addLog('清らかな水が傷を癒してくれる...','heal');
             soundEngine.playHeal();
             setParty(p => p.map(c => ({...c, currentHp: Math.min(c.maxHp, c.currentHp + Math.floor(c.maxHp*0.3)), currentMp: Math.min(c.maxMp, c.currentMp + Math.floor(c.maxMp*0.3))})));
-            addLog('パーティは回復した！', 'heal');
+            addLog('パーティは回復した！','heal');
           }
         }, 2500);
-        
         return () => clearInterval(interval);
       }, [exploring, dungeon, floor, party, retreatHP, addLog]);
 
-      // キャラ作成
       const createChar = () => {
         if (party.length >= 6) return;
         const raceKeys = Object.keys(RACES);
@@ -831,10 +783,9 @@
           equipment: {}, previousJobs: []
         };
         setParty(prev => [...prev, newChar]);
-        addLog(`${newChar.name}（${race.name}の${job.name}）が登録！`, 'level');
+        addLog(`${newChar.name}（${race.name}の${job.name}）が登録！`,'level');
       };
 
-      // 転職
       const canChangeJob = (char, jobKey) => {
         const job = JOBS[jobKey];
         if (!job.align.includes(char.alignKey)) return {can:false,reason:'属性不一致'};
@@ -847,7 +798,7 @@
           if (char.id !== charId) return char;
           const newJob = JOBS[newJobKey];
           soundEngine.playLevelUp();
-          addLog(`★ ${char.name}は${newJob.name}に転職！`, 'level');
+          addLog(`★ ${char.name}は${newJob.name}に転職！`,'level');
           const baseHp = Math.floor((char.vit*3+20)*newJob.hpMod);
           const baseMp = Math.floor((char.int*2+10)*newJob.mpMod);
           return {...char, job: newJob.name, jobKey: newJobKey, level: 1, exp: 0,
@@ -859,11 +810,9 @@
         setShowJobChange(null);
       };
 
-      // 装備
       const equipItem = (charId, item) => {
         const slot = ITEMS.weapons.some(w => w.id === item.id) || (item.id?.startsWith('bd') && item.atk && !item.def) ? 'weapon' 
-                   : ITEMS.armors.some(a => a.id === item.id) || (item.id?.startsWith('bd') && item.def && !item.atk) ? 'armor' 
-                   : 'accessory';
+                   : ITEMS.armors.some(a => a.id === item.id) || (item.id?.startsWith('bd') && item.def && !item.atk) ? 'armor' : 'accessory';
         setParty(prev => prev.map(char => {
           if (char.id !== charId) return char;
           const old = char.equipment[slot];
@@ -873,13 +822,11 @@
           setInventory(p => p.filter(i => i.uid !== item.uid));
           return {...char, atk: newAtk, def: newDef, equipment: {...char.equipment, [slot]: item}};
         }));
-        addLog(`装備: ${item.name}`, 'item');
+        addLog(`装備: ${item.name}`,'item');
       };
 
-      // エクスポート
-      const exportSave = () => { const blob = new Blob([JSON.stringify({party,gold,maxFloors,settings,bestiary,inventory})], {type:'application/json'}); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `wizardry-v10-${Date.now()}.json`; a.click(); };
+      const exportSave = () => { const blob = new Blob([JSON.stringify({party,gold,maxFloors,settings,bestiary,inventory})], {type:'application/json'}); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `wizardry-v11-${Date.now()}.json`; a.click(); };
 
-      // 転職モーダル
       const JobModal = ({char, onClose}) => {
         if (!char) return null;
         return (
@@ -900,30 +847,27 @@
         );
       };
 
-      // タイトル
       if (screen === 'title') {
         return (
           <div className="min-h-screen flex flex-col items-center justify-center p-4">
             <div className="retro-border p-8 bg-black text-center max-w-md">
               <h1 className="text-3xl mb-2 gold-text">⚔️ WIZARDRY SCHEMA ⚔️</h1>
               <p className="text-sm mb-1 text-gray-400">〜 リルガミンの迷宮 〜</p>
-              <p className="text-xs mb-6 text-gray-600">v10.0 戦闘強化＆装備350+</p>
+              <p className="text-xs mb-6 text-gray-600">v11.0 素材450+種</p>
               <div className="space-y-3">
                 <button onClick={() => {setScreen('main'); initSound();}} className="block w-full retro-border px-6 py-2 hover:bg-green-900">{party.length > 0 ? '▶ CONTINUE' : '▶ NEW GAME'}</button>
                 {party.length > 0 && <><button onClick={exportSave} className="block w-full retro-border px-6 py-2 hover:bg-blue-900 text-blue-400">📤 EXPORT</button>
-                <button onClick={() => {if(confirm('削除？')){localStorage.removeItem('wizardrySchemaV10');location.reload();}}} className="block w-full retro-border px-6 py-2 hover:bg-red-900 text-red-400">🗑️ DELETE</button></>}
+                <button onClick={() => {if(confirm('削除？')){localStorage.removeItem('wizardrySchemaV11');location.reload();}}} className="block w-full retro-border px-6 py-2 hover:bg-red-900 text-red-400">🗑️ DELETE</button></>}
               </div>
             </div>
           </div>
         );
       }
 
-      // メイン (レイアウト: ダンジョン左、ログ右)
       return (
         <div className="min-h-screen p-2">
           {showJobChange && <JobModal char={showJobChange} onClose={() => setShowJobChange(null)} />}
           <div className="max-w-6xl mx-auto">
-            {/* ヘッダー */}
             <div className="retro-border p-3 mb-3 flex justify-between items-center flex-wrap gap-2">
               <h1 className="text-lg gold-text">⚔️ WIZARDRY SCHEMA</h1>
               <div className="flex gap-4 text-sm items-center">
@@ -932,8 +876,6 @@
                 <button onClick={() => setShowSettings(!showSettings)} className="text-gray-400 hover:text-white">⚙️</button>
               </div>
             </div>
-
-            {/* 設定 */}
             {showSettings && (
               <div className="retro-border p-3 mb-3 bg-gray-900 text-xs">
                 <div className="grid md:grid-cols-2 gap-4">
@@ -944,8 +886,6 @@
                 </div>
               </div>
             )}
-
-            {/* タブ */}
             <div className="flex gap-1 mb-3 flex-wrap">
               {['party','dungeon','shop','inventory','bestiary'].map(t => (
                 <button key={t} onClick={() => setActiveTab(t)} className={`retro-border px-3 py-1 text-xs tab-btn ${activeTab===t?'active':''}`}>
@@ -953,12 +893,8 @@
                 </button>
               ))}
             </div>
-
-            {/* メインエリア (ダンジョン左、ログ右) */}
             <div className="grid lg:grid-cols-3 gap-3">
-              {/* メインコンテンツ (左側) */}
               <div className="lg:col-span-2 retro-border p-3">
-                {/* パーティ */}
                 {activeTab === 'party' && (<>
                   <h2 className="text-base mb-2 border-b border-green-800 pb-1">【 ギルガメッシュの酒場 】({party.length}/6)</h2>
                   <div className="grid md:grid-cols-2 gap-2 max-h-80 overflow-y-auto">
@@ -975,8 +911,6 @@
                   </div>
                   {!exploring && <div className="mt-3 flex gap-2"><button onClick={createChar} disabled={party.length>=6} className="retro-border px-4 py-2 text-sm hover:bg-green-900 disabled:opacity-50">＋冒険者登録</button>{party.length > 0 && <button onClick={() => setParty(p => p.slice(0,-1))} className="text-xs text-red-400 hover:underline">解雇</button>}</div>}
                 </>)}
-
-                {/* ダンジョン */}
                 {activeTab === 'dungeon' && (<>
                   <h2 className="text-base mb-2 border-b border-green-800 pb-1">【 迷宮入口 】</h2>
                   {!exploring ? (<>
@@ -984,7 +918,7 @@
                       {DUNGEONS.map(d => {
                         const avgLv = party.length > 0 ? Math.floor(party.reduce((a,c) => a+c.level, 0)/party.length) : 0;
                         const canEnter = avgLv >= d.minLv && party.length > 0;
-                        return (<button key={d.id} onClick={() => {if (!canEnter) return; setExploring(true); setFloor(1); setLogs([]); addLog(`━━━ ${d.name}へ出発 ━━━`, 'level'); addLog(`パーティは迷宮へ足を踏み入れた...`, 'normal'); setDungeon(d.id);}} disabled={!canEnter}
+                        return (<button key={d.id} onClick={() => {if (!canEnter) return; setExploring(true); setFloor(1); setLogs([]); addLog(`━━━ ${d.name}へ出発 ━━━`,'level'); addLog(`パーティは迷宮へ足を踏み入れた...`,'normal'); setDungeon(d.id);}} disabled={!canEnter}
                           className={`text-left p-2 text-xs bg-gray-900 ${canEnter?'hover:bg-green-800 cursor-pointer':'opacity-50'}`}>
                           <div className="flex justify-between"><span className="font-bold">{d.name}</span><span className="text-gray-500">B{d.floors}F</span></div>
                           <div className="text-gray-500">推奨Lv.{d.minLv}+ {maxFloors[d.id] ? `(最深B${maxFloors[d.id]}F)` : ''}</div>
@@ -997,39 +931,30 @@
                       <p className="text-2xl mb-2 blink gold-text">探索中...</p>
                       <p className="text-4xl mb-2">🏰 B{floor}F</p>
                       <p className="text-sm text-gray-400 mb-4">{DUNGEONS.find(d => d.id===dungeon)?.name}</p>
-                      <button onClick={() => {setExploring(false); setFloor(1); setParty(p => p.map(c => ({...c, currentHp: c.maxHp, currentMp: c.maxMp}))); addLog('パーティは帰還した', 'heal');}} className="retro-border px-8 py-2 hover:bg-red-900 text-red-400">■ 帰還</button>
+                      <button onClick={() => {setExploring(false); setFloor(1); setParty(p => p.map(c => ({...c, currentHp: c.maxHp, currentMp: c.maxMp}))); addLog('パーティは帰還した','heal');}} className="retro-border px-8 py-2 hover:bg-red-900 text-red-400">■ 帰還</button>
                     </div>
                   )}
                 </>)}
-
-                {/* ショップ */}
                 {activeTab === 'shop' && (<>
                   <h2 className="text-base mb-2 border-b border-green-800 pb-1">【 ボルタック商店 】</h2>
                   <div className="flex gap-1 mb-2">{['weapons','armors','accessories','consumables'].map(cat => (<button key={cat} onClick={() => setShopCat(cat)} className={`px-2 py-1 text-xs ${shopCat===cat?'bg-green-900 retro-border':'bg-gray-900'}`}>{{weapons:'⚔️武器',armors:'🛡️防具',accessories:'💍装飾',consumables:'🧪消耗'}[cat]}</button>))}</div>
                   <div className="space-y-1 max-h-64 overflow-y-auto">{ITEMS[shopCat].map((item,i) => { const canBuy = gold >= item.price; return (<div key={i} className={`p-1 text-xs flex justify-between ${canBuy?'bg-gray-900':'bg-gray-900 opacity-50'}`}><div><span className={`rarity-${item.rarity}`}>{item.name}</span><span className="text-gray-500 ml-2">{item.atk?`ATK+${item.atk}`:''}{item.def?`DEF+${item.def}`:''}</span></div><button onClick={() => {if (!canBuy) return; setGold(p => p-item.price); setInventory(p => [...p, {...item, uid: Date.now()}]); soundEngine.playGold();}} disabled={!canBuy} className="gold-text hover:underline disabled:opacity-50">{item.price}G</button></div>);})}</div>
                 </>)}
-
-                {/* 所持品 */}
                 {activeTab === 'inventory' && (<>
                   <h2 className="text-base mb-2 border-b border-green-800 pb-1">【 所持品 】({inventory.length})</h2>
                   <div className="mb-2"><span className="text-xs text-gray-400">装備先: </span>{party.map(char => (<button key={char.id} onClick={() => setSelChar(char.id)} className={`px-2 py-1 text-xs mx-1 ${selChar===char.id?'bg-green-900 retro-border':'bg-gray-900'}`}>{char.name}</button>))}</div>
                   <div className="space-y-1 max-h-64 overflow-y-auto">{inventory.map(item => (<div key={item.uid} className="p-1 text-xs bg-gray-900 flex justify-between"><div><span className={`rarity-${item.rarity}`}>{item.name}</span><span className="text-gray-500 ml-2">{item.atk?`ATK+${item.atk}`:''}{item.def?`DEF+${item.def}`:''}</span></div><div className="flex gap-2">{selChar && !ITEMS.consumables.some(c => c.id === item.id) && <button onClick={() => equipItem(selChar, item)} className="text-blue-400 hover:underline">装備</button>}<button onClick={() => {setGold(p => p + Math.floor((item.price||10)/2)); setInventory(p => p.filter(i => i.uid !== item.uid));}} className="text-yellow-400 hover:underline">売却</button></div></div>))}{inventory.length === 0 && <p className="text-gray-600 text-center py-4">アイテムなし</p>}</div>
                 </>)}
-
-                {/* 図鑑 */}
                 {activeTab === 'bestiary' && (<>
                   <h2 className="text-base mb-2 border-b border-green-800 pb-1">【 モンスター図鑑 】</h2>
                   <div className="grid md:grid-cols-2 gap-2 max-h-80 overflow-y-auto">{Object.entries(bestiary).map(([name, d]) => (<div key={name} className="p-2 bg-gray-900 text-xs"><div className="flex justify-between"><span className="font-bold">{d.boss?'👑':''}{name}</span><span className="text-gray-500">×{d.cnt}</span></div><div className="text-gray-400 mt-1">HP:{d.hp} ATK:{d.atk} EXP:{d.exp}</div></div>))}</div>
                 </>)}
               </div>
-
-              {/* ログ (右側) */}
               <div className="retro-border p-3">
                 <h2 className="text-base mb-2 border-b border-green-800 pb-1">【 冒険記録 】</h2>
                 <div ref={logRef} className="h-96 overflow-y-auto bg-black p-2 text-xs log-scroll">{logs.length === 0 ? <p className="text-gray-600">ログがここに表示されます...</p> : logs.map((l,i) => <p key={i} className={`${l.c} mb-1`}>{l.msg || ' '}</p>)}</div>
               </div>
             </div>
-
             <div className="text-center mt-3 text-xs text-gray-600"><button onClick={() => setScreen('title')} className="hover:text-green-400">タイトル</button></div>
           </div>
         </div>
