@@ -11,15 +11,8 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=DotGothic16&display=swap');
-    body {
-      font-family: 'DotGothic16', sans-serif;
-      background-color: #0a0a0a;
-      color: #33ff33;
-    }
-    .retro-border {
-      border: 2px solid #33ff33;
-      box-shadow: 0 0 10px rgba(51, 255, 51, 0.3);
-    }
+    body { font-family: 'DotGothic16', sans-serif; background-color: #0a0a0a; color: #33ff33; }
+    .retro-border { border: 2px solid #33ff33; box-shadow: 0 0 10px rgba(51, 255, 51, 0.3); }
     .log-scroll::-webkit-scrollbar { width: 8px; }
     .log-scroll::-webkit-scrollbar-track { background: #1a1a1a; }
     .log-scroll::-webkit-scrollbar-thumb { background-color: #33ff33; }
@@ -29,9 +22,16 @@
     .red-text { color: #ff4444; }
     .blue-text { color: #44aaff; }
     .purple-text { color: #aa44ff; }
+    .orange-text { color: #ff8844; }
     .tab-btn { transition: all 0.2s; }
     .tab-btn:hover { background-color: #1a4a1a; }
     .tab-btn.active { background-color: #2a5a2a; border-color: #66ff66; }
+    .rarity-common { color: #aaaaaa; }
+    .rarity-uncommon { color: #44ff44; }
+    .rarity-rare { color: #4488ff; }
+    .rarity-epic { color: #aa44ff; }
+    .rarity-legendary { color: #ffaa00; }
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: center; z-index: 100; }
   </style>
 </head>
 <body>
@@ -56,35 +56,26 @@
       async init() {
         if (this.initialized) return;
         await Tone.start();
-        
-        // BGM用シンセ（レトロ風）
         this.bgmSynth = new Tone.PolySynth(Tone.Synth, {
           oscillator: { type: 'square' },
           envelope: { attack: 0.01, decay: 0.2, sustain: 0.3, release: 0.5 }
         }).toDestination();
         this.bgmSynth.volume.value = this.bgmVolume;
-
-        // 効果音用シンセ
         this.sfxSynth = new Tone.Synth({
           oscillator: { type: 'triangle' },
           envelope: { attack: 0.01, decay: 0.1, sustain: 0.1, release: 0.2 }
         }).toDestination();
         this.sfxSynth.volume.value = this.sfxVolume;
-
-        // ドラム
         this.noiseSynth = new Tone.NoiseSynth({
           noise: { type: 'white' },
           envelope: { attack: 0.005, decay: 0.1, sustain: 0 }
         }).toDestination();
         this.noiseSynth.volume.value = -20;
-
         this.initialized = true;
       }
 
-      // レトロ風BGMパターン
       startBGM() {
         if (!this.initialized || !this.bgmEnabled || this.isPlaying) return;
-        
         const melody = [
           ['E4', '8n'], ['G4', '8n'], ['A4', '8n'], ['B4', '8n'],
           ['A4', '8n'], ['G4', '8n'], ['E4', '4n'],
@@ -95,7 +86,6 @@
           ['A4', '8n'], ['G4', '8n'], ['E4', '8n'], ['D4', '8n'],
           ['E4', '2n']
         ];
-
         let index = 0;
         this.bgmLoop = new Tone.Loop((time) => {
           if (!this.bgmEnabled) return;
@@ -103,120 +93,42 @@
           this.bgmSynth.triggerAttackRelease(note, duration, time);
           index++;
         }, '8n').start(0);
-
         Tone.Transport.bpm.value = 100;
         Tone.Transport.start();
         this.isPlaying = true;
       }
 
       stopBGM() {
-        if (this.bgmLoop) {
-          this.bgmLoop.stop();
-          Tone.Transport.stop();
-          this.isPlaying = false;
-        }
+        if (this.bgmLoop) { this.bgmLoop.stop(); Tone.Transport.stop(); this.isPlaying = false; }
       }
 
       toggleBGM(enabled) {
         this.bgmEnabled = enabled;
-        if (enabled && this.initialized) {
-          this.startBGM();
-        } else {
-          this.stopBGM();
-        }
+        if (enabled && this.initialized) this.startBGM();
+        else this.stopBGM();
       }
 
-      // 効果音
-      playAttack() {
-        if (!this.initialized || !this.sfxEnabled) return;
-        this.sfxSynth.triggerAttackRelease('C5', '16n');
-        setTimeout(() => this.sfxSynth.triggerAttackRelease('E5', '16n'), 50);
-      }
-
-      playHit() {
-        if (!this.initialized || !this.sfxEnabled) return;
-        this.noiseSynth.triggerAttackRelease('16n');
-      }
-
-      playLevelUp() {
-        if (!this.initialized || !this.sfxEnabled) return;
-        const notes = ['C5', 'E5', 'G5', 'C6'];
-        notes.forEach((note, i) => {
-          setTimeout(() => this.sfxSynth.triggerAttackRelease(note, '8n'), i * 100);
-        });
-      }
-
-      playHeal() {
-        if (!this.initialized || !this.sfxEnabled) return;
-        this.sfxSynth.triggerAttackRelease('G5', '4n');
-        setTimeout(() => this.sfxSynth.triggerAttackRelease('B5', '4n'), 150);
-      }
-
-      playGold() {
-        if (!this.initialized || !this.sfxEnabled) return;
-        this.sfxSynth.triggerAttackRelease('E6', '16n');
-        setTimeout(() => this.sfxSynth.triggerAttackRelease('G6', '16n'), 80);
-      }
-
-      playDeath() {
-        if (!this.initialized || !this.sfxEnabled) return;
-        const notes = ['E4', 'D4', 'C4', 'B3'];
-        notes.forEach((note, i) => {
-          setTimeout(() => this.sfxSynth.triggerAttackRelease(note, '8n'), i * 200);
-        });
-      }
-
-      playBossAppear() {
-        if (!this.initialized || !this.sfxEnabled) return;
-        const notes = ['C3', 'C3', 'G3', 'C3', 'G3', 'C4'];
-        notes.forEach((note, i) => {
-          setTimeout(() => this.sfxSynth.triggerAttackRelease(note, '8n'), i * 150);
-        });
-      }
+      playAttack() { if (this.initialized && this.sfxEnabled) { this.sfxSynth.triggerAttackRelease('C5', '16n'); setTimeout(() => this.sfxSynth.triggerAttackRelease('E5', '16n'), 50); } }
+      playHit() { if (this.initialized && this.sfxEnabled) this.noiseSynth.triggerAttackRelease('16n'); }
+      playLevelUp() { if (this.initialized && this.sfxEnabled) { ['C5', 'E5', 'G5', 'C6'].forEach((note, i) => setTimeout(() => this.sfxSynth.triggerAttackRelease(note, '8n'), i * 100)); } }
+      playHeal() { if (this.initialized && this.sfxEnabled) { this.sfxSynth.triggerAttackRelease('G5', '4n'); setTimeout(() => this.sfxSynth.triggerAttackRelease('B5', '4n'), 150); } }
+      playGold() { if (this.initialized && this.sfxEnabled) { this.sfxSynth.triggerAttackRelease('E6', '16n'); setTimeout(() => this.sfxSynth.triggerAttackRelease('G6', '16n'), 80); } }
+      playDeath() { if (this.initialized && this.sfxEnabled) { ['E4', 'D4', 'C4', 'B3'].forEach((note, i) => setTimeout(() => this.sfxSynth.triggerAttackRelease(note, '8n'), i * 200)); } }
+      playBossAppear() { if (this.initialized && this.sfxEnabled) { ['C3', 'C3', 'G3', 'C3', 'G3', 'C4'].forEach((note, i) => setTimeout(() => this.sfxSynth.triggerAttackRelease(note, '8n'), i * 150)); } }
+      playJobChange() { if (this.initialized && this.sfxEnabled) { ['C5', 'D5', 'E5', 'F5', 'G5', 'A5', 'B5', 'C6'].forEach((note, i) => setTimeout(() => this.sfxSynth.triggerAttackRelease(note, '16n'), i * 80)); } }
     }
 
     const soundEngine = new SoundEngine();
 
-    // ===== Wizardry風 ランダム名前生成 =====
+    // ===== 名前生成 =====
     const NAME_PARTS = {
-      human: {
-        prefix: ['アル', 'ベル', 'カイ', 'ダン', 'エル', 'フィン', 'ガル', 'ハル', 'イル', 'ジェ', 
-                 'ケイ', 'レオ', 'マル', 'ノエ', 'オル', 'パル', 'クエ', 'レイ', 'セル', 'タル'],
-        suffix: ['ス', 'ン', 'ド', 'ク', 'ト', 'ル', 'ム', 'フ', 'リア', 'ナ', 
-                 'シア', 'ティ', 'ヴィ', 'ウス', 'オン', 'アス', 'エル', 'イン', 'ウム', 'ア']
-      },
-      elf: {
-        prefix: ['エア', 'セレ', 'ガラ', 'レゴ', 'アラ', 'エル', 'フェア', 'ギル', 'リン', 'ルー',
-                 'ミス', 'ニム', 'オロ', 'サル', 'シル', 'タウ', 'ウン', 'ヴァ', 'イド', 'セア'],
-        suffix: ['ウェン', 'ディル', 'ドリエル', 'ラス', 'ミア', 'ノール', 'リオン', 'ウィン', 'ナス', 'ロス',
-                 'ミル', 'ドール', 'フィン', 'リア', 'ディア', 'エル', 'シル', 'ニエル', 'ヴェル', 'ウィル']
-      },
-      dwarf: {
-        prefix: ['ドゥ', 'バル', 'ギム', 'トー', 'ブロ', 'ダイ', 'ファ', 'グロ', 'カザ', 'モー',
-                 'ナー', 'オー', 'スノ', 'ウル', 'ヴァル', 'ドワ', 'ボル', 'グラ', 'ハル', 'ムル'],
-        suffix: ['リン', 'イン', 'リ', 'ル', 'ム', 'ド', 'グ', 'ク', 'ン', 'フ',
-                 'ボル', 'ダル', 'ガル', 'ナル', 'マル', 'カル', 'ザル', 'トル', 'ヴル', 'オル']
-      },
-      gnome: {
-        prefix: ['フィ', 'ジン', 'ボボ', 'ニム', 'ガー', 'ピッ', 'ティン', 'ウィ', 'ザン', 'リリ',
-                 'メリ', 'ポポ', 'キキ', 'ルル', 'ミミ', 'ノノ', 'タタ', 'ビビ', 'ココ', 'ディディ'],
-        suffix: ['ック', 'ス', 'ブル', 'ドル', 'リック', 'バス', 'トン', 'ズル', 'ゲル', 'クル',
-                 'ンク', 'ップ', 'ット', 'ンス', 'ムス', 'ルス', 'ンプ', 'ルク', 'ルド', 'ンド']
-      },
-      porkul: {
-        prefix: ['パッ', 'ピッ', 'プル', 'ペコ', 'ポン', 'ホビ', 'ロー', 'サム', 'フロ', 'メリ',
-                 'ビル', 'ボブ', 'ダド', 'ファ', 'ガム', 'ハム', 'トム', 'ウィル', 'バン', 'タン'],
-        suffix: ['ド', 'ト', 'ン', 'ル', 'ス', 'ボ', 'ゴ', 'ロ', 'ジー', 'シー',
-                 'ピン', 'キン', 'リン', 'ミン', 'ティン', 'ウィン', 'ディン', 'フィン', 'ジン', 'ビン']
-      }
+      human: { prefix: ['アル', 'ベル', 'カイ', 'ダン', 'エル', 'フィン', 'ガル', 'ハル', 'イル', 'ジェ', 'ケイ', 'レオ', 'マル', 'ノエ', 'オル', 'パル', 'クエ', 'レイ', 'セル', 'タル'], suffix: ['ス', 'ン', 'ド', 'ク', 'ト', 'ル', 'ム', 'フ', 'リア', 'ナ', 'シア', 'ティ', 'ヴィ', 'ウス', 'オン', 'アス', 'エル', 'イン', 'ウム', 'ア'] },
+      elf: { prefix: ['エア', 'セレ', 'ガラ', 'レゴ', 'アラ', 'エル', 'フェア', 'ギル', 'リン', 'ルー', 'ミス', 'ニム', 'オロ', 'サル', 'シル', 'タウ', 'ウン', 'ヴァ', 'イド', 'セア'], suffix: ['ウェン', 'ディル', 'ドリエル', 'ラス', 'ミア', 'ノール', 'リオン', 'ウィン', 'ナス', 'ロス', 'ミル', 'ドール', 'フィン', 'リア', 'ディア', 'エル', 'シル', 'ニエル', 'ヴェル', 'ウィル'] },
+      dwarf: { prefix: ['ドゥ', 'バル', 'ギム', 'トー', 'ブロ', 'ダイ', 'ファ', 'グロ', 'カザ', 'モー', 'ナー', 'オー', 'スノ', 'ウル', 'ヴァル', 'ドワ', 'ボル', 'グラ', 'ハル', 'ムル'], suffix: ['リン', 'イン', 'リ', 'ル', 'ム', 'ド', 'グ', 'ク', 'ン', 'フ', 'ボル', 'ダル', 'ガル', 'ナル', 'マル', 'カル', 'ザル', 'トル', 'ヴル', 'オル'] },
+      gnome: { prefix: ['フィ', 'ジン', 'ボボ', 'ニム', 'ガー', 'ピッ', 'ティン', 'ウィ', 'ザン', 'リリ', 'メリ', 'ポポ', 'キキ', 'ルル', 'ミミ', 'ノノ', 'タタ', 'ビビ', 'ココ', 'ディディ'], suffix: ['ック', 'ス', 'ブル', 'ドル', 'リック', 'バス', 'トン', 'ズル', 'ゲル', 'クル', 'ンク', 'ップ', 'ット', 'ンス', 'ムス', 'ルス', 'ンプ', 'ルク', 'ルド', 'ンド'] },
+      porkul: { prefix: ['パッ', 'ピッ', 'プル', 'ペコ', 'ポン', 'ホビ', 'ロー', 'サム', 'フロ', 'メリ', 'ビル', 'ボブ', 'ダド', 'ファ', 'ガム', 'ハム', 'トム', 'ウィル', 'バン', 'タン'], suffix: ['ド', 'ト', 'ン', 'ル', 'ス', 'ボ', 'ゴ', 'ロ', 'ジー', 'シー', 'ピン', 'キン', 'リン', 'ミン', 'ティン', 'ウィン', 'ディン', 'フィン', 'ジン', 'ビン'] }
     };
-
-    const generateName = (race) => {
-      const parts = NAME_PARTS[race] || NAME_PARTS.human;
-      const prefix = parts.prefix[Math.floor(Math.random() * parts.prefix.length)];
-      const suffix = parts.suffix[Math.floor(Math.random() * parts.suffix.length)];
-      return prefix + suffix;
-    };
+    const generateName = (race) => { const parts = NAME_PARTS[race] || NAME_PARTS.human; return parts.prefix[Math.floor(Math.random() * parts.prefix.length)] + parts.suffix[Math.floor(Math.random() * parts.suffix.length)]; };
 
     // ===== ゲーム定数 =====
     const RACES = {
@@ -233,18 +145,19 @@
       chaotic: { name: '混沌(C)', color: 'text-red-400' }
     };
 
+    // 転職システム付き職業データ
     const JOBS = {
-      fighter: { name: '戦士', hpMod: 1.5, mpMod: 0.2, atkMod: 1.4, defMod: 1.3, align: ['lawful', 'neutral', 'chaotic'], spellType: null },
-      mage: { name: '魔術師', hpMod: 0.6, mpMod: 1.8, atkMod: 0.6, defMod: 0.5, align: ['lawful', 'neutral', 'chaotic'], spellType: 'mage' },
-      priest: { name: '僧侶', hpMod: 0.9, mpMod: 1.4, atkMod: 0.8, defMod: 0.9, align: ['lawful', 'chaotic'], spellType: 'priest' },
-      thief: { name: '盗賊', hpMod: 0.8, mpMod: 0.5, atkMod: 1.0, defMod: 0.7, align: ['neutral', 'chaotic'], spellType: null },
-      bishop: { name: '司教', hpMod: 0.7, mpMod: 1.6, atkMod: 0.7, defMod: 0.6, align: ['lawful', 'chaotic'], spellType: 'both' },
-      samurai: { name: '侍', hpMod: 1.3, mpMod: 0.8, atkMod: 1.3, defMod: 1.1, align: ['lawful', 'neutral'], spellType: 'mage' },
-      lord: { name: '君主', hpMod: 1.4, mpMod: 1.0, atkMod: 1.2, defMod: 1.2, align: ['lawful'], spellType: 'priest' },
-      ninja: { name: '忍者', hpMod: 1.0, mpMod: 0.6, atkMod: 1.5, defMod: 0.8, align: ['chaotic'], spellType: null }
+      fighter: { name: '戦士', hpMod: 1.5, mpMod: 0.2, atkMod: 1.4, defMod: 1.3, align: ['lawful', 'neutral', 'chaotic'], spellType: null, tier: 1, requirements: {} },
+      mage: { name: '魔術師', hpMod: 0.6, mpMod: 1.8, atkMod: 0.6, defMod: 0.5, align: ['lawful', 'neutral', 'chaotic'], spellType: 'mage', tier: 1, requirements: {} },
+      priest: { name: '僧侶', hpMod: 0.9, mpMod: 1.4, atkMod: 0.8, defMod: 0.9, align: ['lawful', 'chaotic'], spellType: 'priest', tier: 1, requirements: {} },
+      thief: { name: '盗賊', hpMod: 0.8, mpMod: 0.5, atkMod: 1.0, defMod: 0.7, align: ['neutral', 'chaotic'], spellType: null, tier: 1, requirements: {} },
+      bishop: { name: '司教', hpMod: 0.7, mpMod: 1.6, atkMod: 0.7, defMod: 0.6, align: ['lawful', 'chaotic'], spellType: 'both', tier: 2, requirements: { int: 12, pie: 12 } },
+      samurai: { name: '侍', hpMod: 1.3, mpMod: 0.8, atkMod: 1.3, defMod: 1.1, align: ['lawful', 'neutral'], spellType: 'mage', tier: 2, requirements: { str: 15, int: 11, vit: 14, agi: 10 } },
+      lord: { name: '君主', hpMod: 1.4, mpMod: 1.0, atkMod: 1.2, defMod: 1.2, align: ['lawful'], spellType: 'priest', tier: 2, requirements: { str: 15, int: 12, pie: 12, vit: 15, agi: 14, luk: 15 } },
+      ninja: { name: '忍者', hpMod: 1.0, mpMod: 0.6, atkMod: 1.5, defMod: 0.8, align: ['chaotic'], spellType: null, tier: 2, requirements: { str: 15, int: 17, pie: 15, vit: 16, agi: 15, luk: 16 } }
     };
 
-    // Wizardry風呪文システム
+    // 呪文
     const SPELLS = {
       mage: [
         { name: 'ハリト', level: 1, mp: 2, effect: 'damage', power: 15, desc: '小炎を放つ' },
@@ -253,7 +166,10 @@
         { name: 'ディルト', level: 2, mp: 3, effect: 'debuff_def', power: 3, desc: '敵の防御低下' },
         { name: 'ソピック', level: 3, mp: 4, effect: 'identify', power: 0, desc: '宝箱の罠を見破る' },
         { name: 'マハリト', level: 3, mp: 5, effect: 'damage_all', power: 25, desc: '火炎球を放つ' },
-        { name: 'リトカン', level: 5, mp: 7, effect: 'damage_all', power: 40, desc: '大火炎を放つ' },
+        { name: 'ラハリト', level: 4, mp: 6, effect: 'damage', power: 40, desc: '大火炎を放つ' },
+        { name: 'ダルト', level: 5, mp: 7, effect: 'damage', power: 55, desc: '冷気の矢' },
+        { name: 'リトカン', level: 5, mp: 7, effect: 'damage_all', power: 40, desc: '炎の嵐' },
+        { name: 'マダルト', level: 6, mp: 10, effect: 'damage_all', power: 60, desc: '氷結の嵐' },
         { name: 'ティルトウェイト', level: 7, mp: 15, effect: 'damage_all', power: 80, desc: '核爆発級の破壊呪文' }
       ],
       priest: [
@@ -263,39 +179,136 @@
         { name: 'ポルフィク', level: 2, mp: 3, effect: 'buff_def', power: 5, desc: '全体防御上昇' },
         { name: 'マディ', level: 3, mp: 5, effect: 'heal', power: 50, desc: 'HP中回復' },
         { name: 'ディアル', level: 4, mp: 6, effect: 'heal_all', power: 30, desc: '全体HP回復' },
+        { name: 'バマディ', level: 5, mp: 8, effect: 'heal', power: 80, desc: 'HP大回復' },
         { name: 'ラツモフィス', level: 5, mp: 8, effect: 'cure_poison', power: 0, desc: '毒を治療' },
         { name: 'マディアル', level: 6, mp: 12, effect: 'heal_all', power: 60, desc: '全体大回復' },
         { name: 'カドルト', level: 7, mp: 15, effect: 'resurrect', power: 50, desc: '蘇生（成功率50%）' }
       ]
     };
 
-    // 装備品
+    // ===== 大幅拡充: アイテムデータベース =====
+    const ITEM_RARITY = { common: { name: 'コモン', color: 'rarity-common', dropRate: 0.6 }, uncommon: { name: 'アンコモン', color: 'rarity-uncommon', dropRate: 0.25 }, rare: { name: 'レア', color: 'rarity-rare', dropRate: 0.1 }, epic: { name: 'エピック', color: 'rarity-epic', dropRate: 0.04 }, legendary: { name: 'レジェンダリー', color: 'rarity-legendary', dropRate: 0.01 } };
+
     const ITEMS = {
       weapons: [
-        { id: 'sword1', name: 'ロングソード', atk: 5, price: 100, minLv: 1 },
-        { id: 'sword2', name: 'ブロードソード', atk: 10, price: 300, minLv: 3 },
-        { id: 'katana1', name: '打刀', atk: 15, price: 600, minLv: 5, jobs: ['samurai', 'ninja'] },
-        { id: 'mace1', name: 'メイス', atk: 8, price: 200, minLv: 2, jobs: ['priest', 'lord'] },
-        { id: 'staff1', name: '杖', atk: 3, price: 50, minLv: 1, jobs: ['mage', 'bishop'] },
-        { id: 'dagger1', name: 'ダガー', atk: 4, price: 80, minLv: 1 },
-        { id: 'sword3', name: 'フレイムソード', atk: 25, price: 1500, minLv: 10 },
-        { id: 'katana2', name: '村正', atk: 40, price: 5000, minLv: 15, jobs: ['samurai', 'ninja'] },
-        { id: 'muramasa', name: '妖刀ムラマサ', atk: 60, price: 15000, minLv: 20, jobs: ['samurai', 'ninja'], cursed: true }
+        // コモン武器
+        { id: 'w001', name: 'ショートソード', atk: 3, price: 50, minLv: 1, rarity: 'common', desc: '初心者用の剣' },
+        { id: 'w002', name: 'ロングソード', atk: 6, price: 150, minLv: 1, rarity: 'common', desc: '標準的な長剣' },
+        { id: 'w003', name: 'ダガー', atk: 2, price: 30, minLv: 1, rarity: 'common', desc: '短刀' },
+        { id: 'w004', name: 'メイス', atk: 5, price: 100, minLv: 1, rarity: 'common', jobs: ['priest', 'lord', 'bishop'], desc: '僧侶の武器' },
+        { id: 'w005', name: '杖', atk: 2, price: 40, minLv: 1, rarity: 'common', jobs: ['mage', 'bishop'], desc: '魔術師の杖' },
+        { id: 'w006', name: 'ハンドアクス', atk: 4, price: 80, minLv: 1, rarity: 'common', desc: '小型の斧' },
+        { id: 'w007', name: 'スピア', atk: 5, price: 90, minLv: 1, rarity: 'common', desc: '槍' },
+        { id: 'w008', name: 'クラブ', atk: 3, price: 20, minLv: 1, rarity: 'common', desc: '棍棒' },
+        // アンコモン武器
+        { id: 'w101', name: 'ブロードソード', atk: 10, price: 400, minLv: 3, rarity: 'uncommon', desc: '幅広の剣' },
+        { id: 'w102', name: 'バトルアクス', atk: 12, price: 500, minLv: 4, rarity: 'uncommon', desc: '戦斧' },
+        { id: 'w103', name: 'モーニングスター', atk: 9, price: 350, minLv: 3, rarity: 'uncommon', jobs: ['fighter', 'priest', 'lord'], desc: '棘付き鉄球' },
+        { id: 'w104', name: '打刀', atk: 11, price: 450, minLv: 4, rarity: 'uncommon', jobs: ['samurai', 'ninja'], desc: '日本刀' },
+        { id: 'w105', name: 'スタッフ・オブ・ライト', atk: 5, price: 300, minLv: 3, rarity: 'uncommon', jobs: ['mage', 'bishop'], effect: { int: 2 }, desc: '知力+2' },
+        { id: 'w106', name: 'シーフズナイフ', atk: 7, price: 280, minLv: 3, rarity: 'uncommon', jobs: ['thief', 'ninja'], effect: { agi: 2 }, desc: '俊敏+2' },
+        { id: 'w107', name: 'ウォーハンマー', atk: 14, price: 600, minLv: 5, rarity: 'uncommon', desc: '戦鎚' },
+        { id: 'w108', name: 'ハルバード', atk: 13, price: 550, minLv: 5, rarity: 'uncommon', desc: '薙刀斧' },
+        // レア武器
+        { id: 'w201', name: 'フレイムソード', atk: 20, price: 2000, minLv: 8, rarity: 'rare', effect: { fire: true }, desc: '炎を纏う剣' },
+        { id: 'w202', name: 'アイスブランド', atk: 18, price: 1800, minLv: 8, rarity: 'rare', effect: { ice: true }, desc: '氷の剣' },
+        { id: 'w203', name: 'サンダーブレード', atk: 19, price: 1900, minLv: 8, rarity: 'rare', effect: { thunder: true }, desc: '雷の剣' },
+        { id: 'w204', name: '太刀', atk: 22, price: 2500, minLv: 10, rarity: 'rare', jobs: ['samurai', 'ninja'], desc: '上質な日本刀' },
+        { id: 'w205', name: 'ホーリーメイス', atk: 16, price: 1500, minLv: 7, rarity: 'rare', jobs: ['priest', 'lord', 'bishop'], effect: { holy: true }, desc: '聖なる鉄槌' },
+        { id: 'w206', name: 'ウィザードスタッフ', atk: 8, price: 1800, minLv: 8, rarity: 'rare', jobs: ['mage', 'bishop'], effect: { int: 5, mp: 20 }, desc: '知力+5, MP+20' },
+        { id: 'w207', name: 'アサシンブレード', atk: 17, price: 2200, minLv: 9, rarity: 'rare', jobs: ['thief', 'ninja'], effect: { crit: 10 }, desc: 'クリティカル+10%' },
+        { id: 'w208', name: 'ドラゴンスレイヤー', atk: 25, price: 3500, minLv: 12, rarity: 'rare', effect: { dragonSlayer: true }, desc: 'ドラゴン特効' },
+        // エピック武器
+        { id: 'w301', name: '村正', atk: 35, price: 8000, minLv: 15, rarity: 'epic', jobs: ['samurai', 'ninja'], effect: { crit: 15 }, desc: '妖刀' },
+        { id: 'w302', name: 'エクスカリバー', atk: 40, price: 15000, minLv: 18, rarity: 'epic', jobs: ['lord'], effect: { holy: true, str: 5 }, desc: '聖剣' },
+        { id: 'w303', name: 'ミョルニル', atk: 38, price: 12000, minLv: 17, rarity: 'epic', effect: { thunder: true, vit: 5 }, desc: '雷神の槌' },
+        { id: 'w304', name: 'グングニル', atk: 36, price: 10000, minLv: 16, rarity: 'epic', effect: { pierce: true }, desc: '必中の槍' },
+        { id: 'w305', name: 'アークメイジスタッフ', atk: 15, price: 12000, minLv: 17, rarity: 'epic', jobs: ['mage', 'bishop'], effect: { int: 10, mp: 50 }, desc: '知力+10, MP+50' },
+        { id: 'w306', name: 'デスブリンガー', atk: 42, price: 18000, minLv: 20, rarity: 'epic', effect: { death: 5 }, desc: '即死5%' },
+        // レジェンダリー武器
+        { id: 'w401', name: '妖刀ムラマサ', atk: 55, price: 50000, minLv: 23, rarity: 'legendary', jobs: ['samurai', 'ninja'], effect: { cursed: true, crit: 25 }, desc: '呪われた最強の刀' },
+        { id: 'w402', name: 'ロンギヌスの槍', atk: 50, price: 45000, minLv: 22, rarity: 'legendary', effect: { holy: true, pierce: true }, desc: '聖槍' },
+        { id: 'w403', name: 'ラグナロク', atk: 60, price: 60000, minLv: 25, rarity: 'legendary', effect: { allElements: true }, desc: '終焉の剣' },
+        { id: 'w404', name: 'アポカリプス', atk: 58, price: 55000, minLv: 24, rarity: 'legendary', effect: { death: 10, cursed: true }, desc: '黙示録の剣' }
       ],
       armors: [
-        { id: 'cloth1', name: '布の服', def: 2, price: 50, minLv: 1 },
-        { id: 'leather1', name: '革鎧', def: 5, price: 150, minLv: 1 },
-        { id: 'chain1', name: 'チェインメイル', def: 10, price: 400, minLv: 3, jobs: ['fighter', 'lord', 'samurai'] },
-        { id: 'plate1', name: 'プレートメイル', def: 18, price: 1000, minLv: 5, jobs: ['fighter', 'lord'] },
-        { id: 'robe1', name: 'ローブ', def: 3, price: 100, minLv: 1, jobs: ['mage', 'bishop', 'priest'] },
-        { id: 'ninja1', name: '忍び装束', def: 8, price: 500, minLv: 5, jobs: ['ninja', 'thief'] },
-        { id: 'dragonmail', name: 'ドラゴンメイル', def: 30, price: 5000, minLv: 15 }
+        // コモン防具
+        { id: 'a001', name: '布の服', def: 2, price: 30, minLv: 1, rarity: 'common', desc: '普通の服' },
+        { id: 'a002', name: '革鎧', def: 4, price: 100, minLv: 1, rarity: 'common', desc: '革製の鎧' },
+        { id: 'a003', name: 'ローブ', def: 2, price: 50, minLv: 1, rarity: 'common', jobs: ['mage', 'bishop', 'priest'], desc: '魔術師のローブ' },
+        { id: 'a004', name: '布の帽子', def: 1, price: 20, minLv: 1, rarity: 'common', slot: 'head', desc: '布製の帽子' },
+        { id: 'a005', name: '木の盾', def: 2, price: 40, minLv: 1, rarity: 'common', slot: 'shield', desc: '木製の盾' },
+        // アンコモン防具
+        { id: 'a101', name: 'チェインメイル', def: 8, price: 400, minLv: 3, rarity: 'uncommon', jobs: ['fighter', 'lord', 'samurai'], desc: '鎖帷子' },
+        { id: 'a102', name: 'スケイルメイル', def: 10, price: 500, minLv: 4, rarity: 'uncommon', jobs: ['fighter', 'lord', 'samurai'], desc: '鱗鎧' },
+        { id: 'a103', name: '忍び装束', def: 5, price: 350, minLv: 3, rarity: 'uncommon', jobs: ['ninja', 'thief'], effect: { agi: 3 }, desc: '俊敏+3' },
+        { id: 'a104', name: 'マジックローブ', def: 4, price: 400, minLv: 4, rarity: 'uncommon', jobs: ['mage', 'bishop', 'priest'], effect: { int: 2 }, desc: '知力+2' },
+        { id: 'a105', name: 'アイアンヘルム', def: 4, price: 250, minLv: 3, rarity: 'uncommon', slot: 'head', desc: '鉄兜' },
+        { id: 'a106', name: 'アイアンシールド', def: 5, price: 300, minLv: 3, rarity: 'uncommon', slot: 'shield', desc: '鉄盾' },
+        { id: 'a107', name: '革のグローブ', def: 2, price: 150, minLv: 2, rarity: 'uncommon', slot: 'gloves', desc: '革手袋' },
+        { id: 'a108', name: '革のブーツ', def: 2, price: 150, minLv: 2, rarity: 'uncommon', slot: 'boots', desc: '革長靴' },
+        // レア防具
+        { id: 'a201', name: 'プレートメイル', def: 18, price: 2000, minLv: 8, rarity: 'rare', jobs: ['fighter', 'lord'], desc: '板金鎧' },
+        { id: 'a202', name: 'ミスリルメイル', def: 15, price: 2500, minLv: 9, rarity: 'rare', effect: { agi: -1 }, desc: '軽量の魔法金属鎧' },
+        { id: 'a203', name: '大鎧', def: 16, price: 2200, minLv: 8, rarity: 'rare', jobs: ['samurai'], desc: '侍の鎧' },
+        { id: 'a204', name: 'エンチャントローブ', def: 8, price: 1800, minLv: 8, rarity: 'rare', jobs: ['mage', 'bishop', 'priest'], effect: { int: 5, mp: 15 }, desc: '魔力を帯びたローブ' },
+        { id: 'a205', name: 'シャドウクローク', def: 7, price: 2000, minLv: 9, rarity: 'rare', jobs: ['ninja', 'thief'], effect: { agi: 5, evasion: 5 }, desc: '影のマント' },
+        { id: 'a206', name: 'ミスリルヘルム', def: 8, price: 1500, minLv: 8, rarity: 'rare', slot: 'head', desc: 'ミスリル兜' },
+        { id: 'a207', name: 'タワーシールド', def: 12, price: 1800, minLv: 9, rarity: 'rare', slot: 'shield', desc: '大盾' },
+        // エピック防具
+        { id: 'a301', name: 'ドラゴンメイル', def: 28, price: 8000, minLv: 15, rarity: 'epic', effect: { fireRes: 50 }, desc: 'ドラゴンの鱗鎧' },
+        { id: 'a302', name: 'クリスタルメイル', def: 25, price: 7000, minLv: 14, rarity: 'epic', effect: { magicDef: 10 }, desc: '水晶の鎧' },
+        { id: 'a303', name: '神威の大鎧', def: 30, price: 12000, minLv: 18, rarity: 'epic', jobs: ['samurai'], effect: { str: 5 }, desc: '神の加護を受けた大鎧' },
+        { id: 'a304', name: 'アークメイジローブ', def: 12, price: 10000, minLv: 17, rarity: 'epic', jobs: ['mage', 'bishop'], effect: { int: 10, mp: 30 }, desc: '大魔導師のローブ' },
+        { id: 'a305', name: 'イージスの盾', def: 18, price: 9000, minLv: 16, rarity: 'epic', slot: 'shield', effect: { magicDef: 15 }, desc: '神盾' },
+        // レジェンダリー防具
+        { id: 'a401', name: 'ガーディアンアーマー', def: 40, price: 50000, minLv: 23, rarity: 'legendary', effect: { vit: 10, regen: 5 }, desc: '守護者の鎧' },
+        { id: 'a402', name: 'ローブ・オブ・ザ・アーキメイジ', def: 18, price: 45000, minLv: 22, rarity: 'legendary', jobs: ['mage', 'bishop'], effect: { int: 15, mp: 50, magicDef: 20 }, desc: '最高位魔術師のローブ' },
+        { id: 'a403', name: '天照の大鎧', def: 45, price: 60000, minLv: 25, rarity: 'legendary', jobs: ['samurai', 'lord'], effect: { allRes: 25 }, desc: '太陽神の鎧' }
       ],
       accessories: [
-        { id: 'ring1', name: '力の指輪', atk: 3, price: 500, minLv: 3 },
-        { id: 'ring2', name: '守りの指輪', def: 3, price: 500, minLv: 3 },
-        { id: 'amulet1', name: '幸運のアミュレット', luk: 5, price: 800, minLv: 5 },
-        { id: 'ring3', name: '再生の指輪', regen: 2, price: 2000, minLv: 10 }
+        // コモンアクセサリ
+        { id: 'c001', name: '銅の指輪', atk: 1, price: 50, minLv: 1, rarity: 'common', desc: '銅製の指輪' },
+        { id: 'c002', name: '木のお守り', def: 1, price: 50, minLv: 1, rarity: 'common', desc: '木製のお守り' },
+        // アンコモンアクセサリ
+        { id: 'c101', name: '力の指輪', price: 300, minLv: 3, rarity: 'uncommon', effect: { str: 3 }, desc: '筋力+3' },
+        { id: 'c102', name: '守りの指輪', price: 300, minLv: 3, rarity: 'uncommon', effect: { def: 3 }, desc: '防御+3' },
+        { id: 'c103', name: '知恵の指輪', price: 350, minLv: 4, rarity: 'uncommon', effect: { int: 3 }, desc: '知力+3' },
+        { id: 'c104', name: '信仰の指輪', price: 350, minLv: 4, rarity: 'uncommon', effect: { pie: 3 }, desc: '信仰+3' },
+        { id: 'c105', name: '俊敏の指輪', price: 350, minLv: 4, rarity: 'uncommon', effect: { agi: 3 }, desc: '俊敏+3' },
+        { id: 'c106', name: '幸運のコイン', price: 400, minLv: 5, rarity: 'uncommon', effect: { luk: 5 }, desc: '幸運+5' },
+        { id: 'c107', name: '体力のペンダント', price: 350, minLv: 4, rarity: 'uncommon', effect: { hp: 20 }, desc: 'HP+20' },
+        { id: 'c108', name: '魔力のペンダント', price: 350, minLv: 4, rarity: 'uncommon', effect: { mp: 15 }, desc: 'MP+15' },
+        // レアアクセサリ
+        { id: 'c201', name: '戦士の腕輪', price: 1500, minLv: 8, rarity: 'rare', effect: { str: 5, atk: 5 }, desc: '筋力+5, 攻撃+5' },
+        { id: 'c202', name: '賢者の首飾り', price: 1800, minLv: 9, rarity: 'rare', effect: { int: 5, mp: 30 }, desc: '知力+5, MP+30' },
+        { id: 'c203', name: '再生の指輪', price: 2000, minLv: 10, rarity: 'rare', effect: { regen: 3 }, desc: 'HP自動回復+3' },
+        { id: 'c204', name: '盗賊のグローブ', price: 1500, minLv: 8, rarity: 'rare', jobs: ['thief', 'ninja'], effect: { goldBonus: 20 }, desc: 'ゴールド+20%' },
+        { id: 'c205', name: '経験のアミュレット', price: 2500, minLv: 10, rarity: 'rare', effect: { expBonus: 10 }, desc: '経験値+10%' },
+        { id: 'c206', name: '炎の護符', price: 1200, minLv: 7, rarity: 'rare', effect: { fireRes: 30 }, desc: '炎耐性+30%' },
+        { id: 'c207', name: '氷の護符', price: 1200, minLv: 7, rarity: 'rare', effect: { iceRes: 30 }, desc: '氷耐性+30%' },
+        { id: 'c208', name: '雷の護符', price: 1200, minLv: 7, rarity: 'rare', effect: { thunderRes: 30 }, desc: '雷耐性+30%' },
+        // エピックアクセサリ
+        { id: 'c301', name: 'ドラゴンリング', price: 8000, minLv: 15, rarity: 'epic', effect: { str: 8, vit: 8, fireRes: 50 }, desc: '龍の指輪' },
+        { id: 'c302', name: 'アークメイジリング', price: 10000, minLv: 17, rarity: 'epic', effect: { int: 10, mp: 50 }, desc: '大魔導師の指輪' },
+        { id: 'c303', name: 'ロードオブリング', price: 12000, minLv: 18, rarity: 'epic', effect: { allStats: 5 }, desc: '全能力+5' },
+        { id: 'c304', name: 'フェニックスペンダント', price: 15000, minLv: 20, rarity: 'epic', effect: { revive: 1 }, desc: '戦闘不能時1回復活' },
+        // レジェンダリーアクセサリ
+        { id: 'c401', name: '王の証', price: 50000, minLv: 23, rarity: 'legendary', effect: { allStats: 10, expBonus: 25 }, desc: '全能力+10, 経験値+25%' },
+        { id: 'c402', name: 'ソウルリング', price: 60000, minLv: 25, rarity: 'legendary', effect: { soulSteal: 5 }, desc: '与ダメージの5%HP回復' },
+        { id: 'c403', name: 'インフィニティガントレット', price: 100000, minLv: 30, rarity: 'legendary', effect: { allStats: 15, crit: 20, death: 3 }, desc: '究極の篭手' }
+      ],
+      consumables: [
+        { id: 'p001', name: 'ポーション', price: 50, rarity: 'common', effect: { heal: 30 }, desc: 'HP30回復' },
+        { id: 'p002', name: 'ハイポーション', price: 200, rarity: 'uncommon', effect: { heal: 100 }, desc: 'HP100回復' },
+        { id: 'p003', name: 'エーテル', price: 100, rarity: 'uncommon', effect: { mpHeal: 20 }, desc: 'MP20回復' },
+        { id: 'p004', name: 'ハイエーテル', price: 400, rarity: 'rare', effect: { mpHeal: 50 }, desc: 'MP50回復' },
+        { id: 'p005', name: 'エリクサー', price: 2000, rarity: 'epic', effect: { fullHeal: true }, desc: 'HP/MP全回復' },
+        { id: 'p006', name: '毒消し草', price: 30, rarity: 'common', effect: { curePoison: true }, desc: '毒を治療' },
+        { id: 'p007', name: '万能薬', price: 500, rarity: 'rare', effect: { cureAll: true }, desc: '全状態異常を治療' },
+        { id: 'p008', name: 'フェニックスの尾', price: 3000, rarity: 'epic', effect: { revive: true }, desc: '戦闘不能から復活' },
+        { id: 'p009', name: '力の種', price: 1000, rarity: 'rare', effect: { permStr: 1 }, desc: '筋力永久+1' },
+        { id: 'p010', name: '知恵の種', price: 1000, rarity: 'rare', effect: { permInt: 1 }, desc: '知力永久+1' }
       ]
     };
 
@@ -306,10 +319,11 @@
       { id: 'q3', name: '盗賊団壊滅', desc: '盗賊のアジトをB10Fまで踏破', condition: { dungeon: 'thieves', floor: 10 }, reward: { gold: 2000, exp: 1000 } },
       { id: 'q4', name: '下水道の恐怖', desc: 'ヴァンパイアを討伐', condition: { boss: 'ヴァンパイア' }, reward: { gold: 5000, exp: 2500 } },
       { id: 'q5', name: '遺跡探索', desc: 'カオカ・パラージ遺跡をB15Fまで踏破', condition: { dungeon: 'kaoka', floor: 15 }, reward: { gold: 8000, exp: 4000 } },
-      { id: 'q6', name: '伝説の魔王', desc: 'ワードナを討伐', condition: { boss: 'ワードナ' }, reward: { gold: 50000, exp: 30000 } }
+      { id: 'q6', name: '伝説の魔王', desc: 'ワードナを討伐', condition: { boss: 'ワードナ' }, reward: { gold: 50000, exp: 30000 } },
+      { id: 'q7', name: '転職への道', desc: '上級職に転職する', condition: { jobChange: true }, reward: { gold: 3000, exp: 1500 } },
+      { id: 'q8', name: 'レジェンダリーハンター', desc: 'レジェンダリーアイテムを入手', condition: { legendary: true }, reward: { gold: 20000, exp: 10000 } }
     ];
 
-    // Wizardry Schema風ダンジョン
     const DUNGEONS = [
       { id: 'slime', name: 'スライムの穴', floors: 5, minLv: 1 },
       { id: 'kobold', name: 'コボルドの巣', floors: 8, minLv: 3 },
@@ -322,47 +336,38 @@
     ];
 
     const MONSTERS = [
-      // スライムの穴
       { name: 'バブリースライム', hp: 12, atk: 4, def: 1, exp: 8, gold: 3, dungeon: 'slime', floor: 1 },
       { name: 'コボルト', hp: 18, atk: 6, def: 2, exp: 12, gold: 5, dungeon: 'slime', floor: 2 },
       { name: 'オークベビー', hp: 25, atk: 8, def: 3, exp: 18, gold: 8, dungeon: 'slime', floor: 3 },
       { name: 'ジャイアントラット', hp: 20, atk: 10, def: 2, exp: 22, gold: 10, dungeon: 'slime', floor: 4 },
       { name: 'スライムキング', hp: 50, atk: 15, def: 5, exp: 50, gold: 30, dungeon: 'slime', floor: 5, boss: true },
-      // コボルドの巣
       { name: 'コボルトウォーリア', hp: 30, atk: 12, def: 5, exp: 25, gold: 12, dungeon: 'kobold', floor: 1 },
       { name: 'コボルトメイジ', hp: 22, atk: 18, def: 3, exp: 35, gold: 18, dungeon: 'kobold', floor: 3 },
       { name: 'オーク', hp: 40, atk: 15, def: 6, exp: 40, gold: 20, dungeon: 'kobold', floor: 5 },
       { name: 'コボルトロード', hp: 80, atk: 25, def: 10, exp: 100, gold: 60, dungeon: 'kobold', floor: 8, boss: true },
-      // 盗賊のアジト
       { name: 'シーフ', hp: 35, atk: 20, def: 6, exp: 40, gold: 25, dungeon: 'thieves', floor: 1 },
       { name: 'アサシン', hp: 45, atk: 30, def: 8, exp: 60, gold: 40, dungeon: 'thieves', floor: 5 },
       { name: 'ダークエルフ', hp: 55, atk: 35, def: 10, exp: 80, gold: 50, dungeon: 'thieves', floor: 7 },
       { name: 'マスターシーフ', hp: 120, atk: 40, def: 15, exp: 150, gold: 100, dungeon: 'thieves', floor: 10, boss: true },
-      // 下水路
       { name: 'ゾンビ', hp: 55, atk: 15, def: 5, exp: 45, gold: 20, dungeon: 'sewer', floor: 1 },
       { name: 'スケルトン', hp: 45, atk: 20, def: 8, exp: 50, gold: 25, dungeon: 'sewer', floor: 3 },
       { name: 'グール', hp: 65, atk: 25, def: 10, exp: 70, gold: 35, dungeon: 'sewer', floor: 5 },
       { name: 'ワイト', hp: 75, atk: 35, def: 12, exp: 90, gold: 50, dungeon: 'sewer', floor: 9 },
       { name: 'ヴァンパイア', hp: 200, atk: 50, def: 20, exp: 250, gold: 150, dungeon: 'sewer', floor: 12, boss: true },
-      // 遺跡
       { name: 'ストーンゴーレム', hp: 100, atk: 40, def: 25, exp: 120, gold: 60, dungeon: 'kaoka', floor: 1 },
       { name: 'ガーゴイル', hp: 90, atk: 50, def: 20, exp: 150, gold: 80, dungeon: 'kaoka', floor: 8 },
       { name: 'グレーターデーモン', hp: 300, atk: 70, def: 30, exp: 400, gold: 250, dungeon: 'kaoka', floor: 15, boss: true },
-      // 大蔵室
       { name: 'ミミック', hp: 80, atk: 45, def: 15, exp: 100, gold: 200, dungeon: 'deltis', floor: 1 },
       { name: 'マンティコア', hp: 150, atk: 60, def: 25, exp: 200, gold: 150, dungeon: 'deltis', floor: 10 },
       { name: 'ゴールドドラゴン', hp: 400, atk: 80, def: 40, exp: 600, gold: 500, dungeon: 'deltis', floor: 18, boss: true },
-      // 神殿跡
       { name: 'ドラゴンゾンビ', hp: 150, atk: 60, def: 20, exp: 200, gold: 100, dungeon: 'dragon', floor: 1 },
       { name: 'ポイズンジャイアント', hp: 180, atk: 70, def: 25, exp: 280, gold: 140, dungeon: 'dragon', floor: 10 },
       { name: 'エンシェントドラゴン', hp: 600, atk: 100, def: 50, exp: 1000, gold: 800, dungeon: 'dragon', floor: 20, boss: true },
-      // トレボーの試練場
       { name: 'トレボー親衛隊', hp: 200, atk: 80, def: 35, exp: 300, gold: 150, dungeon: 'trebor', floor: 1 },
       { name: 'ダークナイト', hp: 250, atk: 90, def: 40, exp: 400, gold: 200, dungeon: 'trebor', floor: 15 },
       { name: 'ワードナ', hp: 999, atk: 150, def: 60, exp: 5000, gold: 3000, dungeon: 'trebor', floor: 25, boss: true }
     ];
 
-    // トラップ一覧
     const TRAPS = [
       { name: 'ポイズンニードル', effect: 'poison', damage: 0.1 },
       { name: 'クロスボウボルト', effect: 'damage', damage: 0.15 },
@@ -373,18 +378,10 @@
       { name: 'アラーム', effect: 'summon', damage: 0 }
     ];
 
-    // 有名なWizardryフレーズ
     const WIZ_PHRASES = [
-      'ささやき－いのり－えいしょう－ねんじろ！',
-      'パーティは慎重に進んだ...',
-      '宝箱を発見した！',
-      '罠だ！気をつけろ！',
-      '階段を発見した...',
-      'パーティは休息をとった',
-      '泉を発見！神秘の水が湧いている',
-      '壁に何か書いてある..."TREBOR SUX"',
-      'ボルタック商店の商人とすれ違った',
-      'カント寺院の僧侶の祈りが聞こえる...'
+      'ささやき－いのり－えいしょう－ねんじろ！', 'パーティは慎重に進んだ...', '宝箱を発見した！',
+      '罠だ！気をつけろ！', '階段を発見した...', 'パーティは休息をとった', '泉を発見！神秘の水が湧いている',
+      '壁に何か書いてある..."TREBOR SUX"', 'ボルタック商店の商人とすれ違った', 'カント寺院の僧侶の祈りが聞こえる...'
     ];
 
     // ===== メインアプリ =====
@@ -404,19 +401,17 @@
       const [completedQuests, setCompletedQuests] = useState([]);
       const [defeatedBosses, setDefeatedBosses] = useState([]);
       const [inventory, setInventory] = useState([]);
-      const [showShop, setShowShop] = useState(false);
       const [showSettings, setShowSettings] = useState(false);
+      const [showJobChange, setShowJobChange] = useState(null);
+      const [shopCategory, setShopCategory] = useState('weapons');
+      const [selectedChar, setSelectedChar] = useState(null);
       const logRef = useRef(null);
 
-      // サウンド初期化
-      const initSound = async () => {
-        await soundEngine.init();
-        if (settings.bgm) soundEngine.startBGM();
-      };
+      const initSound = async () => { await soundEngine.init(); if (settings.bgm) soundEngine.startBGM(); };
 
       // セーブ/ロード
       useEffect(() => {
-        const saved = localStorage.getItem('wizardrySchemaV3');
+        const saved = localStorage.getItem('wizardrySchemaV4');
         if (saved) {
           const data = JSON.parse(saved);
           setParty(data.party || []);
@@ -432,124 +427,110 @@
 
       useEffect(() => {
         if (party.length > 0 || Object.keys(bestiary).length > 0) {
-          localStorage.setItem('wizardrySchemaV3', JSON.stringify({ 
-            party, gold, maxFloors, settings, bestiary, completedQuests, defeatedBosses, inventory 
-          }));
+          localStorage.setItem('wizardrySchemaV4', JSON.stringify({ party, gold, maxFloors, settings, bestiary, completedQuests, defeatedBosses, inventory }));
         }
       }, [party, gold, maxFloors, settings, bestiary, completedQuests, defeatedBosses, inventory]);
 
-      useEffect(() => {
-        if (logRef.current) logRef.current.scrollTop = logRef.current.scrollHeight;
-      }, [logs]);
-
-      // BGM設定変更
-      useEffect(() => {
-        soundEngine.toggleBGM(settings.bgm);
-      }, [settings.bgm]);
+      useEffect(() => { if (logRef.current) logRef.current.scrollTop = logRef.current.scrollHeight; }, [logs]);
+      useEffect(() => { soundEngine.toggleBGM(settings.bgm); }, [settings.bgm]);
 
       const addLog = (message, type = 'normal') => {
-        const colors = {
-          normal: 'text-green-400',
-          battle: 'text-yellow-400',
-          damage: 'text-red-400',
-          heal: 'text-blue-400',
-          item: 'text-purple-400',
-          level: 'text-cyan-400',
-          special: 'text-pink-400',
-          spell: 'text-orange-400'
-        };
+        const colors = { normal: 'text-green-400', battle: 'text-yellow-400', damage: 'text-red-400', heal: 'text-blue-400', item: 'text-purple-400', level: 'text-cyan-400', special: 'text-pink-400', spell: 'text-orange-400' };
         setLogs(prev => [...prev.slice(-150), { message, color: colors[type], time: Date.now() }]);
       };
 
+      // 転職チェック
+      const canChangeJob = (char, jobKey) => {
+        const job = JOBS[jobKey];
+        if (!job.align.includes(char.alignKey)) return { can: false, reason: '属性が合わない' };
+        if (char.level < 10) return { can: false, reason: 'Lv.10以上必要' };
+        for (const [stat, req] of Object.entries(job.requirements)) {
+          if ((char[stat] || 0) < req) return { can: false, reason: `${stat}が${req}必要` };
+        }
+        return { can: true };
+      };
+
+      // 転職実行
+      const changeJob = (charId, newJobKey) => {
+        setParty(prev => prev.map(char => {
+          if (char.id !== charId) return char;
+          const newJob = JOBS[newJobKey];
+          const baseHp = Math.floor((char.vit * 3 + 20) * newJob.hpMod);
+          const baseMp = Math.floor((char.int * 2 + 10) * newJob.mpMod);
+          const bonusHp = Math.floor(char.maxHp * 0.3); // 前職のHP30%引き継ぎ
+          const bonusMp = Math.floor(char.maxMp * 0.2); // 前職のMP20%引き継ぎ
+          soundEngine.playJobChange();
+          addLog(`★ ${char.name}は${newJob.name}に転職した！`, 'level');
+          return {
+            ...char,
+            job: newJob.name,
+            jobKey: newJobKey,
+            level: 1,
+            exp: 0,
+            maxHp: baseHp + bonusHp,
+            currentHp: baseHp + bonusHp,
+            maxMp: baseMp + bonusMp,
+            currentMp: baseMp + bonusMp,
+            atk: Math.floor((char.str * 1.5 + 5) * newJob.atkMod),
+            def: Math.floor((char.vit * 1.2 + 3) * newJob.defMod),
+            previousJobs: [...(char.previousJobs || []), char.jobKey]
+          };
+        }));
+        setShowJobChange(null);
+        // クエストチェック
+        if (!completedQuests.includes('q7')) {
+          setCompletedQuests(prev => [...prev, 'q7']);
+          const quest = QUESTS.find(q => q.id === 'q7');
+          setGold(prev => prev + quest.reward.gold);
+          addLog(`【クエスト達成】${quest.name}！報酬: ${quest.reward.gold}G`, 'level');
+        }
+      };
+
+      // アイテムドロップ
+      const getRandomDrop = (floor) => {
+        const rand = Math.random();
+        let rarity = 'common';
+        if (rand < 0.01 && floor >= 20) rarity = 'legendary';
+        else if (rand < 0.05 && floor >= 12) rarity = 'epic';
+        else if (rand < 0.15 && floor >= 6) rarity = 'rare';
+        else if (rand < 0.40) rarity = 'uncommon';
+
+        const allItems = [...ITEMS.weapons, ...ITEMS.armors, ...ITEMS.accessories, ...ITEMS.consumables];
+        const available = allItems.filter(item => item.rarity === rarity && (!item.minLv || item.minLv <= Math.floor(floor / 2) + 3));
+        if (available.length === 0) return null;
+        return { ...available[Math.floor(Math.random() * available.length)], id: Date.now() + Math.random() };
+      };
+
       // クエストチェック
-      const checkQuests = useCallback((dungeon, floor, bossName = null) => {
+      const checkQuests = useCallback((dungeon, floor, bossName = null, item = null) => {
         QUESTS.forEach(quest => {
           if (completedQuests.includes(quest.id)) return;
-          
           let completed = false;
           if (quest.condition.dungeon && quest.condition.floor) {
-            if (dungeon === quest.condition.dungeon && floor >= quest.condition.floor) {
-              completed = true;
-            }
+            if (dungeon === quest.condition.dungeon && floor >= quest.condition.floor) completed = true;
           }
-          if (quest.condition.boss && bossName === quest.condition.boss) {
-            completed = true;
-          }
-          
+          if (quest.condition.boss && bossName === quest.condition.boss) completed = true;
+          if (quest.condition.legendary && item?.rarity === 'legendary') completed = true;
           if (completed) {
             setCompletedQuests(prev => [...prev, quest.id]);
             setGold(prev => prev + quest.reward.gold);
             addLog(`【クエスト達成】${quest.name}！`, 'level');
             addLog(`報酬: ${quest.reward.gold}G, ${quest.reward.exp}EXP`, 'item');
             soundEngine.playLevelUp();
-            
-            // 経験値分配
-            setParty(prev => prev.map(char => {
-              const expPerChar = Math.floor(quest.reward.exp / prev.length);
-              return { ...char, exp: char.exp + expPerChar };
-            }));
+            setParty(prev => prev.map(char => ({ ...char, exp: char.exp + Math.floor(quest.reward.exp / prev.length) })));
           }
         });
       }, [completedQuests]);
 
-      // 呪文使用
-      const useSpell = useCallback((caster, spell, targets, isParty = false) => {
-        if (caster.currentMp < spell.mp) return null;
-        
-        soundEngine.sfxSynth && soundEngine.playHeal();
-        
-        let result = { success: true, logs: [], mpUsed: spell.mp };
-        
-        switch (spell.effect) {
-          case 'heal':
-            if (isParty) {
-              const target = targets[0];
-              const healAmount = spell.power + Math.floor(caster.pie * 0.5);
-              result.logs.push({ msg: `${caster.name}が${spell.name}を唱えた！`, type: 'spell' });
-              result.logs.push({ msg: `${target.name}のHPが${healAmount}回復！`, type: 'heal' });
-              result.healTarget = target.id;
-              result.healAmount = healAmount;
-            }
-            break;
-          case 'heal_all':
-            const healAll = spell.power + Math.floor(caster.pie * 0.3);
-            result.logs.push({ msg: `${caster.name}が${spell.name}を唱えた！`, type: 'spell' });
-            result.logs.push({ msg: `全員のHPが${healAll}回復！`, type: 'heal' });
-            result.healAll = healAll;
-            break;
-          case 'damage':
-            const dmg = spell.power + Math.floor(caster.int * 0.5);
-            result.logs.push({ msg: `${caster.name}が${spell.name}を唱えた！`, type: 'spell' });
-            result.damage = dmg;
-            break;
-          case 'damage_all':
-            const dmgAll = spell.power + Math.floor(caster.int * 0.3);
-            result.logs.push({ msg: `${caster.name}が${spell.name}を唱えた！`, type: 'spell' });
-            result.damageAll = dmgAll;
-            break;
-          default:
-            result.logs.push({ msg: `${caster.name}が${spell.name}を唱えた！`, type: 'spell' });
-        }
-        
-        return result;
-      }, []);
-
       // 探索ループ
       useEffect(() => {
         if (!exploring || party.length === 0 || !currentDungeon) return;
-
         const interval = setInterval(() => {
           const aliveParty = party.filter(c => c.currentHp > 0);
-          
-          // 離脱条件チェック
-          const shouldRetreat = aliveParty.some(c => {
-            const hpPercent = (c.currentHp / c.maxHp) * 100;
-            return hpPercent <= retreatCondition.value;
-          });
+          const shouldRetreat = aliveParty.some(c => (c.currentHp / c.maxHp) * 100 <= retreatCondition.value);
 
           if (aliveParty.length === 0) {
             addLog('【全滅】' + WIZ_PHRASES[0], 'damage');
-            addLog('パーティは街に強制帰還した...', 'damage');
             soundEngine.playDeath();
             setExploring(false);
             setCurrentFloor(1);
@@ -558,83 +539,50 @@
           }
 
           if (shouldRetreat) {
-            addLog(`【離脱条件達成】HP${retreatCondition.value}%以下のメンバーがいます`, 'special');
-            addLog('パーティは安全に帰還した', 'heal');
+            addLog(`【離脱条件達成】HP${retreatCondition.value}%以下`, 'special');
             setExploring(false);
             setCurrentFloor(1);
             setParty(prev => prev.map(c => ({ ...c, currentHp: c.maxHp, currentMp: c.maxMp })));
             return;
           }
 
-          // 探索イベント
           const event = Math.random();
           const dungeon = DUNGEONS.find(d => d.id === currentDungeon);
 
           if (event < 0.55) {
             // モンスター遭遇
-            const availableMonsters = MONSTERS.filter(m => 
-              m.dungeon === currentDungeon && m.floor <= currentFloor
-            );
-            if (availableMonsters.length === 0) {
-              addLog(`B${currentFloor}F: ${WIZ_PHRASES[1]}`, 'normal');
-              return;
-            }
-            
+            const availableMonsters = MONSTERS.filter(m => m.dungeon === currentDungeon && m.floor <= currentFloor);
+            if (availableMonsters.length === 0) { addLog(`B${currentFloor}F: ${WIZ_PHRASES[1]}`, 'normal'); return; }
             const monster = { ...availableMonsters[Math.floor(Math.random() * availableMonsters.length)] };
             const isBoss = monster.boss && currentFloor === monster.floor;
-            
             if (isBoss) soundEngine.playBossAppear();
             addLog(`B${currentFloor}F: ${monster.name}${isBoss ? '【BOSS】' : ''}が現れた！`, 'battle');
-            
-            // 図鑑に追加
-            setBestiary(prev => ({
-              ...prev,
-              [monster.name]: { ...monster, encountered: (prev[monster.name]?.encountered || 0) + 1 }
-            }));
+            setBestiary(prev => ({ ...prev, [monster.name]: { ...monster, encountered: (prev[monster.name]?.encountered || 0) + 1 } }));
 
             setTimeout(() => {
               let monsterHp = monster.hp;
               let battleLogs = [];
-              
-              // パーティの攻撃（呪文使用含む）
               aliveParty.forEach(char => {
                 if (monsterHp <= 0) return;
-                
                 const job = JOBS[char.jobKey];
                 const useSpellChance = job.spellType && char.currentMp >= 2 && Math.random() < 0.3;
-                
                 if (useSpellChance) {
-                  // 攻撃呪文を使用
-                  const spellList = job.spellType === 'both' 
-                    ? [...SPELLS.mage, ...SPELLS.priest]
-                    : SPELLS[job.spellType] || [];
-                  
-                  const attackSpells = spellList.filter(s => 
-                    (s.effect === 'damage' || s.effect === 'damage_all') && 
-                    s.mp <= char.currentMp &&
-                    s.level <= Math.floor(char.level / 2) + 1
-                  );
-                  
+                  const spellList = job.spellType === 'both' ? [...SPELLS.mage, ...SPELLS.priest] : SPELLS[job.spellType] || [];
+                  const attackSpells = spellList.filter(s => (s.effect === 'damage' || s.effect === 'damage_all') && s.mp <= char.currentMp && s.level <= Math.floor(char.level / 2) + 1);
                   if (attackSpells.length > 0) {
                     const spell = attackSpells[Math.floor(Math.random() * attackSpells.length)];
                     const damage = spell.power + Math.floor(char.int * 0.5);
                     monsterHp -= damage;
-                    
-                    setParty(prev => prev.map(c => 
-                      c.id === char.id ? { ...c, currentMp: c.currentMp - spell.mp } : c
-                    ));
-                    
-                    battleLogs.push({ msg: `${char.name}は${spell.name}を唱えた！${damage}ダメージ！`, type: 'spell' });
+                    setParty(prev => prev.map(c => c.id === char.id ? { ...c, currentMp: c.currentMp - spell.mp } : c));
+                    battleLogs.push({ msg: `${char.name}は${spell.name}！${damage}ダメージ！`, type: 'spell' });
                     soundEngine.playAttack();
                     return;
                   }
                 }
-                
-                // 通常攻撃
                 const baseDamage = char.atk - monster.def + Math.floor(Math.random() * 10);
                 const damage = Math.max(1, baseDamage);
                 monsterHp -= damage;
-                battleLogs.push({ msg: `${char.name}の攻撃！${monster.name}に${damage}ダメージ！`, type: 'battle' });
+                battleLogs.push({ msg: `${char.name}の攻撃！${damage}ダメージ！`, type: 'battle' });
                 soundEngine.playAttack();
               });
 
@@ -643,73 +591,53 @@
                 battleLogs.push({ msg: `${monster.exp}EXP, ${monster.gold}Gを獲得！`, type: 'item' });
                 soundEngine.playGold();
                 setGold(prev => prev + monster.gold);
-                
-                // ボス討伐記録
                 if (isBoss) {
                   setDefeatedBosses(prev => [...new Set([...prev, monster.name])]);
                   checkQuests(currentDungeon, currentFloor, monster.name);
+                  // ボスドロップ
+                  const drop = getRandomDrop(currentFloor + 5);
+                  if (drop) {
+                    setInventory(prev => [...prev, drop]);
+                    battleLogs.push({ msg: `【ドロップ】${drop.name}を入手！`, type: 'item' });
+                    checkQuests(null, null, null, drop);
+                  }
                 }
-                
-                // 経験値分配とレベルアップ
                 setParty(prev => prev.map(char => {
                   if (char.currentHp <= 0) return char;
                   const expGain = Math.floor(monster.exp / aliveParty.length);
                   const newExp = char.exp + expGain;
                   const expNeeded = char.level * 100;
-                  
                   if (newExp >= expNeeded) {
                     const hpGain = Math.floor(5 + char.vit * 0.5);
                     const mpGain = Math.floor(3 + char.int * 0.3);
                     battleLogs.push({ msg: `★ ${char.name}はレベル${char.level + 1}に上がった！`, type: 'level' });
                     soundEngine.playLevelUp();
-                    return {
-                      ...char,
-                      exp: newExp - expNeeded,
-                      level: char.level + 1,
-                      maxHp: char.maxHp + hpGain,
-                      currentHp: char.maxHp + hpGain,
-                      maxMp: char.maxMp + mpGain,
-                      currentMp: char.maxMp + mpGain,
-                      atk: char.atk + 2,
-                      def: char.def + 1
-                    };
+                    return { ...char, exp: newExp - expNeeded, level: char.level + 1, maxHp: char.maxHp + hpGain, currentHp: char.maxHp + hpGain, maxMp: char.maxMp + mpGain, currentMp: char.maxMp + mpGain, atk: char.atk + 2, def: char.def + 1 };
                   }
                   return { ...char, exp: newExp };
                 }));
               } else {
-                // モンスターの反撃
                 soundEngine.playHit();
                 const target = aliveParty[Math.floor(Math.random() * aliveParty.length)];
                 const monsterDmg = Math.max(1, monster.atk - target.def + Math.floor(Math.random() * 8));
-                
                 setParty(prev => prev.map(char => {
                   if (char.id === target.id) {
                     const newHp = Math.max(0, char.currentHp - monsterDmg);
                     battleLogs.push({ msg: `${monster.name}の反撃！${char.name}に${monsterDmg}ダメージ！`, type: 'damage' });
-                    if (newHp === 0) {
-                      battleLogs.push({ msg: `${char.name}は倒れた...`, type: 'damage' });
-                      soundEngine.playDeath();
-                    }
+                    if (newHp === 0) { battleLogs.push({ msg: `${char.name}は倒れた...`, type: 'damage' }); soundEngine.playDeath(); }
                     return { ...char, currentHp: newHp };
                   }
                   return char;
                 }));
               }
-
-              battleLogs.forEach((log, i) => {
-                setTimeout(() => addLog(log.msg, log.type), i * 200);
-              });
+              battleLogs.forEach((log, i) => setTimeout(() => addLog(log.msg, log.type), i * 200));
             }, 400);
-
           } else if (event < 0.72) {
-            // 階段発見
+            // 階段
             if (currentFloor < dungeon.floors) {
               const newFloor = currentFloor + 1;
               setCurrentFloor(newFloor);
-              setMaxFloors(prev => ({
-                ...prev,
-                [currentDungeon]: Math.max(prev[currentDungeon] || 0, newFloor)
-              }));
+              setMaxFloors(prev => ({ ...prev, [currentDungeon]: Math.max(prev[currentDungeon] || 0, newFloor) }));
               addLog(`${WIZ_PHRASES[4]} B${newFloor}Fへ降りた...`, 'item');
               checkQuests(currentDungeon, newFloor);
             } else {
@@ -719,58 +647,38 @@
             // 宝箱
             const goldFound = Math.floor(Math.random() * 50 * currentFloor) + 10;
             addLog(`${WIZ_PHRASES[2]}`, 'item');
-            
-            // 盗賊がいれば罠回避率上昇
             const hasThief = aliveParty.some(c => c.jobKey === 'thief' || c.jobKey === 'ninja');
             const trapChance = hasThief ? 0.1 : 0.25;
-            
             if (Math.random() < trapChance) {
               const trap = TRAPS[Math.floor(Math.random() * TRAPS.length)];
               addLog(`${WIZ_PHRASES[3]} ${trap.name}！`, 'damage');
               soundEngine.playHit();
-              
               if (trap.effect === 'damage' || trap.effect === 'damage_all') {
                 const targets = trap.effect === 'damage_all' ? aliveParty : [aliveParty[Math.floor(Math.random() * aliveParty.length)]];
-                setParty(prev => prev.map(c => {
-                  if (targets.find(t => t.id === c.id)) {
-                    const trapDmg = Math.floor(c.maxHp * trap.damage);
-                    return { ...c, currentHp: Math.max(1, c.currentHp - trapDmg) };
-                  }
-                  return c;
-                }));
+                setParty(prev => prev.map(c => targets.find(t => t.id === c.id) ? { ...c, currentHp: Math.max(1, c.currentHp - Math.floor(c.maxHp * trap.damage)) } : c));
               }
             } else {
               setGold(prev => prev + goldFound);
               addLog(`${goldFound}Gを発見！`, 'item');
               soundEngine.playGold();
-              
-              // まれにアイテムドロップ
-              if (Math.random() < 0.1) {
-                const allItems = [...ITEMS.weapons, ...ITEMS.armors, ...ITEMS.accessories];
-                const availableItems = allItems.filter(item => item.minLv <= Math.floor(currentFloor / 2) + 1);
-                if (availableItems.length > 0) {
-                  const foundItem = availableItems[Math.floor(Math.random() * availableItems.length)];
-                  setInventory(prev => [...prev, { ...foundItem, id: Date.now() }]);
-                  addLog(`${foundItem.name}を発見！`, 'item');
+              // アイテムドロップ
+              if (Math.random() < 0.15) {
+                const drop = getRandomDrop(currentFloor);
+                if (drop) {
+                  setInventory(prev => [...prev, drop]);
+                  addLog(`${drop.name}を発見！`, 'item');
+                  checkQuests(null, null, null, drop);
                 }
               }
             }
           } else if (event < 0.92) {
-            // 回復ポイント
             addLog(WIZ_PHRASES[6], 'heal');
             soundEngine.playHeal();
-            setParty(prev => prev.map(c => ({
-              ...c,
-              currentHp: Math.min(c.maxHp, c.currentHp + Math.floor(c.maxHp * 0.25)),
-              currentMp: Math.min(c.maxMp, c.currentMp + Math.floor(c.maxMp * 0.25))
-            })));
+            setParty(prev => prev.map(c => ({ ...c, currentHp: Math.min(c.maxHp, c.currentHp + Math.floor(c.maxHp * 0.25)), currentMp: Math.min(c.maxMp, c.currentMp + Math.floor(c.maxMp * 0.25)) })));
           } else {
-            // 特殊イベント
-            const phrase = WIZ_PHRASES[Math.floor(Math.random() * WIZ_PHRASES.length)];
-            addLog(`B${currentFloor}F: ${phrase}`, 'special');
+            addLog(`B${currentFloor}F: ${WIZ_PHRASES[Math.floor(Math.random() * WIZ_PHRASES.length)]}`, 'special');
           }
         }, 1800);
-
         return () => clearInterval(interval);
       }, [exploring, party, currentFloor, currentDungeon, retreatCondition, checkQuests]);
 
@@ -800,10 +708,8 @@
             setCompletedQuests(data.completedQuests || []);
             setDefeatedBosses(data.defeatedBosses || []);
             setInventory(data.inventory || []);
-            alert('セーブデータをインポートしました');
-          } catch (err) {
-            alert('インポートに失敗しました');
-          }
+            alert('インポート完了');
+          } catch (err) { alert('インポート失敗'); }
         };
         reader.readAsText(file);
       };
@@ -815,75 +721,41 @@
             <div className="retro-border p-8 bg-black text-center max-w-md">
               <h1 className="text-3xl mb-2 gold-text">⚔️ WIZARDRY SCHEMA ⚔️</h1>
               <p className="text-sm mb-2 text-gray-400">〜 ダンジョン探索型ログRPG 〜</p>
+              <p className="text-xs mb-1 text-gray-500">v4.0 - 転職＆大量アイテム</p>
               <p className="text-xs mb-6 text-gray-600">ささやき－いのり－えいしょう－ねんじろ！</p>
               <div className="space-y-3">
-                <button 
-                  onClick={() => { setScreen('main'); initSound(); }}
-                  className="block w-full retro-border px-6 py-2 hover:bg-green-900 transition"
-                >
+                <button onClick={() => { setScreen('main'); initSound(); }} className="block w-full retro-border px-6 py-2 hover:bg-green-900 transition">
                   {party.length > 0 ? '▶ CONTINUE' : '▶ NEW GAME'}
                 </button>
                 {party.length > 0 && (
                   <>
-                    <button 
-                      onClick={exportSave}
-                      className="block w-full retro-border px-6 py-2 hover:bg-blue-900 transition text-blue-400"
-                    >
-                      📤 EXPORT SAVE
-                    </button>
-                    <button 
-                      onClick={() => {
-                        if(confirm('セーブデータを削除しますか？')) {
-                          localStorage.removeItem('wizardrySchemaV3');
-                          setParty([]);
-                          setGold(100);
-                          setMaxFloors({});
-                          setBestiary({});
-                          setCompletedQuests([]);
-                          setDefeatedBosses([]);
-                          setInventory([]);
-                        }
-                      }}
-                      className="block w-full retro-border px-6 py-2 hover:bg-red-900 transition text-red-400"
-                    >
-                      ▶ DELETE SAVE
-                    </button>
+                    <button onClick={exportSave} className="block w-full retro-border px-6 py-2 hover:bg-blue-900 transition text-blue-400">📤 EXPORT</button>
+                    <button onClick={() => { if(confirm('削除しますか？')) { localStorage.removeItem('wizardrySchemaV4'); setParty([]); setGold(100); setMaxFloors({}); setBestiary({}); setCompletedQuests([]); setDefeatedBosses([]); setInventory([]); } }} className="block w-full retro-border px-6 py-2 hover:bg-red-900 transition text-red-400">▶ DELETE</button>
                   </>
                 )}
                 <label className="block w-full retro-border px-6 py-2 hover:bg-purple-900 transition text-purple-400 cursor-pointer">
-                  📥 IMPORT SAVE
-                  <input type="file" accept=".json" onChange={importSave} className="hidden" />
+                  📥 IMPORT<input type="file" accept=".json" onChange={importSave} className="hidden" />
                 </label>
               </div>
-              <p className="mt-6 text-xs text-gray-600">© 2026 Claude RPG Engine v3.0</p>
+              <p className="mt-6 text-xs text-gray-600">© 2026 Claude RPG Engine v4.0</p>
             </div>
           </div>
         );
       }
 
-      // キャラ作成関数
+      // キャラ作成
       const createRandomCharacter = () => {
-        if (party.length >= 6) return alert('パーティは最大6人です');
-        
+        if (party.length >= 6) return alert('最大6人です');
         const raceKeys = Object.keys(RACES);
         const raceKey = raceKeys[Math.floor(Math.random() * raceKeys.length)];
         const race = RACES[raceKey];
-        
         const alignKeys = Object.keys(ALIGNMENTS);
         const alignKey = alignKeys[Math.floor(Math.random() * alignKeys.length)];
-        
-        const availableJobs = Object.entries(JOBS).filter(([_, job]) => job.align.includes(alignKey));
+        const availableJobs = Object.entries(JOBS).filter(([_, job]) => job.align.includes(alignKey) && job.tier === 1);
         const [jobKey, job] = availableJobs[Math.floor(Math.random() * availableJobs.length)];
-        
         const bonusPoints = Math.floor(Math.random() * 15) + 5;
         const vit = race.vit + Math.floor(bonusPoints * 0.4);
         const int = race.int + Math.floor(bonusPoints * 0.2);
-        
-        const baseHp = Math.floor((vit * 3 + 20) * job.hpMod);
-        const baseMp = Math.floor((int * 2 + 10) * job.mpMod);
-        const baseAtk = Math.floor((race.str * 1.5 + 5) * job.atkMod);
-        const baseDef = Math.floor((vit * 1.2 + 3) * job.defMod);
-
         const newChar = {
           id: Date.now(),
           name: generateName(raceKey),
@@ -895,122 +767,115 @@
           jobKey,
           level: 1,
           exp: 0,
-          maxHp: baseHp,
-          currentHp: baseHp,
-          maxMp: baseMp,
-          currentMp: baseMp,
-          atk: baseAtk,
-          def: baseDef,
+          maxHp: Math.floor((vit * 3 + 20) * job.hpMod),
+          currentHp: Math.floor((vit * 3 + 20) * job.hpMod),
+          maxMp: Math.floor((int * 2 + 10) * job.mpMod),
+          currentMp: Math.floor((int * 2 + 10) * job.mpMod),
+          atk: Math.floor((race.str * 1.5 + 5) * job.atkMod),
+          def: Math.floor((vit * 1.2 + 3) * job.defMod),
           str: race.str,
           int: int,
           pie: race.pie,
           vit: vit,
           agi: race.agi,
           luk: race.luk,
-          equipment: { weapon: null, armor: null, accessory: null }
+          equipment: { weapon: null, armor: null, accessory: null, head: null, shield: null },
+          previousJobs: []
         };
-        
         setParty(prev => [...prev, newChar]);
-        addLog(`${newChar.name}（${race.name}の${job.name}）がギルドに登録された！`, 'level');
+        addLog(`${newChar.name}（${race.name}の${job.name}）が登録された！`, 'level');
       };
 
       // 装備
-      const equipItem = (charId, item, slot) => {
+      const equipItem = (charId, item) => {
+        const slots = { weapons: 'weapon', armors: 'armor', accessories: 'accessory' };
+        let slot = item.slot || (ITEMS.weapons.find(i => i.id === item.id) ? 'weapon' : ITEMS.armors.find(i => i.id === item.id) ? 'armor' : 'accessory');
         setParty(prev => prev.map(char => {
           if (char.id !== charId) return char;
-          
-          // 古い装備を外す
           const oldItem = char.equipment[slot];
-          let newAtk = char.atk;
-          let newDef = char.def;
-          
+          let newAtk = char.atk, newDef = char.def;
           if (oldItem) {
             if (oldItem.atk) newAtk -= oldItem.atk;
             if (oldItem.def) newDef -= oldItem.def;
             setInventory(prev => [...prev, oldItem]);
           }
-          
-          // 新しい装備を付ける
           if (item.atk) newAtk += item.atk;
           if (item.def) newDef += item.def;
-          
           setInventory(prev => prev.filter(i => i.id !== item.id));
-          
-          return {
-            ...char,
-            atk: newAtk,
-            def: newDef,
-            equipment: { ...char.equipment, [slot]: item }
-          };
+          return { ...char, atk: newAtk, def: newDef, equipment: { ...char.equipment, [slot]: item } };
         }));
         addLog(`${party.find(c => c.id === charId)?.name}は${item.name}を装備した`, 'item');
+      };
+
+      // 転職モーダル
+      const JobChangeModal = ({ char, onClose }) => {
+        if (!char) return null;
+        return (
+          <div className="modal-overlay" onClick={onClose}>
+            <div className="retro-border bg-black p-4 max-w-md max-h-96 overflow-y-auto" onClick={e => e.stopPropagation()}>
+              <h3 className="text-lg gold-text mb-3">転職 - {char.name}</h3>
+              <p className="text-xs text-gray-400 mb-3">現在: Lv.{char.level} {char.job}</p>
+              <div className="space-y-2">
+                {Object.entries(JOBS).map(([key, job]) => {
+                  if (key === char.jobKey) return null;
+                  const check = canChangeJob(char, key);
+                  return (
+                    <div key={key} className={`p-2 bg-gray-900 ${check.can ? 'cursor-pointer hover:bg-green-900' : 'opacity-50'}`} onClick={() => check.can && changeJob(char.id, key)}>
+                      <div className="flex justify-between">
+                        <span className={job.tier === 2 ? 'gold-text' : ''}>{job.name} {job.tier === 2 ? '★' : ''}</span>
+                        <span className="text-xs">{check.can ? '転職可能' : check.reason}</span>
+                      </div>
+                      <div className="text-xs text-gray-500">
+                        属性: {job.align.map(a => ALIGNMENTS[a].name).join('/')}
+                        {Object.keys(job.requirements).length > 0 && ` | 必要: ${Object.entries(job.requirements).map(([k, v]) => `${k}${v}`).join(' ')}`}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+              <button onClick={onClose} className="mt-4 w-full retro-border py-1 hover:bg-red-900 text-red-400">閉じる</button>
+            </div>
+          </div>
+        );
       };
 
       // メイン画面
       return (
         <div className="min-h-screen p-2">
+          {showJobChange && <JobChangeModal char={showJobChange} onClose={() => setShowJobChange(null)} />}
           <div className="max-w-6xl mx-auto">
             {/* ヘッダー */}
             <div className="retro-border p-3 mb-3 flex justify-between items-center flex-wrap gap-2">
-              <h1 className="text-lg gold-text">⚔️ WIZARDRY SCHEMA</h1>
+              <h1 className="text-lg gold-text">⚔️ WIZARDRY SCHEMA v4</h1>
               <div className="flex gap-4 text-sm items-center">
                 <span className="gold-text">💰 {gold.toLocaleString()} G</span>
-                <button 
-                  onClick={() => setShowSettings(!showSettings)}
-                  className="text-gray-400 hover:text-white"
-                >
-                  ⚙️
-                </button>
+                <span className="purple-text">📦 {inventory.length}</span>
+                <button onClick={() => setShowSettings(!showSettings)} className="text-gray-400 hover:text-white">⚙️</button>
               </div>
             </div>
 
-            {/* 設定パネル */}
             {showSettings && (
               <div className="retro-border p-3 mb-3 bg-gray-900">
-                <h3 className="text-sm mb-2">設定</h3>
                 <div className="flex flex-wrap gap-4 text-xs">
-                  <label className="flex items-center gap-2">
-                    <input 
-                      type="checkbox" 
-                      checked={settings.bgm}
-                      onChange={(e) => setSettings(prev => ({ ...prev, bgm: e.target.checked }))}
-                    />
-                    BGM
-                  </label>
-                  <label className="flex items-center gap-2">
-                    <input 
-                      type="checkbox" 
-                      checked={settings.sfx}
-                      onChange={(e) => {
-                        setSettings(prev => ({ ...prev, sfx: e.target.checked }));
-                        soundEngine.sfxEnabled = e.target.checked;
-                      }}
-                    />
-                    効果音
-                  </label>
-                  <button onClick={exportSave} className="text-blue-400 hover:underline">
-                    📤 エクスポート
-                  </button>
+                  <label className="flex items-center gap-2"><input type="checkbox" checked={settings.bgm} onChange={(e) => setSettings(prev => ({ ...prev, bgm: e.target.checked }))} /> BGM</label>
+                  <label className="flex items-center gap-2"><input type="checkbox" checked={settings.sfx} onChange={(e) => { setSettings(prev => ({ ...prev, sfx: e.target.checked })); soundEngine.sfxEnabled = e.target.checked; }} /> 効果音</label>
+                  <button onClick={exportSave} className="text-blue-400 hover:underline">📤 エクスポート</button>
                 </div>
               </div>
             )}
 
             {/* タブナビ */}
             <div className="flex gap-1 mb-3 flex-wrap">
-              {['party', 'dungeon', 'quest', 'bestiary', 'shop'].map(tab => (
-                <button
-                  key={tab}
-                  onClick={() => setActiveTab(tab)}
-                  className={`retro-border px-3 py-1 text-xs tab-btn ${activeTab === tab ? 'active' : ''}`}
-                >
-                  {{ party: '👥 パーティ', dungeon: '🏰 ダンジョン', quest: '📜 クエスト', bestiary: '📖 図鑑', shop: '🛒 ショップ' }[tab]}
+              {['party', 'dungeon', 'shop', 'inventory', 'quest', 'bestiary'].map(tab => (
+                <button key={tab} onClick={() => setActiveTab(tab)} className={`retro-border px-3 py-1 text-xs tab-btn ${activeTab === tab ? 'active' : ''}`}>
+                  {{ party: '👥 パーティ', dungeon: '🏰 ダンジョン', shop: '🛒 ショップ', inventory: '📦 所持品', quest: '📜 クエスト', bestiary: '📖 図鑑' }[tab]}
                 </button>
               ))}
             </div>
 
             <div className="grid lg:grid-cols-3 gap-3">
-              {/* メインコンテンツ */}
               <div className="lg:col-span-2 retro-border p-3">
+                {/* パーティタブ */}
                 {activeTab === 'party' && (
                   <>
                     <h2 className="text-base mb-2 border-b border-green-800 pb-1">【 冒険者ギルド 】({party.length}/6)</h2>
@@ -1019,57 +884,39 @@
                         <div key={char.id} className={`p-2 bg-gray-900 text-xs ${char.currentHp === 0 ? 'opacity-50' : ''}`}>
                           <div className="flex justify-between items-center">
                             <span className="font-bold text-sm">{char.name}</span>
-                            <span className={ALIGNMENTS[char.alignKey]?.color || 'text-gray-400'}>{char.alignment}</span>
+                            <span className={ALIGNMENTS[char.alignKey]?.color}>{char.alignment}</span>
                           </div>
-                          <div className="text-gray-400">
-                            Lv.{char.level} {char.race} {char.job}
-                          </div>
+                          <div className="text-gray-400">Lv.{char.level} {char.race} {char.job}</div>
+                          {char.previousJobs?.length > 0 && <div className="text-gray-600 text-[10px]">前職: {char.previousJobs.map(j => JOBS[j].name).join('→')}</div>}
                           <div className="mt-1 grid grid-cols-2 gap-1">
                             <span className="red-text">HP:{char.currentHp}/{char.maxHp}</span>
                             <span className="blue-text">MP:{char.currentMp}/{char.maxMp}</span>
                             <span>ATK:{char.atk}</span>
                             <span>DEF:{char.def}</span>
                           </div>
-                          <div className="w-full bg-gray-700 h-1 mt-1">
-                            <div className="bg-red-500 h-1" style={{ width: `${(char.currentHp / char.maxHp) * 100}%` }}/>
-                          </div>
-                          <div className="w-full bg-gray-700 h-1 mt-1">
-                            <div className="bg-blue-500 h-1" style={{ width: `${(char.currentMp / char.maxMp) * 100}%` }}/>
-                          </div>
-                          {/* 装備スロット */}
+                          <div className="w-full bg-gray-700 h-1 mt-1"><div className="bg-red-500 h-1" style={{ width: `${(char.currentHp / char.maxHp) * 100}%` }}/></div>
                           <div className="mt-2 text-gray-500 text-[10px]">
-                            <div>⚔️ {char.equipment?.weapon?.name || '未装備'}</div>
-                            <div>🛡️ {char.equipment?.armor?.name || '未装備'}</div>
-                            <div>💍 {char.equipment?.accessory?.name || '未装備'}</div>
+                            ⚔️ {char.equipment?.weapon?.name || '未装備'} | 🛡️ {char.equipment?.armor?.name || '未装備'} | 💍 {char.equipment?.accessory?.name || '未装備'}
                           </div>
+                          {!exploring && char.level >= 10 && (
+                            <button onClick={() => setShowJobChange(char)} className="mt-2 text-[10px] text-cyan-400 hover:underline">🔄 転職</button>
+                          )}
                         </div>
                       ))}
                     </div>
                     {!exploring && (
                       <div className="mt-3 flex gap-2 flex-wrap">
-                        <button
-                          onClick={createRandomCharacter}
-                          disabled={party.length >= 6}
-                          className="retro-border px-4 py-2 text-sm hover:bg-green-900 disabled:opacity-50"
-                        >
-                          ＋ ランダム冒険者
-                        </button>
-                        {party.length > 0 && (
-                          <button
-                            onClick={() => setParty(prev => prev.slice(0, -1))}
-                            className="text-xs text-red-400 hover:underline"
-                          >
-                            最後の冒険者を解雇
-                          </button>
-                        )}
+                        <button onClick={createRandomCharacter} disabled={party.length >= 6} className="retro-border px-4 py-2 text-sm hover:bg-green-900 disabled:opacity-50">＋ 冒険者登録</button>
+                        {party.length > 0 && <button onClick={() => setParty(prev => prev.slice(0, -1))} className="text-xs text-red-400 hover:underline">解雇</button>}
                       </div>
                     )}
                   </>
                 )}
 
+                {/* ダンジョンタブ */}
                 {activeTab === 'dungeon' && (
                   <>
-                    <h2 className="text-base mb-2 border-b border-green-800 pb-1">【 ダンジョン選択 】</h2>
+                    <h2 className="text-base mb-2 border-b border-green-800 pb-1">【 ダンジョン 】</h2>
                     {!exploring ? (
                       <>
                         <div className="grid md:grid-cols-2 gap-2 mb-3">
@@ -1077,74 +924,92 @@
                             const avgLv = party.length > 0 ? Math.floor(party.reduce((a, c) => a + c.level, 0) / party.length) : 0;
                             const canEnter = avgLv >= d.minLv;
                             return (
-                              <button
-                                key={d.id}
-                                onClick={() => canEnter && setCurrentDungeon(d.id)}
-                                disabled={!canEnter}
-                                className={`text-left p-2 text-xs ${currentDungeon === d.id ? 'bg-green-900 retro-border' : 'bg-gray-900'} 
-                                  ${canEnter ? 'hover:bg-green-800' : 'opacity-50 cursor-not-allowed'}`}
-                              >
-                                <div className="flex justify-between">
-                                  <span className="font-bold">{d.name}</span>
-                                  <span className="text-gray-500">B{d.floors}F</span>
-                                </div>
-                                <div className="text-gray-500">
-                                  推奨Lv.{d.minLv}+ {maxFloors[d.id] ? `(最深:B${maxFloors[d.id]}F)` : ''}
-                                </div>
+                              <button key={d.id} onClick={() => canEnter && setCurrentDungeon(d.id)} disabled={!canEnter}
+                                className={`text-left p-2 text-xs ${currentDungeon === d.id ? 'bg-green-900 retro-border' : 'bg-gray-900'} ${canEnter ? 'hover:bg-green-800' : 'opacity-50'}`}>
+                                <div className="flex justify-between"><span className="font-bold">{d.name}</span><span className="text-gray-500">B{d.floors}F</span></div>
+                                <div className="text-gray-500">推奨Lv.{d.minLv}+ {maxFloors[d.id] ? `(最深:B${maxFloors[d.id]}F)` : ''}</div>
                               </button>
                             );
                           })}
                         </div>
                         <div className="mb-3 p-2 bg-gray-900 text-xs">
-                          <p className="mb-1">離脱条件: HP {retreatCondition.value}% 以下で帰還</p>
-                          <input
-                            type="range"
-                            min="10"
-                            max="50"
-                            value={retreatCondition.value}
-                            onChange={(e) => setRetreatCondition({ ...retreatCondition, value: parseInt(e.target.value) })}
-                            className="w-full"
-                          />
+                          <p className="mb-1">離脱条件: HP {retreatCondition.value}% 以下</p>
+                          <input type="range" min="10" max="50" value={retreatCondition.value} onChange={(e) => setRetreatCondition({ ...retreatCondition, value: parseInt(e.target.value) })} className="w-full" />
                         </div>
-                        <button
-                          onClick={() => {
-                            if (party.length === 0) return alert('冒険者を登録してください');
-                            if (!currentDungeon) return alert('ダンジョンを選択してください');
-                            setExploring(true);
-                            setCurrentFloor(1);
-                            setLogs([]);
-                            const d = DUNGEONS.find(d => d.id === currentDungeon);
-                            addLog(`【${d.name}】へ出発！`, 'level');
-                          }}
-                          disabled={party.length === 0 || !currentDungeon}
-                          className="w-full retro-border py-2 hover:bg-green-900 disabled:opacity-50"
-                        >
-                          ▶ 探索開始
-                        </button>
+                        <button onClick={() => { if (party.length === 0) return alert('冒険者を登録'); if (!currentDungeon) return alert('ダンジョン選択'); setExploring(true); setCurrentFloor(1); setLogs([]); addLog(`【${DUNGEONS.find(d => d.id === currentDungeon).name}】へ出発！`, 'level'); }} disabled={party.length === 0 || !currentDungeon} className="w-full retro-border py-2 hover:bg-green-900 disabled:opacity-50">▶ 探索開始</button>
                       </>
                     ) : (
                       <div className="text-center py-8">
                         <p className="text-2xl mb-2 blink gold-text">探索中...</p>
                         <p className="text-4xl mb-2">🏰 B{currentFloor}F</p>
-                        <p className="text-sm text-gray-400 mb-4">
-                          {DUNGEONS.find(d => d.id === currentDungeon)?.name}
-                        </p>
-                        <button
-                          onClick={() => {
-                            setExploring(false);
-                            setCurrentFloor(1);
-                            setParty(prev => prev.map(c => ({ ...c, currentHp: c.maxHp, currentMp: c.maxMp })));
-                            addLog('パーティは街に帰還した', 'heal');
-                          }}
-                          className="retro-border px-8 py-2 hover:bg-red-900 text-red-400"
-                        >
-                          ■ 帰還
-                        </button>
+                        <p className="text-sm text-gray-400 mb-4">{DUNGEONS.find(d => d.id === currentDungeon)?.name}</p>
+                        <button onClick={() => { setExploring(false); setCurrentFloor(1); setParty(prev => prev.map(c => ({ ...c, currentHp: c.maxHp, currentMp: c.maxMp }))); addLog('帰還した', 'heal'); }} className="retro-border px-8 py-2 hover:bg-red-900 text-red-400">■ 帰還</button>
                       </div>
                     )}
                   </>
                 )}
 
+                {/* ショップタブ */}
+                {activeTab === 'shop' && (
+                  <>
+                    <h2 className="text-base mb-2 border-b border-green-800 pb-1">【 ボルタック商店 】</h2>
+                    <div className="flex gap-1 mb-2">
+                      {['weapons', 'armors', 'accessories', 'consumables'].map(cat => (
+                        <button key={cat} onClick={() => setShopCategory(cat)} className={`px-2 py-1 text-xs ${shopCategory === cat ? 'bg-green-900 retro-border' : 'bg-gray-900'}`}>
+                          {{ weapons: '⚔️武器', armors: '🛡️防具', accessories: '💍装飾', consumables: '🧪消耗品' }[cat]}
+                        </button>
+                      ))}
+                    </div>
+                    <div className="space-y-1 max-h-64 overflow-y-auto">
+                      {ITEMS[shopCategory].map((item, i) => {
+                        const canBuy = gold >= item.price;
+                        const avgLv = party.length > 0 ? Math.floor(party.reduce((a, c) => a + c.level, 0) / party.length) : 0;
+                        const available = !item.minLv || avgLv >= item.minLv - 2;
+                        return (
+                          <div key={i} className={`p-1 text-xs flex justify-between items-center ${available && canBuy ? 'bg-gray-900' : 'bg-gray-900 opacity-50'}`}>
+                            <div>
+                              <span className={ITEM_RARITY[item.rarity].color}>{item.name}</span>
+                              <span className="text-gray-500 ml-2">{item.atk ? `ATK+${item.atk}` : ''}{item.def ? `DEF+${item.def}` : ''}{item.effect ? ` (${item.desc})` : ''}</span>
+                            </div>
+                            <button onClick={() => { if (!canBuy || !available) return; setGold(prev => prev - item.price); setInventory(prev => [...prev, { ...item, id: Date.now() }]); addLog(`${item.name}を購入`, 'item'); soundEngine.playGold(); }} disabled={!canBuy || !available} className="gold-text hover:underline disabled:opacity-50">{item.price}G</button>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </>
+                )}
+
+                {/* 所持品タブ */}
+                {activeTab === 'inventory' && (
+                  <>
+                    <h2 className="text-base mb-2 border-b border-green-800 pb-1">【 所持品 】({inventory.length})</h2>
+                    <div className="mb-2">
+                      <span className="text-xs text-gray-400">装備先を選択: </span>
+                      {party.map(char => (
+                        <button key={char.id} onClick={() => setSelectedChar(char.id)} className={`px-2 py-1 text-xs mx-1 ${selectedChar === char.id ? 'bg-green-900 retro-border' : 'bg-gray-900'}`}>{char.name}</button>
+                      ))}
+                    </div>
+                    <div className="space-y-1 max-h-64 overflow-y-auto">
+                      {inventory.map((item, i) => (
+                        <div key={item.id} className="p-1 text-xs bg-gray-900 flex justify-between items-center">
+                          <div>
+                            <span className={ITEM_RARITY[item.rarity]?.color || ''}>{item.name}</span>
+                            <span className="text-gray-500 ml-2">{item.atk ? `ATK+${item.atk}` : ''}{item.def ? `DEF+${item.def}` : ''}</span>
+                          </div>
+                          <div className="flex gap-2">
+                            {selectedChar && !ITEMS.consumables.find(c => c.id === item.id?.toString().replace(/\d+$/, '')) && (
+                              <button onClick={() => equipItem(selectedChar, item)} className="text-blue-400 hover:underline">装備</button>
+                            )}
+                            <button onClick={() => { setGold(prev => prev + Math.floor((item.price || 10) / 2)); setInventory(prev => prev.filter(i => i.id !== item.id)); addLog(`${item.name}を売却`, 'item'); }} className="text-yellow-400 hover:underline">売却</button>
+                          </div>
+                        </div>
+                      ))}
+                      {inventory.length === 0 && <p className="text-gray-600 text-center py-4">アイテムがありません</p>}
+                    </div>
+                  </>
+                )}
+
+                {/* クエストタブ */}
                 {activeTab === 'quest' && (
                   <>
                     <h2 className="text-base mb-2 border-b border-green-800 pb-1">【 クエスト 】</h2>
@@ -1153,10 +1018,7 @@
                         const completed = completedQuests.includes(quest.id);
                         return (
                           <div key={quest.id} className={`p-2 text-xs ${completed ? 'bg-green-900 opacity-75' : 'bg-gray-900'}`}>
-                            <div className="flex justify-between">
-                              <span className="font-bold">{completed ? '✓ ' : ''}{quest.name}</span>
-                              <span className="gold-text">{quest.reward.gold}G / {quest.reward.exp}EXP</span>
-                            </div>
+                            <div className="flex justify-between"><span className="font-bold">{completed ? '✓ ' : ''}{quest.name}</span><span className="gold-text">{quest.reward.gold}G / {quest.reward.exp}EXP</span></div>
                             <p className="text-gray-400 mt-1">{quest.desc}</p>
                           </div>
                         );
@@ -1166,111 +1028,36 @@
                   </>
                 )}
 
+                {/* 図鑑タブ */}
                 {activeTab === 'bestiary' && (
                   <>
                     <h2 className="text-base mb-2 border-b border-green-800 pb-1">【 モンスター図鑑 】</h2>
                     <div className="grid md:grid-cols-2 gap-2 max-h-80 overflow-y-auto">
                       {Object.entries(bestiary).map(([name, data]) => (
                         <div key={name} className="p-2 bg-gray-900 text-xs">
-                          <div className="flex justify-between">
-                            <span className="font-bold">{data.boss ? '👑 ' : ''}{name}</span>
-                            <span className="text-gray-500">×{data.encountered}</span>
-                          </div>
-                          <div className="text-gray-400 mt-1">
-                            HP:{data.hp} ATK:{data.atk} EXP:{data.exp}
-                          </div>
+                          <div className="flex justify-between"><span className="font-bold">{data.boss ? '👑 ' : ''}{name}</span><span className="text-gray-500">×{data.encountered}</span></div>
+                          <div className="text-gray-400 mt-1">HP:{data.hp} ATK:{data.atk} EXP:{data.exp}</div>
                         </div>
                       ))}
                     </div>
                     <p className="mt-2 text-xs text-gray-500">発見: {Object.keys(bestiary).length}/{MONSTERS.length}種</p>
                   </>
                 )}
-
-                {activeTab === 'shop' && (
-                  <>
-                    <h2 className="text-base mb-2 border-b border-green-800 pb-1">【 ボルタック商店 】</h2>
-                    <div className="grid md:grid-cols-2 gap-3">
-                      {/* 商品 */}
-                      <div>
-                        <h3 className="text-xs text-gray-400 mb-2">販売中</h3>
-                        <div className="space-y-1 max-h-48 overflow-y-auto">
-                          {[...ITEMS.weapons, ...ITEMS.armors, ...ITEMS.accessories].slice(0, 15).map((item, i) => {
-                            const canBuy = gold >= item.price;
-                            const avgLv = party.length > 0 ? Math.floor(party.reduce((a, c) => a + c.level, 0) / party.length) : 0;
-                            const available = avgLv >= item.minLv;
-                            return (
-                              <div key={i} className={`p-1 text-xs flex justify-between ${available && canBuy ? 'bg-gray-900' : 'bg-gray-900 opacity-50'}`}>
-                                <span>{item.name} {item.atk ? `(ATK+${item.atk})` : ''}{item.def ? `(DEF+${item.def})` : ''}</span>
-                                <button
-                                  onClick={() => {
-                                    if (!canBuy || !available) return;
-                                    setGold(prev => prev - item.price);
-                                    setInventory(prev => [...prev, { ...item, id: Date.now() }]);
-                                    addLog(`${item.name}を購入した`, 'item');
-                                    soundEngine.playGold();
-                                  }}
-                                  disabled={!canBuy || !available}
-                                  className="gold-text hover:underline disabled:opacity-50"
-                                >
-                                  {item.price}G
-                                </button>
-                              </div>
-                            );
-                          })}
-                        </div>
-                      </div>
-                      {/* インベントリ */}
-                      <div>
-                        <h3 className="text-xs text-gray-400 mb-2">所持品 ({inventory.length})</h3>
-                        <div className="space-y-1 max-h-48 overflow-y-auto">
-                          {inventory.map((item, i) => (
-                            <div key={item.id} className="p-1 text-xs bg-gray-900 flex justify-between items-center">
-                              <span>{item.name}</span>
-                              <div className="flex gap-1">
-                                {party.map(char => (
-                                  <button
-                                    key={char.id}
-                                    onClick={() => {
-                                      const slot = item.atk && !item.def ? 'weapon' : item.def && !item.atk ? 'armor' : 'accessory';
-                                      equipItem(char.id, item, slot);
-                                    }}
-                                    className="text-blue-400 hover:underline text-[10px]"
-                                    title={`${char.name}に装備`}
-                                  >
-                                    {char.name.slice(0, 2)}
-                                  </button>
-                                ))}
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  </>
-                )}
               </div>
 
-              {/* 探索ログ */}
+              {/* ログ */}
               <div className="retro-border p-3">
                 <h2 className="text-base mb-2 border-b border-green-800 pb-1">【 探索ログ 】</h2>
                 <div ref={logRef} className="h-80 overflow-y-auto bg-black p-2 text-xs log-scroll">
-                  {logs.length === 0 ? (
-                    <p className="text-gray-600">ログがここに表示されます...</p>
-                  ) : (
-                    logs.map((log, i) => (
-                      <p key={i} className={`${log.color} mb-1`}>&gt; {log.message}</p>
-                    ))
-                  )}
+                  {logs.length === 0 ? <p className="text-gray-600">ログがここに表示されます...</p> : logs.map((log, i) => <p key={i} className={`${log.color} mb-1`}>&gt; {log.message}</p>)}
                 </div>
               </div>
             </div>
 
             <div className="text-center mt-3 text-xs text-gray-600">
-              <button onClick={() => setScreen('title')} className="hover:text-green-400">
-                タイトルに戻る
-              </button>
+              <button onClick={() => setScreen('title')} className="hover:text-green-400">タイトル</button>
               <span className="mx-2">|</span>
-              <span>v3.0 - BGM/SFX/Quest/Bestiary/Shop</span>
+              <span>アイテム: {ITEMS.weapons.length + ITEMS.armors.length + ITEMS.accessories.length + ITEMS.consumables.length}種</span>
             </div>
           </div>
         </div>
