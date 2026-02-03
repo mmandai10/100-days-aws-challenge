@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Wizardry Schema v12 - 放置型探索RPG</title>
+  <title>Wizardry Schema v12.1 - 放置型探索RPG</title>
   <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -134,14 +134,7 @@
         rooms: ['隠し部屋','宝物庫','酒場','訓練場','拷問室','首領の間'],
         floors: {
           1: { desc: '偽装された入口。罠に注意。', sounds: ['静寂','微かな足音'], features: ['隠し扉','偽の壁'] },
-          2: { desc: '見張り所。常に監視されている。', sounds: ['囁き声','暗号の合図'], features: ['覗き穴','警報装置'] },
-          3: { desc: '盗品の保管庫。様々な宝が眠る。', sounds: ['金貨の音','宝石が転がる音'], features: ['鍵付きの箱','偽物の罠'] },
-          4: { desc: '訓練場。暗殺術が磨かれる。', sounds: ['投擲音','急所を突く練習'], features: ['的','毒の調合台'] },
           5: { desc: '暗殺者の巣窟。危険度が跳ね上がる。', sounds: ['無音','衣擦れの音'], features: ['影に潜む者','毒塗りの刃'] },
-          6: { desc: '拷問室。過去の犠牲者の叫びが聞こえる。', sounds: ['うめき声','鎖の音'], features: ['拷問器具','血の染み'] },
-          7: { desc: '幹部の居住区。豪華だが油断できない。', sounds: ['密談の声','ワインを注ぐ音'], features: ['高級家具','隠し武器'] },
-          8: { desc: '金庫室。最も警備が厳しい。', sounds: ['機械仕掛けの音','警報装置'], features: ['巨大な金庫','罠の数々'] },
-          9: { desc: '首領への通路。刺客が待ち構える。', sounds: ['殺気','抜刀の音'], features: ['影','最後の防衛線'] },
           10: { desc: '【ボス階層】マスターシーフの隠れ家。', sounds: ['静寂の中の殺気','勝利への渇望'], features: ['豪華な玉座','盗品コレクション'] }
         }
       },
@@ -150,17 +143,8 @@
         rooms: ['汚水路','浄化槽','管理室','崩落した通路','地下墓地','祭壇'],
         floors: {
           1: { desc: '下水の入口。悪臭が鼻を突く。', sounds: ['水流の音','ネズミの鳴き声'], features: ['汚水','苔'] },
-          2: { desc: '古い下水道。歴史を感じる石造り。', sounds: ['反響する足音','水滴の音'], features: ['古代の彫刻','崩れた壁'] },
-          3: { desc: '廃棄物処理場。何かが蠢いている。', sounds: ['ゴボゴボという音','うめき声'], features: ['腐敗物','這いずるもの'] },
-          4: { desc: '地下墓地との境界。死の気配が漂う。', sounds: ['骨が軋む音','風の唸り'], features: ['墓石','棺桶'] },
-          5: { desc: '忘れられた地下神殿。邪悪な力が宿る。', sounds: ['詠唱の残響','呪いの呟き'], features: ['壊れた祭壇','呪われた遺物'] },
           6: { desc: 'アンデッドの巣窟。生者を拒む。', sounds: ['うめき声の合唱','骨の足音'], features: ['積み上げられた骨','腐った死体'] },
-          7: { desc: '吸血鬼の領域に近づく。冷気が増す。', sounds: ['コウモリの羽音','妖しい笑い声'], features: ['血の跡','棺桶の列'] },
-          8: { desc: '吸血鬼の眷属が徘徊する。', sounds: ['囁く声','誘惑の言葉'], features: ['美しい罠','魅了の霧'] },
-          9: { desc: '儀式の間への通路。血の匂いが濃くなる。', sounds: ['血を啜る音','祈りの声'], features: ['血の祭壇','生贄の残骸'] },
-          10: { desc: '吸血鬼の領域核心部。', sounds: ['心臓の鼓動','永遠の渇き'], features: ['闇の玉座','血の泉'] },
-          11: { desc: '最深部への階段。', sounds: ['魔力の脈動','運命の足音'], features: ['古代の封印','力の結晶'] },
-          12: { desc: '【ボス階層】ヴァンパイアの玉座の間。', sounds: ['支配者の威圧','血の宴'], features: ['漆黒の玉座','永遠の闘争'] }
+          12: { desc: '【ボス階層】ヴァンパイアの玉座の間。', sounds: ['支配者の威圧','血の宴'], features: ['漆黒の玉座','血の泉'] }
         }
       },
       kaoka: {
@@ -168,8 +152,7 @@
         rooms: ['崩れた神殿','宝物庫','祭司の間','試練の回廊','封印の間','深淵への門'],
         floors: {
           1: { desc: '遺跡の入口。古代の威厳を感じる。', sounds: ['風化した石の音','遠い過去の残響'], features: ['風化した石像','古代文字'] },
-          5: { desc: '神殿の中層。罠が多く仕掛けられている。', sounds: ['機械の作動音','矢が飛ぶ音'], features: ['起動する罠','崩れる床'] },
-          10: { desc: '封印区画。強大な力が眠る。', sounds: ['封印の唸り','古代の呪文'], features: ['魔法陣','力の柱'] },
+          8: { desc: '神殿の中層。罠が多く仕掛けられている。', sounds: ['機械の作動音','矢が飛ぶ音'], features: ['起動する罠','崩れる床'] },
           15: { desc: '【ボス階層】グレーターデーモンの封印の間。', sounds: ['地獄の咆哮','次元の歪み'], features: ['破れた封印','悪魔の玉座'] }
         }
       },
@@ -202,29 +185,24 @@
       }
     };
 
-    // ===== ダンジョン探索イベント描写 =====
+    // ===== 探索・戦闘描写 =====
     const EXPLORATION_EVENTS = {
       move: ['慎重に歩を進める...','松明の明かりを頼りに進む...','壁伝いに移動する...','足音を殺して進む...','周囲を警戒しながら歩く...'],
       search: ['周囲を調べる...','怪しい場所を探す...','壁に耳を当てる...','床を調べる...','天井を見上げる...'],
-      rest: ['一息つく...','傷を確認する...','装備を整える...','精神を集中させる...','警戒しながら休憩する...'],
-      trap: ['ガチャン！罠が作動した！','足元の床が沈んだ！','壁から矢が飛んできた！','毒ガスが噴出した！','落とし穴だ！'],
-      secret: ['隠し通路を発見！','秘密の部屋を見つけた！','壁の中に何かがある...','床下に空洞がある...','天井に隠し扉が！']
     };
-
-    // ===== 戦闘描写パターン =====
     const BATTLE_DESC = {
-      encounter: ['前方に影が見える...{enemy}だ！','突然、{enemy}が飛び出してきた！','暗闇の中から{enemy}が姿を現した！','足音が近づく...{enemy}が現れた！','不気味な気配...振り向くと{enemy}！','{enemy}が行く手を塞いでいる！'],
+      encounter: ['前方に影が見える...{enemy}だ！','突然、{enemy}が飛び出してきた！','暗闘の中から{enemy}が姿を現した！','足音が近づく...{enemy}が現れた！','不気味な気配...振り向くと{enemy}！','{enemy}が行く手を塞いでいる！'],
       attack: ['{name}は剣を振りかざした！','{name}の渾身の一撃！','{name}は素早く斬りかかった！','{name}は力強く武器を振り下ろした！','{name}の連続攻撃！','{name}は隙を突いて攻撃！','{name}は正面から斬りつけた！','{name}が武器を構え突進！','{name}は回転斬りを繰り出した！'],
       critical: ['【会心】急所に命中！','【会心】見事なクリティカルヒット！','【会心】渾身の一撃が炸裂！'],
-      miss: ['{name}の攻撃は外れた！','敵は素早く回避した！','{name}は空振りした！','{name}の攻撃を躱された！','紙一重で避けられた！'],
-      damage: ['{target}に{dmg}のダメージ！','{target}は{dmg}のダメージを受けた！','{dmg}ダメージ！{target}がよろめく！','{target}に{dmg}ダメージを与えた！'],
-      enemyAttack: ['{enemy}が襲いかかってきた！','{enemy}の鋭い攻撃！','{enemy}は牙を剥いた！','{enemy}の爪が光る！','{enemy}が突進してきた！','{enemy}の凶暴な一撃！','{enemy}が唸り声を上げ攻撃！','{enemy}の鋭い眼光...そして攻撃！'],
-      spell: ['{name}は呪文を唱えた...「{spell}」！','「{spell}」！{name}の手から魔力が放たれる！','{name}は集中し...{spell}を発動！','「{spell}！」光が敵を包む！'],
-      victory: ['{enemy}を倒した！','{enemy}は崩れ落ちた！','{enemy}は消滅した！','{enemy}は力尽きた！','{enemy}を打ち倒した！'],
-      bossAppear: ['【警告】強大な気配を感じる...','地響きとともに{enemy}が現れた！','闇の中から{enemy}が姿を現した！','【BOSS】{enemy}との対峙！'],
-      battleStart: ['──── 戦闘開始 ────','═══ BATTLE ═══','▶ 戦闘突入！'],
-      turn: ['【ターン{n}】','─ 第{n}ターン ─','《Turn {n}》'],
-      monsterStatus: ['{enemy} HP: {hp}/{maxHp}','[{enemy}の残りHP: {hp}]','{enemy}: {hp}/{maxHp}']
+      miss: ['{name}の攻撃は外れた！','敵は素早く回避した！','{name}は空振りした！'],
+      damage: ['{target}に{dmg}のダメージ！','{target}は{dmg}のダメージを受けた！','{dmg}ダメージ！{target}がよろめく！'],
+      enemyAttack: ['{enemy}が襲いかかってきた！','{enemy}の鋭い攻撃！','{enemy}は牙を剥いた！','{enemy}の爪が光る！','{enemy}が突進してきた！'],
+      spell: ['{name}は呪文を唱えた...「{spell}」！','「{spell}」！{name}の手から魔力が放たれる！'],
+      victory: ['{enemy}を倒した！','{enemy}は崩れ落ちた！','{enemy}は消滅した！'],
+      bossAppear: ['【警告】強大な気配を感じる...','地響きとともに{enemy}が現れた！'],
+      battleStart: ['──── 戦闘開始 ────'],
+      turn: ['【ターン{n}】'],
+      monsterStatus: ['{enemy} HP: {hp}/{maxHp}']
     };
     const getBattleDesc = (type, params = {}) => {
       const arr = BATTLE_DESC[type];
@@ -232,10 +210,7 @@
       Object.entries(params).forEach(([k, v]) => { msg = msg.replace(new RegExp(`\\{${k}\\}`, 'g'), v); });
       return msg;
     };
-    const getExploreDesc = (type) => {
-      const arr = EXPLORATION_EVENTS[type];
-      return arr[Math.floor(Math.random() * arr.length)];
-    };
+    const getExploreDesc = (type) => EXPLORATION_EVENTS[type][Math.floor(Math.random() * EXPLORATION_EVENTS[type].length)];
     const getRoomDesc = (dng, floor) => {
       const d = DUNGEON_ATMOSPHERE[dng];
       if (!d) return '暗い通路を進む...';
@@ -281,14 +256,14 @@
 
     // ===== ボス専用ドロップ =====
     const BOSS_DROPS = {
-      'スライムキング': [{id:'bd01',name:'スライムの王冠',atk:3,def:3,price:500,rarity:'uncommon'},{id:'bd02',name:'ゼリー状の盾',def:5,price:400,rarity:'uncommon'}],
-      'コボルトロード': [{id:'bd03',name:'コボルトの宝珠',atk:5,def:2,price:800,rarity:'uncommon'},{id:'bd04',name:'略奪者の短剣',atk:10,price:700,rarity:'uncommon'}],
-      'マスターシーフ': [{id:'bd06',name:'影のマント',def:10,price:1800,rarity:'rare',jobs:['thief','ninja']},{id:'bd07',name:'盗賊のナイフ',atk:15,price:1500,rarity:'rare'}],
-      'ヴァンパイア': [{id:'bd09',name:'吸血鬼の牙',atk:18,price:2800,rarity:'rare'},{id:'bd10',name:'闇のマント',def:12,price:2500,rarity:'rare'}],
-      'グレーターデーモン': [{id:'bd12',name:'悪魔の角',atk:22,def:8,price:5000,rarity:'epic'},{id:'bd13',name:'魔界の剣',atk:28,price:6000,rarity:'epic'}],
-      'ゴールドドラゴン': [{id:'bd15',name:'黄金の鱗',def:25,price:10000,rarity:'epic'},{id:'bd16',name:'ドラゴンファング',atk:35,price:12000,rarity:'epic'}],
-      'エンシェントドラゴン': [{id:'bd18',name:'古竜の心臓',atk:20,def:20,price:18000,rarity:'epic'},{id:'bd20',name:'時の鱗',atk:25,def:25,price:25000,rarity:'legendary'}],
-      'ワードナ': [{id:'bd21',name:'魔除けの護符',atk:30,def:30,price:60000,rarity:'legendary'},{id:'bd22',name:'ワードナの杖',atk:55,price:80000,rarity:'legendary',jobs:['mage','bishop']}]
+      'スライムキング': [{id:'bd01',name:'スライムの王冠',atk:3,def:3,price:500,rarity:'uncommon'}],
+      'コボルトロード': [{id:'bd03',name:'コボルトの宝珠',atk:5,def:2,price:800,rarity:'uncommon'}],
+      'マスターシーフ': [{id:'bd06',name:'影のマント',def:10,price:1800,rarity:'rare',jobs:['thief','ninja']}],
+      'ヴァンパイア': [{id:'bd09',name:'吸血鬼の牙',atk:18,price:2800,rarity:'rare'}],
+      'グレーターデーモン': [{id:'bd12',name:'悪魔の角',atk:22,def:8,price:5000,rarity:'epic'}],
+      'ゴールドドラゴン': [{id:'bd15',name:'黄金の鱗',def:25,price:10000,rarity:'epic'}],
+      'エンシェントドラゴン': [{id:'bd20',name:'時の鱗',atk:25,def:25,price:25000,rarity:'legendary'}],
+      'ワードナ': [{id:'bd21',name:'魔除けの護符',atk:30,def:30,price:60000,rarity:'legendary'}]
     };
 
     const DUNGEONS = [
@@ -397,51 +372,45 @@
         const interval = setInterval(() => {
           const alive = party.filter(c => c.currentHp > 0);
           if (alive.length === 0) {
-            addLog('','normal'); addLog('【全滅】パーティは全滅した...','damage'); addLog('意識が遠のいていく...帰還する...','damage');
+            addLog('','normal'); addLog('【全滅】パーティは全滅した...','damage');
             soundEngine.playDeath(); setExploring(false); setFloor(1); setParty(p => p.map(c => ({...c, currentHp: Math.floor(c.maxHp*0.5)}))); return;
           }
           if (alive.some(c => (c.currentHp/c.maxHp)*100 <= retreatHP)) {
-            addLog('','normal'); addLog(`【撤退判断】HP${retreatHP}%以下を検知...`,'special'); addLog('安全を優先して帰還を開始する...','special');
+            addLog('','normal'); addLog(`【撤退】HP${retreatHP}%以下...帰還開始`,'special');
             setExploring(false); setFloor(1); setParty(p => p.map(c => ({...c, currentHp: c.maxHp, currentMp: c.maxMp}))); return;
           }
           const event = Math.random();
           const dngData = DUNGEONS.find(d => d.id === dungeon);
           
-          // 探索描写を追加
-          addLog('','normal');
           addLog(getExploreDesc('move'),'explore');
           addLog(getRoomDesc(dungeon, floor),'explore');
           
           if (event < 0.85) {
             const monsters = MONSTERS.filter(m => m.dng === dungeon && m.flr <= floor);
-            if (monsters.length === 0) { addLog(`B${floor}F: 静寂が支配している...`,'normal'); return; }
+            if (monsters.length === 0) return;
             const mon = {...monsters[Math.floor(Math.random()*monsters.length)]};
             const isBoss = mon.boss && floor === mon.flr;
             const monMaxHp = mon.hp;
             let battleLogs = [];
             if (isBoss) {
               soundEngine.playBoss();
-              battleLogs.push({msg:`━━━━━ B${floor}F BOSS ━━━━━`,type:'boss'});
-              battleLogs.push({msg:getBattleDesc('bossAppear',{enemy:mon.name}),type:'boss'});
-              battleLogs.push({msg:`【${mon.name}】HP:${mon.hp} ATK:${mon.atk} DEF:${mon.def}`,type:'boss'});
+              battleLogs.push({msg:`━━━ BOSS: ${mon.name} ━━━`,type:'boss'});
             } else {
-              battleLogs.push({msg:`───── B${floor}F 戦闘 ─────`,type:'battle'});
               battleLogs.push({msg:getBattleDesc('encounter',{enemy:mon.name}),type:'battle'});
             }
-            battleLogs.push({msg:getBattleDesc('battleStart'),type:'battle'});
             setBestiary(prev => ({...prev,[mon.name]:{...mon,cnt:(prev[mon.name]?.cnt||0)+1}}));
             let monHp = mon.hp;
             let mpUsed = {};
             let turnCount = 1;
             let partyDamage = {};
             while (monHp > 0 && alive.filter(c => (partyDamage[c.id]||0) < c.currentHp).length > 0 && turnCount <= 5) {
-              battleLogs.push({msg:getBattleDesc('turn',{n:turnCount}),type:'battle'});
+              battleLogs.push({msg:`【ターン${turnCount}】`,type:'battle'});
               alive.forEach((char) => {
                 if (monHp <= 0) return;
                 const job = JOBS[char.jobKey];
                 const isCritical = Math.random() < (0.05 + char.luk * 0.005);
                 const isMiss = Math.random() < 0.08;
-                if (isMiss) { battleLogs.push({msg:getBattleDesc('miss',{name:char.name}),type:'normal'}); return; }
+                if (isMiss) { battleLogs.push({msg:`${char.name}の攻撃は外れた！`,type:'normal'}); return; }
                 if (job.spell && char.currentMp >= 2 && Math.random() < 0.35) {
                   const spells = job.spell === 'both' ? [...SPELLS.mage,...SPELLS.priest] : (SPELLS[job.spell]||[]);
                   const atkSpells = spells.filter(s => s.pow > 0 && s.mp <= char.currentMp && s.lv <= Math.floor(char.level/2)+1);
@@ -451,51 +420,37 @@
                     if (isCritical) dmg = Math.floor(dmg * 1.5);
                     monHp -= dmg;
                     mpUsed[char.id] = (mpUsed[char.id]||0) + spell.mp;
-                    battleLogs.push({msg:getBattleDesc('spell',{name:char.name,spell:spell.name}),type:'special'});
-                    battleLogs.push({msg:getBattleDesc('damage',{target:mon.name,dmg}),type:isCritical?'critical':'battle'});
-                    if (isCritical) { battleLogs.push({msg:getBattleDesc('critical'),type:'critical'}); soundEngine.playCritical(); }
-                    else soundEngine.playAttack();
+                    battleLogs.push({msg:`${char.name}「${spell.name}」→ ${mon.name}に${dmg}ダメージ！`,type:isCritical?'critical':'special'});
+                    soundEngine.playAttack();
                     return;
                   }
                 }
-                battleLogs.push({msg:getBattleDesc('attack',{name:char.name}),type:'battle'});
                 let dmg = Math.max(1, char.atk - mon.def + Math.floor(Math.random()*8));
                 if (isCritical) dmg = Math.floor(dmg * 1.5);
                 monHp -= dmg;
-                battleLogs.push({msg:getBattleDesc('damage',{target:mon.name,dmg}),type:isCritical?'critical':'battle'});
-                if (isCritical) { battleLogs.push({msg:getBattleDesc('critical'),type:'critical'}); soundEngine.playCritical(); }
-                else soundEngine.playAttack();
+                battleLogs.push({msg:`${char.name}の攻撃 → ${mon.name}に${dmg}ダメージ${isCritical?' 【会心】':''}`,type:isCritical?'critical':'battle'});
+                soundEngine.playAttack();
               });
               if (monHp > 0) {
-                battleLogs.push({msg:getBattleDesc('monsterStatus',{enemy:mon.name,hp:Math.max(0,monHp),maxHp:monMaxHp}),type:'normal'});
+                battleLogs.push({msg:`  [${mon.name} HP:${Math.max(0,monHp)}/${monMaxHp}]`,type:'normal'});
                 soundEngine.playHit();
                 const target = alive[Math.floor(Math.random()*alive.length)];
-                battleLogs.push({msg:getBattleDesc('enemyAttack',{enemy:mon.name}),type:'damage'});
                 const dmg = Math.max(1, mon.atk - target.def + Math.floor(Math.random()*8));
                 partyDamage[target.id] = (partyDamage[target.id]||0) + dmg;
-                battleLogs.push({msg:`▷ ${target.name}は${dmg}のダメージを受けた！`,type:'damage'});
-                if (partyDamage[target.id] >= target.currentHp) battleLogs.push({msg:`${target.name}は力尽きた...`,type:'damage'});
+                battleLogs.push({msg:`${mon.name}の攻撃 → ${target.name}に${dmg}ダメージ`,type:'damage'});
               }
               turnCount++;
             }
             if (monHp <= 0) {
-              battleLogs.push({msg:getBattleDesc('victory',{enemy:mon.name}),type:'item'});
-              battleLogs.push({msg:`═══ VICTORY ═══`,type:'item'});
-              battleLogs.push({msg:`▶ ${mon.exp}EXP / ${mon.gold}G 獲得！`,type:'item'});
+              battleLogs.push({msg:`═══ ${mon.name}を倒した！ ═══`,type:'item'});
+              battleLogs.push({msg:`+${mon.exp}EXP / +${mon.gold}G`,type:'item'});
               soundEngine.playGold();
               setGold(prev => prev + mon.gold);
-              if (isBoss) {
-                const drop = getDrop(floor,true,mon.name);
+              if (isBoss || Math.random() < 0.12) {
+                const drop = getDrop(floor,isBoss,mon.name);
                 if (drop) {
                   setInventory(prev => [...prev,drop]);
-                  const rarityName = {common:'コモン',uncommon:'アンコモン',rare:'レア',epic:'エピック',legendary:'★レジェンダリー★'}[drop.rarity];
-                  battleLogs.push({msg:`【${rarityName}】${drop.name} をドロップ！`,type:drop.rarity==='legendary'?'boss':'item'});
-                }
-              } else if (Math.random() < 0.12) {
-                const drop = getDrop(floor);
-                if (drop) {
-                  setInventory(prev => [...prev,drop]);
-                  battleLogs.push({msg:`${drop.name} をドロップ！`,type:'item'});
+                  battleLogs.push({msg:`【ドロップ】${drop.name}`,type:drop.rarity==='legendary'?'boss':'item'});
                 }
               }
               setParty(prev => prev.map(char => {
@@ -507,7 +462,7 @@
                   const newExp = updated.exp + expGain;
                   const expNeed = updated.level * 100;
                   if (newExp >= expNeed) {
-                    battleLogs.push({msg:`★★★ ${char.name} LEVEL UP! Lv.${updated.level} → Lv.${updated.level+1} ★★★`,type:'level'});
+                    battleLogs.push({msg:`★ ${char.name} Lv.${updated.level}→${updated.level+1}！`,type:'level'});
                     soundEngine.playLevelUp();
                     const hpUp = 5 + Math.floor(updated.vit*0.5);
                     const mpUp = 3 + Math.floor(updated.int*0.3);
@@ -515,56 +470,40 @@
                       maxHp: updated.maxHp + hpUp, currentHp: updated.maxHp + hpUp,
                       maxMp: updated.maxMp + mpUp, currentMp: updated.maxMp + mpUp,
                       atk: updated.atk + 2, def: updated.def + 1};
-                    battleLogs.push({msg:`  HP+${hpUp} MP+${mpUp} ATK+2 DEF+1`,type:'level'});
                   } else { updated.exp = newExp; }
                 }
                 return updated;
               }));
-            } else {
-              battleLogs.push({msg:`戦闘は長引いている...一時撤退！`,type:'damage'});
-              setParty(prev => prev.map(char => {
-                let updated = {...char};
-                if (mpUsed[char.id]) updated.currentMp = Math.max(0, updated.currentMp - mpUsed[char.id]);
-                if (partyDamage[char.id]) updated.currentHp = Math.max(0, updated.currentHp - partyDamage[char.id]);
-                return updated;
-              }));
             }
-            battleLogs.forEach((log, i) => setTimeout(() => addLog(log.msg, log.type), i * 80));
+            battleLogs.forEach((log, i) => setTimeout(() => addLog(log.msg, log.type), i * 60));
           } else if (event < 0.93) {
             if (floor < dngData.floors) {
               const newFloor = floor + 1;
               setFloor(newFloor);
               setMaxFloors(prev => ({...prev,[dungeon]:Math.max(prev[dungeon]||0,newFloor)}));
-              addLog('下り階段を発見した...','item');
-              addLog(`━━━ B${newFloor}Fへ降りる ━━━`,'item');
+              addLog(`━━━ B${newFloor}Fへ ━━━`,'item');
               addLog(getFloorDesc(dungeon, newFloor),'explore');
-            } else { addLog(`最深部に到達している...これ以上は進めない`,'normal'); }
+            }
           } else if (event < 0.97) {
-            addLog('宝箱を発見！慎重に調べる...','item');
+            addLog('宝箱を発見！','item');
             const hasThief = alive.some(c => c.jobKey === 'thief' || c.jobKey === 'ninja');
             if (Math.random() < (hasThief ? 0.1 : 0.25)) {
               const trap = TRAPS[Math.floor(Math.random()*TRAPS.length)];
-              addLog(`罠だ！${trap.name}が発動！`,'damage');
+              addLog(`罠！${trap.name}が発動！`,'damage');
               soundEngine.playHit();
               setParty(p => p.map(c => ({...c, currentHp: Math.max(1, c.currentHp - Math.floor(c.maxHp*trap.dmg))})));
             } else {
               const goldFound = Math.floor(Math.random()*50*floor) + 20;
               setGold(prev => prev + goldFound);
-              addLog(`${goldFound}Gを発見！`,'item');
+              addLog(`+${goldFound}G`,'item');
               soundEngine.playGold();
-              if (Math.random() < 0.2) {
-                const drop = getDrop(floor);
-                if (drop) { setInventory(prev => [...prev,drop]); addLog(`${drop.name}を発見！`,'item'); }
-              }
             }
           } else {
-            addLog('神秘的な泉を発見！','heal');
-            addLog('清らかな水が傷を癒してくれる...','heal');
+            addLog('神秘的な泉を発見！回復した','heal');
             soundEngine.playHeal();
             setParty(p => p.map(c => ({...c, currentHp: Math.min(c.maxHp, c.currentHp + Math.floor(c.maxHp*0.3)), currentMp: Math.min(c.maxMp, c.currentMp + Math.floor(c.maxMp*0.3))})));
-            addLog('パーティは回復した！','heal');
           }
-        }, 1500); // スピードアップ: 2500ms → 1500ms
+        }, 1200);
         return () => clearInterval(interval);
       }, [exploring, dungeon, floor, party, retreatHP, addLog]);
 
@@ -630,7 +569,6 @@
           setInventory(p => p.filter(i => i.uid !== item.uid));
           return {...char, atk: newAtk, def: newDef, equipment: {...char.equipment, [slot]: item}};
         }));
-        addLog(`装備: ${item.name}`,'item');
       };
 
       const exportSave = () => { const blob = new Blob([JSON.stringify({party,gold,maxFloors,settings,bestiary,inventory})], {type:'application/json'}); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `wizardry-v12-${Date.now()}.json`; a.click(); };
@@ -641,12 +579,11 @@
           <div className="modal-overlay" onClick={onClose}>
             <div className="retro-border bg-black p-4 max-w-md max-h-96 overflow-y-auto" onClick={e => e.stopPropagation()}>
               <h3 className="text-lg gold-text mb-3">🔄 転職 - {char.name}</h3>
-              <p className="text-xs text-gray-400 mb-3">現在: Lv.{char.level} {char.job}</p>
               <div className="space-y-2">{Object.entries(JOBS).map(([k,j]) => {
                 if (k === char.jobKey) return null;
                 const c = canChangeJob(char, k);
                 return (<div key={k} className={`p-2 bg-gray-900 ${c.can?'cursor-pointer hover:bg-green-900':'opacity-50'}`} onClick={() => c.can && changeJob(char.id, k)}>
-                  <div className="flex justify-between"><span className={j.tier===2?'gold-text':''}>{j.name}{j.tier===2?' ★':''}</span><span className="text-xs">{c.can?'可能':c.reason}</span></div>
+                  <div className="flex justify-between"><span className={j.tier===2?'gold-text':''}>{j.name}</span><span className="text-xs">{c.can?'可能':c.reason}</span></div>
                 </div>);
               })}</div>
               <button onClick={onClose} className="mt-4 w-full retro-border py-1 hover:bg-red-900 text-red-400">閉じる</button>
@@ -661,7 +598,7 @@
             <div className="retro-border p-8 bg-black text-center max-w-md">
               <h1 className="text-3xl mb-2 gold-text">⚔️ WIZARDRY SCHEMA ⚔️</h1>
               <p className="text-sm mb-1 text-gray-400">〜 リルガミンの迷宮 〜</p>
-              <p className="text-xs mb-6 text-gray-600">v12.0 ダンジョン風景拡充</p>
+              <p className="text-xs mb-6 text-gray-600">v12.1</p>
               <div className="space-y-3">
                 <button onClick={() => {setScreen('main'); initSound();}} className="block w-full retro-border px-6 py-2 hover:bg-green-900">{party.length > 0 ? '▶ CONTINUE' : '▶ NEW GAME'}</button>
                 {party.length > 0 && <><button onClick={exportSave} className="block w-full retro-border px-6 py-2 hover:bg-blue-900 text-blue-400">📤 EXPORT</button>
@@ -672,10 +609,63 @@
         );
       }
 
+      // ===== 探索中のレイアウト =====
+      if (exploring) {
+        return (
+          <div className="min-h-screen p-2">
+            <div className="max-w-6xl mx-auto">
+              <div className="retro-border p-2 mb-2 flex justify-between items-center">
+                <div className="flex items-center gap-3">
+                  <span className="gold-text text-lg">🏰 {DUNGEONS.find(d=>d.id===dungeon)?.name}</span>
+                  <span className="text-2xl blink">B{floor}F</span>
+                </div>
+                <div className="flex gap-4 items-center">
+                  <span className="gold-text">💰{gold.toLocaleString()}G</span>
+                  <span className="purple-text">📦{inventory.length}</span>
+                  <button onClick={() => {setExploring(false); setFloor(1); setParty(p => p.map(c => ({...c, currentHp: c.maxHp, currentMp: c.maxMp}))); addLog('帰還した','heal');}} className="retro-border px-4 py-1 hover:bg-red-900 text-red-400 text-sm">帰還</button>
+                </div>
+              </div>
+              <div className="text-xs text-gray-500 mb-2 px-1">{getFloorDesc(dungeon, floor)}</div>
+              <div className="grid lg:grid-cols-4 gap-2">
+                {/* 冒険記録 - 大きく */}
+                <div className="lg:col-span-3 retro-border p-3">
+                  <h2 className="text-sm mb-2 border-b border-green-800 pb-1">【 冒険記録 】</h2>
+                  <div ref={logRef} className="h-96 overflow-y-auto bg-black p-2 text-xs log-scroll">
+                    {logs.map((l,i) => <p key={i} className={`${l.c} mb-1`}>{l.msg || ' '}</p>)}
+                  </div>
+                </div>
+                {/* パーティステータス - コンパクト */}
+                <div className="retro-border p-2">
+                  <h2 className="text-sm mb-2 border-b border-green-800 pb-1">【 パーティ 】</h2>
+                  <div className="space-y-2">
+                    {party.map(char => (
+                      <div key={char.id} className={`text-xs p-2 bg-gray-900 ${char.currentHp === 0 ? 'opacity-50' : ''}`}>
+                        <div className="flex justify-between mb-1">
+                          <span className="font-bold">{char.name}</span>
+                          <span className="text-gray-500">Lv.{char.level} {char.job}</span>
+                        </div>
+                        <div className="flex gap-2 text-[10px]">
+                          <span className="red-text">HP:{char.currentHp}/{char.maxHp}</span>
+                          <span className="blue-text">MP:{char.currentMp}/{char.maxMp}</span>
+                        </div>
+                        <div className="w-full bg-gray-700 h-2 mt-1 rounded">
+                          <div className="bg-red-500 h-2 rounded" style={{width:`${(char.currentHp/char.maxHp)*100}%`}}/>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+      }
+
+      // ===== 通常時のレイアウト =====
       return (
         <div className="min-h-screen p-2">
           {showJobChange && <JobModal char={showJobChange} onClose={() => setShowJobChange(null)} />}
-          <div className="max-w-6xl mx-auto">
+          <div className="max-w-5xl mx-auto">
             <div className="retro-border p-3 mb-3 flex justify-between items-center flex-wrap gap-2">
               <h1 className="text-lg gold-text">⚔️ WIZARDRY SCHEMA</h1>
               <div className="flex gap-4 text-sm items-center">
@@ -688,9 +678,9 @@
               <div className="retro-border p-3 mb-3 bg-gray-900 text-xs">
                 <div className="grid md:grid-cols-2 gap-4">
                   <div><label className="flex items-center gap-2 mb-2"><input type="checkbox" checked={settings.bgm} onChange={e => setSettings(p => ({...p, bgm: e.target.checked}))} /> BGM</label>
-                  <div className="flex items-center gap-2"><span>音量:</span><input type="range" min="0" max="100" value={settings.bgmVol} onChange={e => setSettings(p => ({...p, bgmVol: +e.target.value}))} className="flex-1" /><span>{settings.bgmVol}%</span></div></div>
+                  <input type="range" min="0" max="100" value={settings.bgmVol} onChange={e => setSettings(p => ({...p, bgmVol: +e.target.value}))} className="w-full" /></div>
                   <div><label className="flex items-center gap-2 mb-2"><input type="checkbox" checked={settings.sfx} onChange={e => {setSettings(p => ({...p, sfx: e.target.checked})); soundEngine.sfxEnabled = e.target.checked;}} /> 効果音</label>
-                  <div className="flex items-center gap-2"><span>音量:</span><input type="range" min="0" max="100" value={settings.sfxVol} onChange={e => setSettings(p => ({...p, sfxVol: +e.target.value}))} className="flex-1" /><span>{settings.sfxVol}%</span></div></div>
+                  <input type="range" min="0" max="100" value={settings.sfxVol} onChange={e => setSettings(p => ({...p, sfxVol: +e.target.value}))} className="w-full" /></div>
                 </div>
               </div>
             )}
@@ -701,97 +691,54 @@
                 </button>
               ))}
             </div>
-            <div className="grid lg:grid-cols-3 gap-3">
-              {/* 左側: 冒険記録 */}
-              <div className="retro-border p-3 lg:order-1">
-                <h2 className="text-base mb-2 border-b border-green-800 pb-1">【 冒険記録 】</h2>
-                <div ref={logRef} className="h-80 overflow-y-auto bg-black p-2 text-xs log-scroll">{logs.length === 0 ? <p className="text-gray-600">ログがここに表示されます...</p> : logs.map((l,i) => <p key={i} className={`${l.c} mb-1`}>{l.msg || ' '}</p>)}</div>
-                {/* 探索中のパーティステータス */}
-                {exploring && (
-                  <div className="mt-2 border-t border-green-800 pt-2">
-                    <p className="text-xs text-gray-500 mb-1">【パーティ状態】</p>
-                    <div className="grid grid-cols-2 gap-1">
-                      {party.map(char => (
-                        <div key={char.id} className={`text-[10px] p-1 bg-gray-900 ${char.currentHp === 0 ? 'opacity-50' : ''}`}>
-                          <div className="flex justify-between">
-                            <span>{char.name.slice(0,4)}</span>
-                            <span className="text-gray-500">Lv.{char.level}</span>
-                          </div>
-                          <div className="flex gap-2">
-                            <span className="red-text">HP:{char.currentHp}/{char.maxHp}</span>
-                            <span className="blue-text">MP:{char.currentMp}/{char.maxMp}</span>
-                          </div>
-                          <div className="w-full bg-gray-700 h-1 mt-1">
-                            <div className="bg-red-500 h-1" style={{width:`${(char.currentHp/char.maxHp)*100}%`}}/>
-                          </div>
-                        </div>
-                      ))}
+            <div className="retro-border p-4">
+              {activeTab === 'dungeon' && (<>
+                <h2 className="text-lg mb-3 border-b border-green-800 pb-2">【 迷宮入口 】</h2>
+                <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-2 mb-4">
+                  {DUNGEONS.map(d => {
+                    const avgLv = party.length > 0 ? Math.floor(party.reduce((a,c) => a+c.level, 0)/party.length) : 0;
+                    const canEnter = avgLv >= d.minLv && party.length > 0;
+                    return (<button key={d.id} onClick={() => {if (!canEnter) return; setExploring(true); setFloor(1); setLogs([]); addLog(`━━━ ${d.name}へ ━━━`,'level'); addLog(getFloorDesc(d.id, 1),'explore'); setDungeon(d.id);}} disabled={!canEnter}
+                      className={`text-left p-3 text-xs bg-gray-900 ${canEnter?'hover:bg-green-800 cursor-pointer':'opacity-50'}`}>
+                      <div className="font-bold">{d.name}</div>
+                      <div className="text-gray-500">B{d.floors}F / Lv.{d.minLv}+</div>
+                      {maxFloors[d.id] && <div className="text-green-600">最深B{maxFloors[d.id]}F</div>}
+                    </button>);
+                  })}
+                </div>
+                <div className="p-2 bg-gray-900 text-xs inline-block"><span>離脱HP: {retreatHP}%</span><input type="range" min="10" max="50" value={retreatHP} onChange={e => setRetreatHP(+e.target.value)} className="ml-2 w-32" /></div>
+              </>)}
+              {activeTab === 'party' && (<>
+                <h2 className="text-lg mb-3 border-b border-green-800 pb-2">【 ギルガメッシュの酒場 】({party.length}/6)</h2>
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-2 mb-3">
+                  {party.map(char => (
+                    <div key={char.id} className="p-3 bg-gray-900 text-xs">
+                      <div className="flex justify-between"><span className="font-bold">{char.name}</span><span className={ALIGNMENTS[char.alignKey]?.color}>{char.alignment}</span></div>
+                      <div className="text-gray-400">Lv.{char.level} {char.race} {char.job}</div>
+                      <div className="mt-2 grid grid-cols-2 gap-1"><span className="red-text">HP:{char.currentHp}/{char.maxHp}</span><span className="blue-text">MP:{char.currentMp}/{char.maxMp}</span><span>ATK:{char.atk}</span><span>DEF:{char.def}</span></div>
+                      <div className="w-full bg-gray-700 h-1 mt-1"><div className="bg-red-500 h-1" style={{width:`${(char.currentHp/char.maxHp)*100}%`}}/></div>
+                      <div className="mt-1 text-gray-500 text-[10px]">EXP: {char.exp}/{char.level * 100}</div>
+                      <div className="mt-1 text-gray-600 text-[10px]">⚔️{char.equipment?.weapon?.name||'-'} 🛡️{char.equipment?.armor?.name||'-'} 💍{char.equipment?.accessory?.name||'-'}</div>
+                      {char.level >= 10 && <button onClick={() => setShowJobChange(char)} className="mt-2 text-[10px] text-cyan-400 hover:underline">🔄転職</button>}
                     </div>
-                  </div>
-                )}
-              </div>
-              
-              {/* 右側: メインコンテンツ */}
-              <div className="lg:col-span-2 retro-border p-3 lg:order-2">
-                {activeTab === 'dungeon' && (<>
-                  <h2 className="text-base mb-2 border-b border-green-800 pb-1">【 迷宮入口 】</h2>
-                  {!exploring ? (<>
-                    <div className="grid md:grid-cols-2 gap-2 mb-3">
-                      {DUNGEONS.map(d => {
-                        const avgLv = party.length > 0 ? Math.floor(party.reduce((a,c) => a+c.level, 0)/party.length) : 0;
-                        const canEnter = avgLv >= d.minLv && party.length > 0;
-                        const atm = DUNGEON_ATMOSPHERE[d.id];
-                        return (<button key={d.id} onClick={() => {if (!canEnter) return; setExploring(true); setFloor(1); setLogs([]); addLog(`━━━ ${d.name}へ出発 ━━━`,'level'); addLog(`パーティは迷宮へ足を踏み入れた...`,'normal'); addLog(getFloorDesc(d.id, 1),'explore'); setDungeon(d.id);}} disabled={!canEnter}
-                          className={`text-left p-2 text-xs bg-gray-900 ${canEnter?'hover:bg-green-800 cursor-pointer':'opacity-50'}`}>
-                          <div className="flex justify-between"><span className="font-bold">{d.name}</span><span className="text-gray-500">B{d.floors}F</span></div>
-                          <div className="text-gray-500">推奨Lv.{d.minLv}+ {maxFloors[d.id] ? `(最深B${maxFloors[d.id]}F)` : ''}</div>
-                          {atm && <div className="text-gray-600 text-[10px] mt-1 truncate">特徴: {atm.rooms.slice(0,3).join(', ')}...</div>}
-                        </button>);
-                      })}
-                    </div>
-                    <div className="p-2 bg-gray-900 text-xs"><p className="mb-1">離脱条件: HP{retreatHP}%以下</p><input type="range" min="10" max="50" value={retreatHP} onChange={e => setRetreatHP(+e.target.value)} className="w-full" /></div>
-                  </>) : (
-                    <div className="text-center py-4">
-                      <p className="text-2xl mb-2 blink gold-text">探索中...</p>
-                      <p className="text-4xl mb-2">🏰 B{floor}F</p>
-                      <p className="text-sm text-gray-400 mb-2">{DUNGEONS.find(d => d.id===dungeon)?.name}</p>
-                      <p className="text-xs text-gray-500 mb-4 max-w-xs mx-auto">{getFloorDesc(dungeon, floor)}</p>
-                      <button onClick={() => {setExploring(false); setFloor(1); setParty(p => p.map(c => ({...c, currentHp: c.maxHp, currentMp: c.maxMp}))); addLog('パーティは帰還した','heal');}} className="retro-border px-8 py-2 hover:bg-red-900 text-red-400">■ 帰還</button>
-                    </div>
-                  )}
-                </>)}
-                {activeTab === 'party' && (<>
-                  <h2 className="text-base mb-2 border-b border-green-800 pb-1">【 ギルガメッシュの酒場 】({party.length}/6)</h2>
-                  <div className="grid md:grid-cols-2 gap-2 max-h-72 overflow-y-auto">
-                    {party.map(char => (
-                      <div key={char.id} className={`p-2 bg-gray-900 text-xs ${char.currentHp===0?'opacity-50':''}`}>
-                        <div className="flex justify-between"><span className="font-bold">{char.name}</span><span className={ALIGNMENTS[char.alignKey]?.color}>{char.alignment}</span></div>
-                        <div className="text-gray-400">Lv.{char.level} {char.race} {char.job}</div>
-                        <div className="mt-1 grid grid-cols-2 gap-1"><span className="red-text">HP:{char.currentHp}/{char.maxHp}</span><span className="blue-text">MP:{char.currentMp}/{char.maxMp}</span><span>ATK:{char.atk}</span><span>DEF:{char.def}</span></div>
-                        <div className="w-full bg-gray-700 h-1 mt-1"><div className="bg-red-500 h-1" style={{width:`${(char.currentHp/char.maxHp)*100}%`}}/></div>
-                        <div className="mt-1 text-gray-500 text-[10px]">EXP: {char.exp}/{char.level * 100}</div>
-                        <div className="mt-1 text-gray-500 text-[10px]">⚔️{char.equipment?.weapon?.name||'-'} 🛡️{char.equipment?.armor?.name||'-'} 💍{char.equipment?.accessory?.name||'-'}</div>
-                        {!exploring && char.level >= 10 && <button onClick={() => setShowJobChange(char)} className="mt-2 text-[10px] text-cyan-400 hover:underline">🔄転職</button>}
-                      </div>
-                    ))}
-                  </div>
-                  {!exploring && <div className="mt-3 flex gap-2"><button onClick={createChar} disabled={party.length>=6} className="retro-border px-4 py-2 text-sm hover:bg-green-900 disabled:opacity-50">＋冒険者登録</button>{party.length > 0 && <button onClick={() => setParty(p => p.slice(0,-1))} className="text-xs text-red-400 hover:underline">解雇</button>}</div>}
-                </>)}
-                {activeTab === 'shop' && (<>
-                  <h2 className="text-base mb-2 border-b border-green-800 pb-1">【 ボルタック商店 】</h2>
-                  <div className="flex gap-1 mb-2">{['weapons','armors','accessories','consumables'].map(cat => (<button key={cat} onClick={() => setShopCat(cat)} className={`px-2 py-1 text-xs ${shopCat===cat?'bg-green-900 retro-border':'bg-gray-900'}`}>{{weapons:'⚔️武器',armors:'🛡️防具',accessories:'💍装飾',consumables:'🧪消耗'}[cat]}</button>))}</div>
-                  <div className="space-y-1 max-h-64 overflow-y-auto">{ITEMS[shopCat].map((item,i) => { const canBuy = gold >= item.price; return (<div key={i} className={`p-1 text-xs flex justify-between ${canBuy?'bg-gray-900':'bg-gray-900 opacity-50'}`}><div><span className={`rarity-${item.rarity}`}>{item.name}</span><span className="text-gray-500 ml-2">{item.atk?`ATK+${item.atk}`:''}{item.def?`DEF+${item.def}`:''}</span></div><button onClick={() => {if (!canBuy) return; setGold(p => p-item.price); setInventory(p => [...p, {...item, uid: Date.now()}]); soundEngine.playGold();}} disabled={!canBuy} className="gold-text hover:underline disabled:opacity-50">{item.price}G</button></div>);})}</div>
-                </>)}
-                {activeTab === 'inventory' && (<>
-                  <h2 className="text-base mb-2 border-b border-green-800 pb-1">【 所持品 】({inventory.length})</h2>
-                  <div className="mb-2"><span className="text-xs text-gray-400">装備先: </span>{party.map(char => (<button key={char.id} onClick={() => setSelChar(char.id)} className={`px-2 py-1 text-xs mx-1 ${selChar===char.id?'bg-green-900 retro-border':'bg-gray-900'}`}>{char.name}</button>))}</div>
-                  <div className="space-y-1 max-h-64 overflow-y-auto">{inventory.map(item => (<div key={item.uid} className="p-1 text-xs bg-gray-900 flex justify-between"><div><span className={`rarity-${item.rarity}`}>{item.name}</span><span className="text-gray-500 ml-2">{item.atk?`ATK+${item.atk}`:''}{item.def?`DEF+${item.def}`:''}</span></div><div className="flex gap-2">{selChar && !ITEMS.consumables.some(c => c.id === item.id) && <button onClick={() => equipItem(selChar, item)} className="text-blue-400 hover:underline">装備</button>}<button onClick={() => {setGold(p => p + Math.floor((item.price||10)/2)); setInventory(p => p.filter(i => i.uid !== item.uid));}} className="text-yellow-400 hover:underline">売却</button></div></div>))}{inventory.length === 0 && <p className="text-gray-600 text-center py-4">アイテムなし</p>}</div>
-                </>)}
-                {activeTab === 'bestiary' && (<>
-                  <h2 className="text-base mb-2 border-b border-green-800 pb-1">【 モンスター図鑑 】</h2>
-                  <div className="grid md:grid-cols-2 gap-2 max-h-72 overflow-y-auto">{Object.entries(bestiary).map(([name, d]) => (<div key={name} className="p-2 bg-gray-900 text-xs"><div className="flex justify-between"><span className="font-bold">{d.boss?'👑':''}{name}</span><span className="text-gray-500">×{d.cnt}</span></div><div className="text-gray-400 mt-1">HP:{d.hp} ATK:{d.atk} EXP:{d.exp}</div></div>))}</div>
-                </>)}
-              </div>
+                  ))}
+                </div>
+                <div className="flex gap-2"><button onClick={createChar} disabled={party.length>=6} className="retro-border px-4 py-2 text-sm hover:bg-green-900 disabled:opacity-50">＋冒険者登録</button>{party.length > 0 && <button onClick={() => setParty(p => p.slice(0,-1))} className="text-xs text-red-400 hover:underline">解雇</button>}</div>
+              </>)}
+              {activeTab === 'shop' && (<>
+                <h2 className="text-lg mb-3 border-b border-green-800 pb-2">【 ボルタック商店 】</h2>
+                <div className="flex gap-1 mb-3">{['weapons','armors','accessories','consumables'].map(cat => (<button key={cat} onClick={() => setShopCat(cat)} className={`px-3 py-1 text-xs ${shopCat===cat?'bg-green-900 retro-border':'bg-gray-900'}`}>{{weapons:'⚔️武器',armors:'🛡️防具',accessories:'💍装飾',consumables:'🧪消耗'}[cat]}</button>))}</div>
+                <div className="space-y-1 max-h-64 overflow-y-auto">{ITEMS[shopCat].map((item,i) => { const canBuy = gold >= item.price; return (<div key={i} className={`p-2 text-xs flex justify-between ${canBuy?'bg-gray-900':'bg-gray-900 opacity-50'}`}><div><span className={`rarity-${item.rarity}`}>{item.name}</span><span className="text-gray-500 ml-2">{item.atk?`ATK+${item.atk}`:''}{item.def?`DEF+${item.def}`:''}</span></div><button onClick={() => {if (!canBuy) return; setGold(p => p-item.price); setInventory(p => [...p, {...item, uid: Date.now()}]); soundEngine.playGold();}} disabled={!canBuy} className="gold-text hover:underline disabled:opacity-50">{item.price}G</button></div>);})}</div>
+              </>)}
+              {activeTab === 'inventory' && (<>
+                <h2 className="text-lg mb-3 border-b border-green-800 pb-2">【 所持品 】({inventory.length})</h2>
+                <div className="mb-3"><span className="text-xs text-gray-400">装備先: </span>{party.map(char => (<button key={char.id} onClick={() => setSelChar(char.id)} className={`px-2 py-1 text-xs mx-1 ${selChar===char.id?'bg-green-900 retro-border':'bg-gray-900'}`}>{char.name}</button>))}</div>
+                <div className="space-y-1 max-h-64 overflow-y-auto">{inventory.map(item => (<div key={item.uid} className="p-2 text-xs bg-gray-900 flex justify-between"><div><span className={`rarity-${item.rarity}`}>{item.name}</span><span className="text-gray-500 ml-2">{item.atk?`ATK+${item.atk}`:''}{item.def?`DEF+${item.def}`:''}</span></div><div className="flex gap-2">{selChar && <button onClick={() => equipItem(selChar, item)} className="text-blue-400 hover:underline">装備</button>}<button onClick={() => {setGold(p => p + Math.floor((item.price||10)/2)); setInventory(p => p.filter(i => i.uid !== item.uid));}} className="text-yellow-400 hover:underline">売却</button></div></div>))}{inventory.length === 0 && <p className="text-gray-600 text-center py-4">アイテムなし</p>}</div>
+              </>)}
+              {activeTab === 'bestiary' && (<>
+                <h2 className="text-lg mb-3 border-b border-green-800 pb-2">【 モンスター図鑑 】</h2>
+                <div className="grid md:grid-cols-3 lg:grid-cols-4 gap-2">{Object.entries(bestiary).map(([name, d]) => (<div key={name} className="p-2 bg-gray-900 text-xs"><div className="flex justify-between"><span className="font-bold">{d.boss?'👑':''}{name}</span><span className="text-gray-500">×{d.cnt}</span></div><div className="text-gray-400">HP:{d.hp} ATK:{d.atk}</div></div>))}</div>
+              </>)}
             </div>
             <div className="text-center mt-3 text-xs text-gray-600"><button onClick={() => setScreen('title')} className="hover:text-green-400">タイトル</button></div>
           </div>
