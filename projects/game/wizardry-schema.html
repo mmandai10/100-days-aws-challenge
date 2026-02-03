@@ -36,7 +36,7 @@
 <body>
   <div id="root"></div>
   <script type="text/babel">
-    const { useState, useEffect, useRef } = React;
+    const { useState, useEffect, useRef, useCallback } = React;
 
     // ===== サウンドエンジン =====
     class SoundEngine {
@@ -415,17 +415,13 @@
       const [shopCat, setShopCat] = useState('weapons');
       const [selChar, setSelChar] = useState(null);
       const logRef = useRef(null);
-      
-      // ★ useRef で最新値を追跡 (クロージャ問題の解決)
-      const dungeonRef = useRef(dungeon);
-      const floorRef = useRef(floor);
-      const retreatHPRef = useRef(retreatHP);
-      
-      useEffect(() => { dungeonRef.current = dungeon; }, [dungeon]);
-      useEffect(() => { floorRef.current = floor; }, [floor]);
-      useEffect(() => { retreatHPRef.current = retreatHP; }, [retreatHP]);
 
       const initSound = async () => { await soundEngine.init(); if (settings.bgm) soundEngine.startBGM(); };
+
+      const addLog = useCallback((msg, type='normal') => {
+        const c = {normal:'text-green-400',battle:'text-yellow-400',damage:'text-red-400',heal:'text-blue-400',item:'text-purple-400',level:'text-cyan-400',special:'text-pink-400'}[type];
+        setLogs(prev => [...prev.slice(-80), {msg,c}]);
+      }, []);
 
       // セーブ/ロード
       useEffect(() => {
@@ -437,11 +433,6 @@
       useEffect(() => { soundEngine.toggleBGM(settings.bgm); }, [settings.bgm]);
       useEffect(() => { soundEngine.setBgmVolume(-30 + settings.bgmVol*0.3); }, [settings.bgmVol]);
       useEffect(() => { soundEngine.setSfxVolume(-20 + settings.sfxVol*0.2); }, [settings.sfxVol]);
-
-      const addLog = (msg, type='normal') => {
-        const c = {normal:'text-green-400',battle:'text-yellow-400',damage:'text-red-400',heal:'text-blue-400',item:'text-purple-400',level:'text-cyan-400',special:'text-pink-400'}[type];
-        setLogs(prev => [...prev.slice(-80), {msg,c}]);
-      };
 
       // ドロップ
       const getDrop = (flr) => {
@@ -457,180 +448,188 @@
         return {...avail[Math.floor(Math.random()*avail.length)], uid: Date.now()+Math.random()};
       };
 
-      // ===== 探索ループ (useRefで最新値参照) =====
+      // ===== 探索ループ (シンプル版) =====
       useEffect(() => {
         if (!exploring || party.length === 0 || !dungeon) return;
         
         const interval = setInterval(() => {
-          // ★ useRefから最新値を取得
-          const currentDungeon = dungeonRef.current;
-          const currentFloor = floorRef.current;
-          const currentRetreatHP = retreatHPRef.current;
+          const alive = party.filter(c => c.currentHp > 0);
           
-          setParty(currentParty => {
-            const alive = currentParty.filter(c => c.currentHp > 0);
-            
-            // 全滅チェック
-            if (alive.length === 0) {
-              addLog('【全滅】帰還します...', 'damage');
-              soundEngine.playDeath();
-              setExploring(false);
-              setFloor(1);
-              return currentParty.map(c => ({...c, currentHp: Math.floor(c.maxHp*0.5)}));
+          // 全滅チェック
+          if (alive.length === 0) {
+            addLog('【全滅】帰還します...', 'damage');
+            soundEngine.playDeath();
+            setExploring(false);
+            setFloor(1);
+            setParty(p => p.map(c => ({...c, currentHp: Math.floor(c.maxHp*0.5)})));
+            return;
+          }
+          
+          // 撤退チェック
+          if (alive.some(c => (c.currentHp/c.maxHp)*100 <= retreatHP)) {
+            addLog(`【離脱】HP${retreatHP}%以下`, 'special');
+            setExploring(false);
+            setFloor(1);
+            setParty(p => p.map(c => ({...c, currentHp: c.maxHp, currentMp: c.maxMp})));
+            return;
+          }
+          
+          const event = Math.random();
+          const dngData = DUNGEONS.find(d => d.id === dungeon);
+          
+          // ===== 戦闘 (55%) =====
+          if (event < 0.55) {
+            const monsters = MONSTERS.filter(m => m.dng === dungeon && m.flr <= floor);
+            if (monsters.length === 0) { 
+              addLog(`B${floor}F: 静かだ...`, 'normal'); 
+              return; 
             }
             
-            // 撤退チェック
-            if (alive.some(c => (c.currentHp/c.maxHp)*100 <= currentRetreatHP)) {
-              addLog(`【離脱】HP${currentRetreatHP}%以下`, 'special');
-              setExploring(false);
-              setFloor(1);
-              return currentParty.map(c => ({...c, currentHp: c.maxHp, currentMp: c.maxMp}));
-            }
+            const mon = {...monsters[Math.floor(Math.random()*monsters.length)]};
+            const isBoss = mon.boss && floor === mon.flr;
+            if (isBoss) soundEngine.playBoss();
+            addLog(`B${floor}F: ${mon.name}${isBoss ? '【BOSS】' : ''}が現れた！`, 'battle');
+            setBestiary(prev => ({...prev, [mon.name]: {...mon, cnt: (prev[mon.name]?.cnt||0)+1}}));
             
-            const event = Math.random();
-            const dngData = DUNGEONS.find(d => d.id === currentDungeon);
+            let monHp = mon.hp;
+            let battleLogs = [];
+            let mpUsed = {};
             
-            // ===== 戦闘 (55%) =====
-            if (event < 0.55) {
-              const monsters = MONSTERS.filter(m => m.dng === currentDungeon && m.flr <= currentFloor);
-              if (monsters.length === 0) { 
-                addLog(`B${currentFloor}F: 静かだ...`, 'normal'); 
-                return currentParty; 
+            // パーティの攻撃
+            alive.forEach((char) => {
+              if (monHp <= 0) return;
+              const job = JOBS[char.jobKey];
+              
+              // 魔法攻撃
+              if (job.spell && char.currentMp >= 2 && Math.random() < 0.3) {
+                const spells = job.spell === 'both' ? [...SPELLS.mage,...SPELLS.priest] : (SPELLS[job.spell]||[]);
+                const atkSpells = spells.filter(s => s.pow > 0 && s.mp <= char.currentMp && s.lv <= Math.floor(char.level/2)+1);
+                if (atkSpells.length > 0) {
+                  const spell = atkSpells[Math.floor(Math.random()*atkSpells.length)];
+                  const dmg = spell.pow + Math.floor(char.int * 0.5);
+                  monHp -= dmg;
+                  mpUsed[char.id] = spell.mp;
+                  battleLogs.push({msg: `${char.name}の${spell.name}！${dmg}ダメージ！`, type: 'special'});
+                  soundEngine.playAttack();
+                  return;
+                }
               }
               
-              const mon = {...monsters[Math.floor(Math.random()*monsters.length)]};
-              const isBoss = mon.boss && currentFloor === mon.flr;
-              if (isBoss) soundEngine.playBoss();
-              addLog(`B${currentFloor}F: ${mon.name}${isBoss ? '【BOSS】' : ''}が現れた！`, 'battle');
-              setBestiary(prev => ({...prev, [mon.name]: {...mon, cnt: (prev[mon.name]?.cnt||0)+1}}));
+              // 通常攻撃
+              const dmg = Math.max(1, char.atk - mon.def + Math.floor(Math.random()*10));
+              monHp -= dmg;
+              battleLogs.push({msg: `${char.name}の攻撃！${dmg}ダメージ！`, type: 'battle'});
+              soundEngine.playAttack();
+            });
+            
+            // 勝利
+            if (monHp <= 0) {
+              battleLogs.push({msg: `${mon.name}を倒した！${mon.exp}EXP, ${mon.gold}G`, type: 'item'});
+              soundEngine.playGold();
+              setGold(prev => prev + mon.gold);
               
-              let monHp = mon.hp;
-              const newParty = [...currentParty];
-              
-              // パーティの攻撃
-              alive.forEach((char, idx) => {
-                if (monHp <= 0) return;
-                const charIdx = currentParty.findIndex(c => c.id === char.id);
-                const job = JOBS[char.jobKey];
-                
-                // 魔法攻撃
-                if (job.spell && char.currentMp >= 2 && Math.random() < 0.3) {
-                  const spells = job.spell === 'both' ? [...SPELLS.mage,...SPELLS.priest] : (SPELLS[job.spell]||[]);
-                  const atkSpells = spells.filter(s => s.pow > 0 && s.mp <= char.currentMp && s.lv <= Math.floor(char.level/2)+1);
-                  if (atkSpells.length > 0) {
-                    const spell = atkSpells[Math.floor(Math.random()*atkSpells.length)];
-                    const dmg = spell.pow + Math.floor(char.int * 0.5);
-                    monHp -= dmg;
-                    newParty[charIdx] = {...newParty[charIdx], currentMp: newParty[charIdx].currentMp - spell.mp};
-                    setTimeout(() => addLog(`${char.name}の${spell.name}！${dmg}ダメージ！`, 'special'), idx*100);
-                    soundEngine.playAttack();
-                    return;
-                  }
+              // ボスドロップ
+              if (isBoss) {
+                const drop = getDrop(floor + 5);
+                if (drop) {
+                  setInventory(prev => [...prev, drop]);
+                  battleLogs.push({msg: `【ドロップ】${drop.name}！`, type: 'item'});
                 }
-                
-                // 通常攻撃
-                const dmg = Math.max(1, char.atk - mon.def + Math.floor(Math.random()*10));
-                monHp -= dmg;
-                setTimeout(() => addLog(`${char.name}の攻撃！${dmg}ダメージ！`, 'battle'), idx*100);
-                soundEngine.playAttack();
-              });
+              }
               
-              // 勝利
-              if (monHp <= 0) {
-                setTimeout(() => {
-                  addLog(`${mon.name}を倒した！${mon.exp}EXP, ${mon.gold}G`, 'item');
-                  soundEngine.playGold();
-                }, alive.length*100);
-                setGold(prev => prev + mon.gold);
-                
-                // ボスドロップ
-                if (isBoss) {
-                  const drop = getDrop(currentFloor + 5);
-                  if (drop) {
-                    setInventory(prev => [...prev, drop]);
-                    setTimeout(() => addLog(`【ドロップ】${drop.name}！`, 'item'), alive.length*100+100);
-                  }
-                }
-                
+              // 経験値 & MP消費
+              setParty(prev => prev.map(char => {
+                let updated = {...char};
+                // MP消費
+                if (mpUsed[char.id]) updated.currentMp = Math.max(0, updated.currentMp - mpUsed[char.id]);
                 // 経験値
-                return newParty.map(char => {
-                  if (char.currentHp <= 0) return char;
+                if (char.currentHp > 0) {
                   const expGain = Math.floor(mon.exp / alive.length);
-                  const newExp = char.exp + expGain;
-                  const expNeed = char.level * 100;
+                  const newExp = updated.exp + expGain;
+                  const expNeed = updated.level * 100;
                   if (newExp >= expNeed) {
-                    setTimeout(() => { addLog(`★ ${char.name}がLv.${char.level+1}に！`, 'level'); soundEngine.playLevelUp(); }, alive.length*100+200);
-                    return {...char, exp: newExp - expNeed, level: char.level + 1,
-                      maxHp: char.maxHp + 5 + Math.floor(char.vit*0.5), currentHp: char.maxHp + 5 + Math.floor(char.vit*0.5),
-                      maxMp: char.maxMp + 3 + Math.floor(char.int*0.3), currentMp: char.maxMp + 3 + Math.floor(char.int*0.3),
-                      atk: char.atk + 2, def: char.def + 1};
+                    battleLogs.push({msg: `★ ${char.name}がLv.${updated.level+1}に！`, type: 'level'});
+                    soundEngine.playLevelUp();
+                    updated = {...updated, exp: newExp - expNeed, level: updated.level + 1,
+                      maxHp: updated.maxHp + 5 + Math.floor(updated.vit*0.5), 
+                      currentHp: updated.maxHp + 5 + Math.floor(updated.vit*0.5),
+                      maxMp: updated.maxMp + 3 + Math.floor(updated.int*0.3), 
+                      currentMp: updated.maxMp + 3 + Math.floor(updated.int*0.3),
+                      atk: updated.atk + 2, def: updated.def + 1};
+                  } else {
+                    updated.exp = newExp;
                   }
-                  return {...char, exp: newExp};
-                });
-              }
-              // 敵の反撃
-              else {
-                soundEngine.playHit();
-                const targetIdx = Math.floor(Math.random()*alive.length);
-                const target = alive[targetIdx];
-                const charIdx = currentParty.findIndex(c => c.id === target.id);
-                const dmg = Math.max(1, mon.atk - target.def + Math.floor(Math.random()*8));
-                setTimeout(() => addLog(`${mon.name}の反撃！${target.name}に${dmg}ダメージ！`, 'damage'), alive.length*100);
-                
-                const newHp = Math.max(0, newParty[charIdx].currentHp - dmg);
-                newParty[charIdx] = {...newParty[charIdx], currentHp: newHp};
-                if (newHp === 0) setTimeout(() => { addLog(`${target.name}は倒れた...`, 'damage'); soundEngine.playDeath(); }, alive.length*100+100);
-                return newParty;
-              }
-            }
-            // ===== 階段 (17%) =====
-            else if (event < 0.72) {
-              if (currentFloor < dngData.floors) {
-                const newFloor = currentFloor + 1;
-                setFloor(newFloor);
-                floorRef.current = newFloor; // ★ refも更新
-                setMaxFloors(prev => ({...prev, [currentDungeon]: Math.max(prev[currentDungeon]||0, newFloor)}));
-                addLog(`階段を発見！B${newFloor}Fへ...`, 'item');
-              }
-              return currentParty;
-            }
-            // ===== 宝箱 (13%) =====
-            else if (event < 0.85) {
-              addLog('宝箱を発見！', 'item');
-              const hasThief = alive.some(c => c.jobKey === 'thief' || c.jobKey === 'ninja');
-              if (Math.random() < (hasThief ? 0.1 : 0.25)) {
-                const trap = TRAPS[Math.floor(Math.random()*TRAPS.length)];
-                addLog(`罠だ！${trap.name}！`, 'damage');
-                soundEngine.playHit();
-                return currentParty.map(c => ({...c, currentHp: Math.max(1, c.currentHp - Math.floor(c.maxHp*trap.dmg))}));
-              } else {
-                const goldFound = Math.floor(Math.random()*50*currentFloor) + 10;
-                setGold(prev => prev + goldFound);
-                addLog(`${goldFound}Gを発見！`, 'item');
-                soundEngine.playGold();
-                if (Math.random() < 0.15) {
-                  const drop = getDrop(currentFloor);
-                  if (drop) { setInventory(prev => [...prev, drop]); addLog(`${drop.name}を発見！`, 'item'); }
                 }
-              }
-              return currentParty;
+                return updated;
+              }));
             }
-            // ===== 回復 (7%) =====
-            else if (event < 0.92) {
-              addLog('泉を発見！回復した', 'heal');
-              soundEngine.playHeal();
-              return currentParty.map(c => ({...c, currentHp: Math.min(c.maxHp, c.currentHp + Math.floor(c.maxHp*0.25)), currentMp: Math.min(c.maxMp, c.currentMp + Math.floor(c.maxMp*0.25))}));
-            }
-            // ===== その他 =====
+            // 敵の反撃
             else {
-              addLog(`B${currentFloor}F: 静かだ...`, 'normal');
-              return currentParty;
+              soundEngine.playHit();
+              const target = alive[Math.floor(Math.random()*alive.length)];
+              const dmg = Math.max(1, mon.atk - target.def + Math.floor(Math.random()*8));
+              battleLogs.push({msg: `${mon.name}の反撃！${target.name}に${dmg}ダメージ！`, type: 'damage'});
+              
+              setParty(prev => prev.map(char => {
+                if (char.id !== target.id) {
+                  // MP消費のみ
+                  if (mpUsed[char.id]) return {...char, currentMp: Math.max(0, char.currentMp - mpUsed[char.id])};
+                  return char;
+                }
+                const newHp = Math.max(0, char.currentHp - dmg);
+                if (newHp === 0) battleLogs.push({msg: `${target.name}は倒れた...`, type: 'damage'});
+                let updated = {...char, currentHp: newHp};
+                if (mpUsed[char.id]) updated.currentMp = Math.max(0, updated.currentMp - mpUsed[char.id]);
+                return updated;
+              }));
             }
-          });
+            
+            // バトルログを順次表示
+            battleLogs.forEach((log, i) => setTimeout(() => addLog(log.msg, log.type), i * 150));
+          }
+          // ===== 階段 (17%) =====
+          else if (event < 0.72) {
+            if (floor < dngData.floors) {
+              const newFloor = floor + 1;
+              setFloor(newFloor);
+              setMaxFloors(prev => ({...prev, [dungeon]: Math.max(prev[dungeon]||0, newFloor)}));
+              addLog(`階段を発見！B${newFloor}Fへ...`, 'item');
+            }
+          }
+          // ===== 宝箱 (13%) =====
+          else if (event < 0.85) {
+            addLog('宝箱を発見！', 'item');
+            const hasThief = alive.some(c => c.jobKey === 'thief' || c.jobKey === 'ninja');
+            if (Math.random() < (hasThief ? 0.1 : 0.25)) {
+              const trap = TRAPS[Math.floor(Math.random()*TRAPS.length)];
+              addLog(`罠だ！${trap.name}！`, 'damage');
+              soundEngine.playHit();
+              setParty(p => p.map(c => ({...c, currentHp: Math.max(1, c.currentHp - Math.floor(c.maxHp*trap.dmg))})));
+            } else {
+              const goldFound = Math.floor(Math.random()*50*floor) + 10;
+              setGold(prev => prev + goldFound);
+              addLog(`${goldFound}Gを発見！`, 'item');
+              soundEngine.playGold();
+              if (Math.random() < 0.15) {
+                const drop = getDrop(floor);
+                if (drop) { setInventory(prev => [...prev, drop]); addLog(`${drop.name}を発見！`, 'item'); }
+              }
+            }
+          }
+          // ===== 回復 (7%) =====
+          else if (event < 0.92) {
+            addLog('泉を発見！回復した', 'heal');
+            soundEngine.playHeal();
+            setParty(p => p.map(c => ({...c, currentHp: Math.min(c.maxHp, c.currentHp + Math.floor(c.maxHp*0.25)), currentMp: Math.min(c.maxMp, c.currentMp + Math.floor(c.maxMp*0.25))})));
+          }
+          // ===== その他 =====
+          else {
+            addLog(`B${floor}F: 静かだ...`, 'normal');
+          }
         }, 2000);
         
         return () => clearInterval(interval);
-      }, [exploring, dungeon]); // ★ floorを依存配列から削除
+      }, [exploring, dungeon, floor, party, retreatHP, addLog]);
 
       // キャラ作成
       const createChar = () => {
@@ -805,7 +804,7 @@
                       {DUNGEONS.map(d => {
                         const avgLv = party.length > 0 ? Math.floor(party.reduce((a,c) => a+c.level, 0)/party.length) : 0;
                         const canEnter = avgLv >= d.minLv && party.length > 0;
-                        return (<button key={d.id} onClick={() => {if (!canEnter) return; setExploring(true); setFloor(1); floorRef.current = 1; setLogs([]); addLog(`【${d.name}】へ出発！`, 'level'); setDungeon(d.id);}} disabled={!canEnter}
+                        return (<button key={d.id} onClick={() => {if (!canEnter) return; setExploring(true); setFloor(1); setLogs([]); addLog(`【${d.name}】へ出発！`, 'level'); setDungeon(d.id);}} disabled={!canEnter}
                           className={`text-left p-2 text-xs bg-gray-900 ${canEnter?'hover:bg-green-800 cursor-pointer':'opacity-50'}`}>
                           <div className="flex justify-between"><span className="font-bold">{d.name}</span><span className="text-gray-500">B{d.floors}F</span></div>
                           <div className="text-gray-500">推奨Lv.{d.minLv}+ {maxFloors[d.id] ? `(最深B${maxFloors[d.id]}F)` : ''}</div>
