@@ -12,8 +12,8 @@
 ## 現在の進捗
 
 - **Phase:** Phase 2 - コンテナ基礎
-- **Day:** 51 / 200 完了
-- **次回:** Day 52 - ECR 応用または ECS 入門
+- **Day:** 52 / 200 完了
+- **次回:** Day 53 - ECS 応用（ALB 連携、Auto Scaling）
 
 ## Phase 構成
 
