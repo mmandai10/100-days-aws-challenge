@@ -412,6 +412,20 @@
 
     // ストーリーイベント（ダンジョン内発見物）
     const STORY_EVENTS = {
+      slime: {
+        trigger: 'clear',
+        id: 'adventurer_remains',
+        title: '冒険者の遺品',
+        text: 'スライムキングの巣の奥で、白骨化した遺体を見つけた。\n\n古びた革袋の中に、日記の断片が残っている。\n\n「…深淵の入口を見つけた。あの塩い穴の奥に、\n　千年前の戦いの痕跡が残っている。\n　『スキーマ』の真実は、歴史が語るものと違う…」\n\n日記はそこで途切れている。\nこの冒険者は、何を見つけたのだろうか。',
+        item: { id: 'doc0', name: '冒険者の日記（断片）', type: 'document', rarity: 'uncommon' }
+      },
+      kobold: {
+        trigger: 'floor6',
+        id: 'kobold_legend',
+        title: 'コボルトの伝承',
+        text: '壁に刻まれた稚拙な絵。\nコボルトたちが代々語り継いできたものらしい。\n\n絵にはこう記されている。\n\n「暗き穴の奥に、門あり。\n　門の番人、千年立つ。」\n\n「群れは知る。番人、悪にあらず。\n　群れは守る。番人の道を。」\n\n「人の子来たりて、番人を撃つ。\n　群れは阻む。群れの役目なり。」\n\nコボルトたちは、何を守っているのだろうか。',
+        item: null
+      },
       thieves: {
         trigger: 'clear', // ボス擃破時
         id: 'doc_royal',
@@ -419,12 +433,26 @@
         text: 'マスターシーフの隠し部屋から、古びた羊皮紙が見つかった。\n王家の印章が押されているが、文字がかすれて読めない。\nセラフィナに見せれば解読できるかもしれない。',
         item: { id: 'doc1', name: '王家の古文書', type: 'document', rarity: 'rare' }
       },
+      sewer: {
+        trigger: 'floor8',
+        id: 'bloody_monument',
+        title: '血塗られた石碑',
+        text: '下水道の壁に、古い石碑が埋め込まれている。\n血のような赤黒い染みが、文字を覚っている。\n\n「我、この地に縛られし者。\n　千年の契約によりて。」\n\n「門より這う者あらば、我が遛う。\n　それが我の僧いなり。」\n\n「かの魔術師の意志を継ぎ、\n　我は永劫を生きる。」\n\nヴァンパイアもまた、「門」を守る者なのか。',
+        item: null
+      },
       kaoka: {
         trigger: 'floor8',
         id: 'mural',
         title: '謎の壁画',
         text: '崩れかけた壁に、古代の壁画が残っていた。\n\n一人の魔術師が、深淵の前に立ち塁ぐ姿。\nその背後には人々が祈りを捧げている。\n\n「悪の魔術師」の姿にしては、奇妙な構図だ…',
         item: { id: 'doc2', name: '壁画の写し', type: 'document', rarity: 'rare' }
+      },
+      deltis: {
+        trigger: 'floor12',
+        id: 'golden_tablet',
+        title: '黄金の記録板',
+        text: '宝物の山の中に、純金の板が埋もれていた。\n古代の取引記録が刻まれている。\n\n「『スキーマ』の術式、成功せり。\n　代優として以下を納む。」\n\n「王国の財宝の半分。\n　魔術師ワードナの生涯。\n　そして——歴史における彼の名誉。」\n\n「これにより門は閉ざされ、\n　世界は救われたり。」\n\n…ワードナは「悪の魔術師」ではなかったのか？',
+        item: { id: 'doc_deltis', name: '黄金の記録板', type: 'document', rarity: 'epic' }
       },
       dragon: {
         trigger: 'boss_before',
@@ -449,6 +477,14 @@
           '「初めまして。私はセラフィナ。古代史の研究をしています。」',
           '「『スキーマ』の真実を突き止めたくて、この街に来ました。」',
           '「あなたがダンジョンで何か見つけたら、ぜひ教えてください。」'
+        ]
+      },
+      hasDoc0: {
+        lines: [
+          '「これは…冒険者の日記ですね。」',
+          '「『スキーマ』の真実が歴史と違う…興味深いです。」',
+          '「この冒険者は何かを見つけたのでしょう。」',
+          '「もっと深くのダンジョンを探索すれば、手がかりが見つかるかもしれません。」'
         ]
       },
       hasDoc1: {
@@ -1217,6 +1253,7 @@
         if (storyFlags.documents.includes('doc3')) dialogueKey = 'hasDoc3';
         else if (storyFlags.documents.includes('doc2')) dialogueKey = 'hasDoc2';
         else if (storyFlags.documents.includes('doc1')) dialogueKey = 'hasDoc1';
+        else if (storyFlags.documents.includes('doc0')) dialogueKey = 'hasDoc0';
         
         const dialogue = SERAPHINA_DIALOGUES[dialogueKey];
         setDialogueModal({ npc: 'seraphina', lines: dialogue.lines, currentLine: 0 });
