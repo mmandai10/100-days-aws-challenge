@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Wizardry Schema v13.3 - 放置型探索RPG</title>
+  <title>Wizardry Schema v14.0 - 放置型探索RPG</title>
   <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -31,6 +31,13 @@
     .rarity-epic { color: #aa44ff; }
     .rarity-legendary { color: #ffaa00; text-shadow: 0 0 8px #ffaa00; }
     .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); display: flex; align-items: center; justify-content: center; z-index: 100; }
+    /* v14.0: 施設メニュースタイル */
+    .facility-card { transition: all 0.3s; cursor: pointer; position: relative; overflow: hidden; }
+    .facility-card:hover { transform: translateY(-4px); box-shadow: 0 4px 20px rgba(51, 255, 51, 0.4); }
+    .facility-card::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent); transition: left 0.5s; }
+    .facility-card:hover::before { left: 100%; }
+    .facility-icon { font-size: 3rem; margin-bottom: 0.5rem; }
+    .back-btn { position: fixed; bottom: 20px; right: 20px; z-index: 50; }
   </style>
 </head>
 <body>
@@ -217,6 +224,17 @@
 
     const TRAPS = [{name:'ポイズンニードル',dmg:0.1},{name:'クロスボウボルト',dmg:0.15},{name:'爆発する箱',dmg:0.2},{name:'落とし穴',dmg:0.1},{name:'毒ガス',dmg:0.12}];
 
+    // v14.0: 施設データ
+    const FACILITIES = [
+      { id: 'guild', name: '冒険者ギルド', icon: '⚔️', desc: '冒険者の登録・編成', color: 'from-amber-900 to-amber-800' },
+      { id: 'tavern', name: 'ギルガメッシュの酒場', icon: '🍺', desc: 'パーティ編成・転職', color: 'from-yellow-900 to-yellow-800' },
+      { id: 'shop', name: 'ボルタック商店', icon: '💰', desc: '武器・防具の購入', color: 'from-emerald-900 to-emerald-800' },
+      { id: 'temple', name: 'カント寺院', icon: '⛪', desc: 'HP/MP回復・蘇生', color: 'from-blue-900 to-blue-800' },
+      { id: 'storage', name: '倉庫', icon: '📦', desc: '所持品管理', color: 'from-purple-900 to-purple-800' },
+      { id: 'bestiary', name: '図書館', icon: '📚', desc: 'モンスター図鑑', color: 'from-indigo-900 to-indigo-800' },
+      { id: 'gate', name: '迷宮入口', icon: '🏰', desc: 'ダンジョンへ出発', color: 'from-red-900 to-red-800' },
+    ];
+
     // ===== メインアプリ =====
     function App() {
       const [screen, setScreen] = useState('title');
@@ -240,6 +258,7 @@
       const [showJobChange, setShowJobChange] = useState(null);
       const [shopCat, setShopCat] = useState('weapons');
       const [selChar, setSelChar] = useState(null);
+      const [currentFacility, setCurrentFacility] = useState(null); // v14.0: 施設画面管理
       const logRef = useRef(null);
 
       const initSound = async () => { await soundEngine.init(); if (settings.bgm) soundEngine.startBGM(); };
@@ -653,7 +672,7 @@
             <div className="retro-border p-8 bg-black text-center max-w-md">
               <h1 className="text-3xl mb-2 gold-text">⚔️ WIZARDRY SCHEMA ⚔️</h1>
               <p className="text-sm mb-1 text-gray-400">〜 リルガミンの迷宮 〜</p>
-              <p className="text-sm mb-6 text-gray-600">v13.2</p>
+              <p className="text-sm mb-6 text-gray-600">v14.0</p>
               <div className="space-y-3">
                 <button onClick={() => {setScreen('main'); initSound();}} className="block w-full retro-border px-6 py-3 text-lg hover:bg-green-900">{party.length > 0 ? '▶ CONTINUE' : '▶ NEW GAME'}</button>
                 {party.length > 0 && <><button onClick={exportSave} className="block w-full retro-border px-6 py-2 hover:bg-blue-900 text-blue-400">📤 EXPORT</button>
@@ -715,40 +734,92 @@
         );
       }
 
+      // v14.0: 施設メニュー画面
+      if (!currentFacility) {
+        return (
+          <div className="min-h-screen p-4">
+            {showJobChange && <JobModal char={showJobChange} onClose={() => setShowJobChange(null)} />}
+            <div className="max-w-4xl mx-auto">
+              {/* ヘッダー */}
+              <div className="text-center mb-6">
+                <h1 className="text-3xl gold-text mb-2">⚔️ WIZARDRY SCHEMA ⚔️</h1>
+                <p className="text-gray-500">〜 リルガミンの街 〜</p>
+                <div className="flex justify-center gap-6 mt-3 text-lg">
+                  <span className="gold-text">💰 {gold.toLocaleString()}G</span>
+                  <span className="purple-text">📦 {inventory.length}</span>
+                  <span className="text-cyan-400">👥 {party.length}/6</span>
+                </div>
+              </div>
+              {/* 施設メニュー */}
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+                {FACILITIES.map(f => (
+                  <div key={f.id} onClick={() => setCurrentFacility(f.id)} 
+                    className={`facility-card retro-border p-4 bg-gradient-to-br ${f.color} text-center`}>
+                    <div className="facility-icon">{f.icon}</div>
+                    <h3 className="text-lg font-bold mb-1">{f.name}</h3>
+                    <p className="text-sm text-gray-300">{f.desc}</p>
+                  </div>
+                ))}
+              </div>
+              {/* パーティサマリー */}
+              {party.length > 0 && (
+                <div className="retro-border p-3 mb-4">
+                  <h3 className="text-sm mb-2 border-b border-green-800 pb-1">【 パーティ 】</h3>
+                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2">
+                    {party.map(c => (
+                      <div key={c.id} className="text-xs bg-gray-900 p-2 rounded">
+                        <div className="font-bold truncate">{c.name}</div>
+                        <div className="text-gray-500">Lv.{c.level} {c.job}</div>
+                        <div className="flex gap-1 mt-1">
+                          <span className="red-text">HP:{Math.floor(c.currentHp/c.maxHp*100)}%</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+              {/* フッター */}
+              <div className="flex justify-between items-center text-sm text-gray-600">
+                <button onClick={() => setShowSettings(!showSettings)} className="hover:text-green-400">⚙️ 設定</button>
+                <button onClick={() => setScreen('title')} className="hover:text-green-400">タイトルへ</button>
+              </div>
+              {showSettings && (
+                <div className="retro-border p-3 mt-3 bg-gray-900 text-sm">
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div><label className="flex items-center gap-2 mb-2"><input type="checkbox" checked={settings.bgm} onChange={e => setSettings(p => ({...p, bgm: e.target.checked}))} /> BGM</label>
+                    <input type="range" min="0" max="100" value={settings.bgmVol} onChange={e => setSettings(p => ({...p, bgmVol: +e.target.value}))} className="w-full" /></div>
+                    <div><label className="flex items-center gap-2 mb-2"><input type="checkbox" checked={settings.sfx} onChange={e => {setSettings(p => ({...p, sfx: e.target.checked})); soundEngine.sfxEnabled = e.target.checked;}} /> 効果音</label>
+                    <input type="range" min="0" max="100" value={settings.sfxVol} onChange={e => setSettings(p => ({...p, sfxVol: +e.target.value}))} className="w-full" /></div>
+                  </div>
+                  <div className="mt-3 border-t border-gray-700 pt-3">
+                    <label className="flex items-center gap-2"><input type="checkbox" checked={autoPotion} onChange={e => setAutoPotion(e.target.checked)} /> 💊 自動ポーション使用</label>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        );
+      }
+
+      // v14.0: 施設詳細画面
+      const facilityInfo = FACILITIES.find(f => f.id === currentFacility);
       return (
         <div className="min-h-screen p-2">
           {showJobChange && <JobModal char={showJobChange} onClose={() => setShowJobChange(null)} />}
           <div className="max-w-5xl mx-auto">
+            {/* 施設ヘッダー */}
             <div className="retro-border p-3 mb-3 flex justify-between items-center flex-wrap gap-2">
-              <h1 className="text-xl gold-text">⚔️ WIZARDRY SCHEMA</h1>
+              <div className="flex items-center gap-3">
+                <button onClick={() => setCurrentFacility(null)} className="text-2xl hover:scale-110 transition-transform">⬅️</button>
+                <h1 className="text-xl gold-text">{facilityInfo?.icon} {facilityInfo?.name}</h1>
+              </div>
               <div className="flex gap-4 text-base items-center">
                 <span className="gold-text">💰{gold.toLocaleString()}G</span>
                 <span className="purple-text">📦{inventory.length}</span>
-                <button onClick={() => setShowSettings(!showSettings)} className="text-gray-400 hover:text-white text-lg">⚙️</button>
               </div>
-            </div>
-            {showSettings && (
-              <div className="retro-border p-3 mb-3 bg-gray-900 text-sm">
-                <div className="grid md:grid-cols-2 gap-4">
-                  <div><label className="flex items-center gap-2 mb-2"><input type="checkbox" checked={settings.bgm} onChange={e => setSettings(p => ({...p, bgm: e.target.checked}))} /> BGM</label>
-                  <input type="range" min="0" max="100" value={settings.bgmVol} onChange={e => setSettings(p => ({...p, bgmVol: +e.target.value}))} className="w-full" /></div>
-                  <div><label className="flex items-center gap-2 mb-2"><input type="checkbox" checked={settings.sfx} onChange={e => {setSettings(p => ({...p, sfx: e.target.checked})); soundEngine.sfxEnabled = e.target.checked;}} /> 効果音</label>
-                  <input type="range" min="0" max="100" value={settings.sfxVol} onChange={e => setSettings(p => ({...p, sfxVol: +e.target.value}))} className="w-full" /></div>
-                </div>
-                <div className="mt-3 border-t border-gray-700 pt-3">
-                  <label className="flex items-center gap-2"><input type="checkbox" checked={autoPotion} onChange={e => setAutoPotion(e.target.checked)} /> 💊 自動ポーション使用 (HP30%以下で自動回復)</label>
-                </div>
-              </div>
-            )}
-            <div className="flex gap-1 mb-3 flex-wrap">
-              {['dungeon','party','shop','inventory','bestiary'].map(t => (
-                <button key={t} onClick={() => setActiveTab(t)} className={`retro-border px-4 py-2 text-sm tab-btn ${activeTab===t?'active':''}`}>
-                  {{dungeon:'🏰ダンジョン',party:'👥パーティ',shop:'🛒ショップ',inventory:'📦所持品',bestiary:'📖図鑑'}[t]}
-                </button>
-              ))}
             </div>
             <div className="retro-border p-4">
-              {activeTab === 'dungeon' && (<>
+              {currentFacility === 'gate' && (<>
                 <h2 className="text-xl mb-3 border-b border-green-800 pb-2">【 迷宮入口 】</h2>
                 <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-2 mb-4">
                   {DUNGEONS.map((d, idx) => {
@@ -776,7 +847,7 @@
                 </div>
                 <div className="p-2 bg-gray-900 text-sm inline-block"><span>離脱HP: {retreatHP}%</span><input type="range" min="10" max="50" value={retreatHP} onChange={e => setRetreatHP(+e.target.value)} className="ml-2 w-32" /></div>
               </>)}
-              {activeTab === 'party' && (<>
+              {(currentFacility === 'guild' || currentFacility === 'tavern') && (<>
                 <h2 className="text-xl mb-3 border-b border-green-800 pb-2">【 ギルガメッシュの酒場 】({party.length}/6)</h2>
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3 mb-3">
                   {party.map(char => {
@@ -797,22 +868,51 @@
                 </div>
                 <div className="flex gap-2"><button onClick={createChar} disabled={party.length>=6} className="retro-border px-4 py-2 hover:bg-green-900 disabled:opacity-50">＋冒険者登録</button>{party.length > 0 && <button onClick={() => setParty(p => p.slice(0,-1))} className="text-sm text-red-400 hover:underline">解雇</button>}</div>
               </>)}
-              {activeTab === 'shop' && (<>
+              {currentFacility === 'shop' && (<>
                 <h2 className="text-xl mb-3 border-b border-green-800 pb-2">【 ボルタック商店 】</h2>
                 <div className="flex gap-1 mb-3">{['weapons','armors','accessories','consumables'].map(cat => (<button key={cat} onClick={() => setShopCat(cat)} className={`px-3 py-2 text-sm ${shopCat===cat?'bg-green-900 retro-border':'bg-gray-900'}`}>{{weapons:'⚔️武器',armors:'🛡️防具',accessories:'💍装飾',consumables:'🧪消耗'}[cat]}</button>))}</div>
                 <div className="space-y-1 max-h-72 overflow-y-auto">{ITEMS[shopCat].map((item,i) => { const canBuy = gold >= item.price; return (<div key={i} className={`p-2 text-sm flex justify-between ${canBuy?'bg-gray-900':'bg-gray-900 opacity-50'}`}><div><span className={`rarity-${item.rarity}`}>{item.name}</span><span className="text-gray-500 ml-2">{item.atk?`ATK+${item.atk}`:''}{item.def?`DEF+${item.def}`:''}{item.heal?`回復${item.heal}`:''}</span></div><button onClick={() => {if (!canBuy) return; setGold(p => p-item.price); setInventory(p => [...p, {...item, uid: Date.now()}]); soundEngine.playGold();}} disabled={!canBuy} className="gold-text hover:underline disabled:opacity-50">{item.price}G</button></div>);})}</div>
               </>)}
-              {activeTab === 'inventory' && (<>
+              {currentFacility === 'storage' && (<>
                 <h2 className="text-xl mb-3 border-b border-green-800 pb-2">【 所持品 】({inventory.length})</h2>
                 <div className="mb-3"><span className="text-sm text-gray-400">装備先: </span>{party.map(char => (<button key={char.id} onClick={() => setSelChar(char.id)} className={`px-2 py-1 text-sm mx-1 ${selChar===char.id?'bg-green-900 retro-border':'bg-gray-900'}`}>{char.name}</button>))}</div>
                 <div className="space-y-1 max-h-72 overflow-y-auto">{inventory.map(item => (<div key={item.uid} className="p-2 text-sm bg-gray-900 flex justify-between"><div><span className={`rarity-${item.rarity}`}>{item.name}</span><span className="text-gray-500 ml-2">{item.atk?`ATK+${item.atk}`:''}{item.def?`DEF+${item.def}`:''}{item.heal?`回復${item.heal}`:''}</span></div><div className="flex gap-2">{selChar && !item.heal && <button onClick={() => equipItem(selChar, item)} className="text-blue-400 hover:underline">装備</button>}<button onClick={() => {setGold(p => p + Math.floor((item.price||10)/2)); setInventory(p => p.filter(i => i.uid !== item.uid));}} className="text-yellow-400 hover:underline">売却</button></div></div>))}{inventory.length === 0 && <p className="text-gray-600 text-center py-4">アイテムなし</p>}</div>
               </>)}
-              {activeTab === 'bestiary' && (<>
+              {currentFacility === 'bestiary' && (<>
                 <h2 className="text-xl mb-3 border-b border-green-800 pb-2">【 モンスター図鑑 】</h2>
                 <div className="grid md:grid-cols-3 lg:grid-cols-4 gap-2">{Object.entries(bestiary).map(([name, d]) => (<div key={name} className="p-2 bg-gray-900 text-sm"><div className="flex justify-between"><span className="font-bold">{d.boss?'👑':''}{name}</span><span className="text-gray-500">×{d.cnt}</span></div><div className="text-gray-400">HP:{d.hp} ATK:{d.atk}</div></div>))}</div>
               </>)}
+              {currentFacility === 'temple' && (<>
+                <h2 className="text-xl mb-3 border-b border-green-800 pb-2">【 カント寺院 】</h2>
+                <p className="text-gray-400 mb-4">神の加護があなたを癒すでしょう。</p>
+                <div className="space-y-3">
+                  <div className="p-4 bg-gray-900 rounded">
+                    <h3 className="text-lg mb-2 blue-text">✨ 全員回復</h3>
+                    <p className="text-sm text-gray-400 mb-3">パーティ全員のHP/MPを完全回復します。</p>
+                    <button onClick={() => { setParty(p => p.map(c => ({...c, currentHp: c.maxHp, currentMp: c.maxMp}))); soundEngine.playHeal(); }} 
+                      className="retro-border px-4 py-2 hover:bg-blue-900"
+                      disabled={party.length === 0 || party.every(c => c.currentHp === c.maxHp && c.currentMp === c.maxMp)}>
+                      💖 回復する（無料）
+                    </button>
+                  </div>
+                  <div className="mt-4">
+                    <h3 className="text-sm mb-2">パーティ状態:</h3>
+                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-2">
+                      {party.map(c => (
+                        <div key={c.id} className="p-2 bg-gray-900 text-sm">
+                          <div className="font-bold">{c.name}</div>
+                          <div className="flex gap-2 mt-1">
+                            <span className={c.currentHp < c.maxHp ? 'red-text' : ''}>HP:{c.currentHp}/{c.maxHp}</span>
+                            <span className={c.currentMp < c.maxMp ? 'blue-text' : ''}>MP:{c.currentMp}/{c.maxMp}</span>
+                          </div>
+                          <div className="w-full bg-gray-700 h-1 mt-1"><div className="bg-green-500 h-1" style={{width:`${(c.currentHp/c.maxHp)*100}%`}}/></div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </>)}
             </div>
-            <div className="text-center mt-3 text-sm text-gray-600"><button onClick={() => setScreen('title')} className="hover:text-green-400">タイトル</button></div>
           </div>
         </div>
       );
