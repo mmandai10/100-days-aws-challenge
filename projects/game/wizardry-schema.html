@@ -3,41 +3,80 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Wizardry Schema v14.0 - 放置型探索RPG</title>
+  <title>Wizardry Schema v14.4 - 放置型探索RPG</title>
   <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=DotGothic16&display=swap');
-    body { font-family: 'DotGothic16', sans-serif; background-color: #0a0a0a; color: #33ff33; }
-    .retro-border { border: 2px solid #33ff33; box-shadow: 0 0 10px rgba(51, 255, 51, 0.3); }
-    .log-scroll::-webkit-scrollbar { width: 8px; }
-    .log-scroll::-webkit-scrollbar-track { background: #1a1a1a; }
-    .log-scroll::-webkit-scrollbar-thumb { background-color: #33ff33; }
-    .blink { animation: blink 1s infinite; }
-    @keyframes blink { 0%, 50% { opacity: 1; } 51%, 100% { opacity: 0; } }
-    .gold-text { color: #ffd700; }
-    .red-text { color: #ff4444; }
-    .blue-text { color: #44aaff; }
-    .purple-text { color: #aa44ff; }
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700&display=swap');
+    /* v14.2: Nilda風ダークファンタジーUI */
+    body { font-family: 'Noto Serif JP', serif; background: linear-gradient(180deg, #1a1410 0%, #0d0a08 100%); color: #d4c4a8; min-height: 100vh; }
+    .retro-border { border: 1px solid #5a4a3a; box-shadow: 0 2px 8px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05); background: rgba(30,25,20,0.9); }
+    .log-scroll::-webkit-scrollbar { width: 6px; }
+    .log-scroll::-webkit-scrollbar-track { background: #1a1510; }
+    .log-scroll::-webkit-scrollbar-thumb { background-color: #5a4a3a; border-radius: 3px; }
+    .blink { animation: blink 1.5s infinite; }
+    @keyframes blink { 0%, 50% { opacity: 1; } 51%, 100% { opacity: 0.3; } }
+    .gold-text { color: #ffd700; text-shadow: 0 0 4px rgba(255,215,0,0.3); }
+    .red-text { color: #e85555; }
+    .blue-text { color: #6ab0ff; }
+    .purple-text { color: #b088ff; }
     .tab-btn { transition: all 0.2s; }
-    .tab-btn:hover { background-color: #1a4a1a; }
-    .tab-btn.active { background-color: #2a5a2a; border-color: #66ff66; }
-    .rarity-common { color: #aaaaaa; }
-    .rarity-uncommon { color: #44ff44; }
-    .rarity-rare { color: #4488ff; }
-    .rarity-epic { color: #aa44ff; }
-    .rarity-legendary { color: #ffaa00; text-shadow: 0 0 8px #ffaa00; }
-    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); display: flex; align-items: center; justify-content: center; z-index: 100; }
-    /* v14.0: 施設メニュースタイル */
-    .facility-card { transition: all 0.3s; cursor: pointer; position: relative; overflow: hidden; }
-    .facility-card:hover { transform: translateY(-4px); box-shadow: 0 4px 20px rgba(51, 255, 51, 0.4); }
-    .facility-card::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent); transition: left 0.5s; }
+    .tab-btn:hover { background-color: #2a2520; }
+    .tab-btn.active { background-color: #3a3025; border-color: #8a7a5a; }
+    .rarity-common { color: #888888; }
+    .rarity-uncommon { color: #5cb85c; }
+    .rarity-rare { color: #5bc0de; }
+    .rarity-epic { color: #9b59b6; }
+    .rarity-legendary { color: #f0ad4e; text-shadow: 0 0 8px #f0ad4e; }
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.9); display: flex; align-items: center; justify-content: center; z-index: 100; }
+    /* v14.2: Nilda風施設カード */
+    .facility-card { 
+      transition: all 0.3s; cursor: pointer; position: relative; overflow: hidden;
+      background: linear-gradient(180deg, #2d2520 0%, #1a1512 100%);
+      border: 1px solid #4a3a2a; border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+    }
+    .facility-card:hover { 
+      transform: translateY(-3px); 
+      box-shadow: 0 6px 20px rgba(200,150,80,0.2);
+      border-color: #9a7a4a;
+    }
+    .facility-card::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,220,150,0.08), transparent); transition: left 0.5s; }
     .facility-card:hover::before { left: 100%; }
-    .facility-icon { font-size: 3rem; margin-bottom: 0.5rem; }
+    /* 出発ゲート特別スタイル */
+    .gate-card {
+      background: linear-gradient(180deg, #3d2a1a 0%, #2a1a0a 50%, #1a0a00 100%);
+      border: 2px solid #a07030;
+      box-shadow: 0 0 25px rgba(180,120,40,0.25), inset 0 0 40px rgba(0,0,0,0.4);
+    }
+    .gate-card:hover {
+      border-color: #d4a040;
+      box-shadow: 0 0 35px rgba(220,160,60,0.35), inset 0 0 40px rgba(0,0,0,0.4);
+      transform: translateY(-4px);
+    }
     .back-btn { position: fixed; bottom: 20px; right: 20px; z-index: 50; }
+    /* ボタンスタイル */
+    button { font-family: 'Noto Serif JP', serif; }
+    .btn-fantasy { background: linear-gradient(180deg, #3d3025 0%, #2a2015 100%); border: 1px solid #5a4a3a; color: #d4c4a8; border-radius: 4px; }
+    .btn-fantasy:hover { background: linear-gradient(180deg, #4d4035 0%, #3a3025 100%); border-color: #8a7a5a; }
+    .btn-danger { background: linear-gradient(180deg, #4a2520 0%, #3a1510 100%); border: 1px solid #6a4540; color: #e8a0a0; border-radius: 4px; }
+    .btn-danger:hover { background: linear-gradient(180deg, #5a3530 0%, #4a2520 100%); }
+    /* キャラカード */
+    .char-card { background: linear-gradient(180deg, #252018 0%, #1a1510 100%); border: 1px solid #3a3020; border-radius: 6px; }
+    /* セクションタイトル */
+    .section-title { color: #a08060; font-weight: 700; letter-spacing: 0.05em; }
+    /* v14.4: オープニング演出 */
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes slowScroll { from { transform: translateY(100%); } to { transform: translateY(-100%); } }
+    @keyframes textGlow { 0%, 100% { text-shadow: 0 0 10px rgba(200,160,96,0.5); } 50% { text-shadow: 0 0 20px rgba(200,160,96,0.8), 0 0 40px rgba(200,160,96,0.4); } }
+    .opening-container { position: fixed; inset: 0; background: linear-gradient(180deg, #0a0806 0%, #1a1410 50%, #0a0806 100%); overflow: hidden; }
+    .opening-text { animation: slowScroll 45s linear forwards; }
+    .opening-title { animation: fadeIn 3s ease-out, textGlow 4s ease-in-out infinite; }
+    .skip-btn { position: fixed; bottom: 30px; right: 30px; opacity: 0.6; transition: opacity 0.3s; }
+    .skip-btn:hover { opacity: 1; }
   </style>
 </head>
 <body>
@@ -45,40 +84,159 @@
   <script type="text/babel">
     const { useState, useEffect, useRef, useCallback } = React;
 
-    // ===== サウンドエンジン =====
+    // ===== v14.4: バロック調アンビエントBGM =====
     class SoundEngine {
-      constructor() { this.initialized = false; this.bgmEnabled = true; this.sfxEnabled = true; this.bgmVolume = -12; this.sfxVolume = -6; this.bgmLoop = null; this.isPlaying = false; }
+      constructor() { 
+        this.initialized = false; 
+        this.bgmEnabled = true; 
+        this.sfxEnabled = true; 
+        this.bgmVolume = -16; 
+        this.sfxVolume = -12; 
+        this.isPlaying = false;
+        this.currentTheme = 'town';
+        this.chordIdx = 0;
+        this.measureCount = 0;
+      }
+      
+      // ダンジョン別テーマ（バロック調コード進行）
+      themes = {
+        town: { // 街 - 穏やかなバロック
+          chords: [['D3','F3','A3'],['G2','B2','D3'],['C3','E3','G3'],['A2','C3','E3'],['D3','F3','A3'],['G2','B2','D3'],['E2','G2','B2'],['A2','C3','E3']],
+          special: [['F3','A3','C4'],['G3','B3','D4'],['A3','C4','E4']], // 変化球
+          tempo: 3500
+        },
+        slime: { // スライム - 明るい探索
+          chords: [['C3','E3','G3'],['F2','A2','C3'],['G2','B2','D3'],['C3','E3','G3'],['A2','C3','E3'],['D3','F3','A3'],['G2','B2','D3'],['C3','E3','G3']],
+          special: [['E3','G3','B3'],['F3','A3','C4']],
+          tempo: 3200
+        },
+        kobold: { // コボルド - 緊張感
+          chords: [['D3','F3','A3'],['A2','C3','E3'],['Bb2','D3','F3'],['A2','C3','E3'],['D3','F3','A3'],['G2','Bb2','D3'],['A2','C3','E3'],['D3','F3','A3']],
+          special: [['E3','G#3','B3'],['F3','A3','C4']],
+          tempo: 3000
+        },
+        thieves: { // 盗賊 - 神秘的
+          chords: [['E2','G2','B2'],['A2','C3','E3'],['D3','F3','A3'],['G2','B2','D3'],['C3','E3','G3'],['F2','A2','C3'],['B2','D3','F3'],['E2','G2','B2']],
+          special: [['Ab2','C3','Eb3'],['Bb2','D3','F3']],
+          tempo: 3800
+        },
+        sewer: { // 下水道 - 不気味
+          chords: [['A2','C3','E3'],['E2','G2','B2'],['F2','A2','C3'],['D2','F2','A2'],['A2','C3','E3'],['G2','Bb2','D3'],['F2','A2','C3'],['E2','G2','B2']],
+          special: [['Eb2','Gb2','Bb2'],['Ab2','C3','Eb3']],
+          tempo: 4200
+        },
+        kaoka: { // 遺跡 - 古代の神秘
+          chords: [['D3','F#3','A3'],['G2','B2','D3'],['E3','G3','B3'],['A2','C#3','E3'],['D3','F#3','A3'],['B2','D3','F#3'],['E3','G3','B3'],['A2','C#3','E3']],
+          special: [['F#3','A3','C#4'],['B3','D4','F#4']],
+          tempo: 4000
+        },
+        deltis: { // 大蔵室 - 豪華
+          chords: [['G3','B3','D4'],['D3','F#3','A3'],['E3','G3','B3'],['A2','C#3','E3'],['G3','B3','D4'],['C3','E3','G3'],['D3','F#3','A3'],['G2','B2','D3']],
+          special: [['E3','G#3','B3'],['A3','C#4','E4'],['D4','F#4','A4']],
+          tempo: 3500
+        },
+        dragon: { // 竜の神殿 - 荘厳
+          chords: [['C3','Eb3','G3'],['Ab2','C3','Eb3'],['Bb2','D3','F3'],['G2','Bb2','D3'],['C3','Eb3','G3'],['F2','Ab2','C3'],['G2','Bb2','D3'],['C3','Eb3','G3']],
+          special: [['Db3','F3','Ab3'],['Eb3','G3','Bb3'],['F3','A3','C4']],
+          tempo: 4500
+        },
+        trebor: { // 最終 - 絶望と希望
+          chords: [['D3','F3','A3'],['Bb2','D3','F3'],['G2','Bb2','D3'],['A2','C#3','E3'],['D3','F3','A3'],['C3','E3','G3'],['Bb2','D3','F3'],['A2','C#3','E3']],
+          special: [['E3','G#3','B3'],['F3','A3','C4'],['G3','B3','D4']],
+          tempo: 5000
+        }
+      };
+      
       async init() {
         if (this.initialized) return;
         await Tone.start();
-        this.bgmSynth = new Tone.PolySynth(Tone.Synth, { oscillator: { type: 'square' }, envelope: { attack: 0.01, decay: 0.2, sustain: 0.3, release: 0.5 } }).toDestination();
-        this.bgmSynth.volume.value = this.bgmVolume;
-        this.sfxSynth = new Tone.Synth({ oscillator: { type: 'triangle' }, envelope: { attack: 0.01, decay: 0.1, sustain: 0.1, release: 0.2 } }).toDestination();
+        // バロック調オルガン風シンセ
+        this.padSynth = new Tone.PolySynth(Tone.Synth, {
+          oscillator: { type: 'sine' },
+          envelope: { attack: 1.5, decay: 0.8, sustain: 0.7, release: 2.5 }
+        }).toDestination();
+        this.padSynth.volume.value = this.bgmVolume;
+        // 高音メロディ用（変化球）
+        this.melodySynth = new Tone.Synth({
+          oscillator: { type: 'triangle' },
+          envelope: { attack: 0.5, decay: 0.3, sustain: 0.4, release: 1.5 }
+        }).toDestination();
+        this.melodySynth.volume.value = this.bgmVolume - 6;
+        // SE用シンセ
+        this.sfxSynth = new Tone.Synth({
+          oscillator: { type: 'sine' },
+          envelope: { attack: 0.01, decay: 0.3, sustain: 0, release: 0.5 }
+        }).toDestination();
         this.sfxSynth.volume.value = this.sfxVolume;
-        this.noiseSynth = new Tone.NoiseSynth({ noise: { type: 'white' }, envelope: { attack: 0.005, decay: 0.1, sustain: 0 } }).toDestination();
-        this.noiseSynth.volume.value = -20;
         this.initialized = true;
       }
-      setBgmVolume(v) { this.bgmVolume = v; if (this.bgmSynth) this.bgmSynth.volume.value = v; }
-      setSfxVolume(v) { this.sfxVolume = v; if (this.sfxSynth) this.sfxSynth.volume.value = v; if (this.noiseSynth) this.noiseSynth.volume.value = v - 14; }
-      startBGM() {
-        if (!this.initialized || !this.bgmEnabled || this.isPlaying) return;
-        const melody = [['E4','8n'],['G4','8n'],['A4','8n'],['B4','8n'],['A4','8n'],['G4','8n'],['E4','4n'],['D4','8n'],['E4','8n'],['G4','8n'],['A4','8n'],['G4','8n'],['E4','8n'],['D4','4n']];
-        let idx = 0;
-        this.bgmLoop = new Tone.Loop((time) => { if (!this.bgmEnabled) return; const [n,d] = melody[idx % melody.length]; this.bgmSynth.triggerAttackRelease(n,d,time); idx++; }, '8n').start(0);
-        Tone.Transport.bpm.value = 100; Tone.Transport.start(); this.isPlaying = true;
+      
+      setBgmVolume(v) { 
+        this.bgmVolume = v; 
+        if (this.padSynth) this.padSynth.volume.value = v; 
+        if (this.melodySynth) this.melodySynth.volume.value = v - 6;
       }
-      stopBGM() { if (this.bgmLoop) { this.bgmLoop.stop(); Tone.Transport.stop(); this.isPlaying = false; } }
-      toggleBGM(e) { this.bgmEnabled = e; if (e && this.initialized) this.startBGM(); else this.stopBGM(); }
-      playAttack() { if (this.initialized && this.sfxEnabled) { this.sfxSynth.triggerAttackRelease('C5','16n'); setTimeout(() => this.sfxSynth.triggerAttackRelease('E5','16n'), 50); } }
-      playHit() { if (this.initialized && this.sfxEnabled) this.noiseSynth.triggerAttackRelease('16n'); }
-      playLevelUp() { if (this.initialized && this.sfxEnabled) ['C5','E5','G5','C6'].forEach((n,i) => setTimeout(() => this.sfxSynth.triggerAttackRelease(n,'8n'), i*100)); }
-      playHeal() { if (this.initialized && this.sfxEnabled) { this.sfxSynth.triggerAttackRelease('G5','4n'); setTimeout(() => this.sfxSynth.triggerAttackRelease('B5','4n'), 150); } }
-      playGold() { if (this.initialized && this.sfxEnabled) { this.sfxSynth.triggerAttackRelease('E6','16n'); setTimeout(() => this.sfxSynth.triggerAttackRelease('G6','16n'), 80); } }
-      playDeath() { if (this.initialized && this.sfxEnabled) ['E4','D4','C4','B3'].forEach((n,i) => setTimeout(() => this.sfxSynth.triggerAttackRelease(n,'8n'), i*200)); }
-      playBoss() { if (this.initialized && this.sfxEnabled) ['C3','C3','G3','C3','G3','C4'].forEach((n,i) => setTimeout(() => this.sfxSynth.triggerAttackRelease(n,'8n'), i*150)); }
-      playClear() { if (this.initialized && this.sfxEnabled) ['C5','E5','G5','C6','E6','G6','C7'].forEach((n,i) => setTimeout(() => this.sfxSynth.triggerAttackRelease(n,'8n'), i*120)); }
-      playCritical() { if (this.initialized && this.sfxEnabled) { this.sfxSynth.triggerAttackRelease('G5','16n'); setTimeout(() => this.sfxSynth.triggerAttackRelease('B5','16n'), 30); setTimeout(() => this.sfxSynth.triggerAttackRelease('D6','16n'), 60); } }
+      setSfxVolume(v) { this.sfxVolume = v; if (this.sfxSynth) this.sfxSynth.volume.value = v; }
+      
+      startBGM(theme = 'town') {
+        if (!this.initialized || !this.bgmEnabled) return;
+        if (this.isPlaying) this.stopBGM();
+        
+        this.currentTheme = theme;
+        const t = this.themes[theme] || this.themes.town;
+        this.chordIdx = 0;
+        this.measureCount = 0;
+        
+        // 最初のコードを即座に再生
+        this.padSynth.triggerAttackRelease(t.chords[0], '2n');
+        this.chordIdx = 1;
+        
+        this.bgmInterval = setInterval(() => {
+          if (!this.bgmEnabled) return;
+          this.measureCount++;
+          
+          // 12回に1回変化球（特殊コード）
+          if (this.measureCount % 12 === 0 && t.special && Math.random() < 0.5) {
+            const special = t.special[Math.floor(Math.random() * t.special.length)];
+            this.padSynth.triggerAttackRelease(special, '2n');
+            // メロディ音も追加
+            setTimeout(() => {
+              if (this.bgmEnabled) this.melodySynth.triggerAttackRelease(special[2], '4n');
+            }, 800);
+          } else {
+            const chord = t.chords[this.chordIdx % t.chords.length];
+            this.padSynth.triggerAttackRelease(chord, '2n');
+            this.chordIdx++;
+          }
+        }, t.tempo);
+        
+        this.isPlaying = true;
+      }
+      
+      changeBGM(theme) {
+        if (this.currentTheme === theme) return;
+        this.startBGM(theme);
+      }
+      
+      stopBGM() { 
+        if (this.bgmInterval) { clearInterval(this.bgmInterval); this.bgmInterval = null; } 
+        this.isPlaying = false; 
+      }
+      toggleBGM(e) { this.bgmEnabled = e; if (e && this.initialized) this.startBGM(this.currentTheme); else this.stopBGM(); }
+      
+      // SE
+      playClick() { if (this.initialized && this.sfxEnabled) this.sfxSynth.triggerAttackRelease('E5','32n'); }
+      playLevelUp() { if (this.initialized && this.sfxEnabled) { this.sfxSynth.triggerAttackRelease('C5','8n'); setTimeout(() => this.sfxSynth.triggerAttackRelease('E5','8n'), 150); setTimeout(() => this.sfxSynth.triggerAttackRelease('G5','4n'), 300); } }
+      playBossClear() { if (this.initialized && this.sfxEnabled) { ['C4','E4','G4','C5'].forEach((n,i) => setTimeout(() => this.sfxSynth.triggerAttackRelease(n,'4n'), i*200)); } }
+      // 互換性用空関数
+      playAttack() {}
+      playHit() {}
+      playHeal() {}
+      playGold() {}
+      playDeath() {}
+      playBoss() {}
+      playClear() { this.playBossClear(); }
+      playCritical() {}
     }
     const soundEngine = new SoundEngine();
 
@@ -224,15 +382,15 @@
 
     const TRAPS = [{name:'ポイズンニードル',dmg:0.1},{name:'クロスボウボルト',dmg:0.15},{name:'爆発する箱',dmg:0.2},{name:'落とし穴',dmg:0.1},{name:'毒ガス',dmg:0.12}];
 
-    // v14.0: 施設データ
+    // v14.2: 施設データ（Nilda風ダークファンタジー）
     const FACILITIES = [
-      { id: 'guild', name: '冒険者ギルド', icon: '⚔️', desc: '冒険者の登録・編成', color: 'from-amber-900 to-amber-800' },
-      { id: 'tavern', name: 'ギルガメッシュの酒場', icon: '🍺', desc: 'パーティ編成・転職', color: 'from-yellow-900 to-yellow-800' },
-      { id: 'shop', name: 'ボルタック商店', icon: '💰', desc: '武器・防具の購入', color: 'from-emerald-900 to-emerald-800' },
-      { id: 'temple', name: 'カント寺院', icon: '⛪', desc: 'HP/MP回復・蘇生', color: 'from-blue-900 to-blue-800' },
-      { id: 'storage', name: '倉庫', icon: '📦', desc: '所持品管理', color: 'from-purple-900 to-purple-800' },
-      { id: 'bestiary', name: '図書館', icon: '📚', desc: 'モンスター図鑑', color: 'from-indigo-900 to-indigo-800' },
-      { id: 'gate', name: '迷宮入口', icon: '🏰', desc: 'ダンジョンへ出発', color: 'from-red-900 to-red-800' },
+      { id: 'guild', name: '冒険者ギルド', desc: '新たな冒険者を登録', color: '#4a3020' },
+      { id: 'tavern', name: 'テサークの宿', desc: 'パーティ管理・転職', color: '#3a3528' },
+      { id: 'shop', name: 'ボルタック商店', desc: '武器・防具の購入', color: '#2a3530' },
+      { id: 'temple', name: 'サンドル寺院', desc: 'HP/MP回復・蘇生', color: '#252838' },
+      { id: 'storage', name: '一味の屯所', desc: '所持品管理', color: '#302828' },
+      { id: 'bestiary', name: '図書館', desc: 'モンスター図鑑', color: '#282830' },
+      { id: 'gate', name: '出発ゲート', desc: 'ダンジョンへ出発', color: '#3d2a1a' },
     ];
 
     // ===== メインアプリ =====
@@ -342,11 +500,11 @@
           const alive = party.filter(c => c.currentHp > 0);
           if (alive.length === 0) {
             addLog('【全滅】パーティは全滅した...','damage');
-            soundEngine.playDeath(); setExploring(false); setFloor(1); setParty(p => p.map(c => ({...c, currentHp: Math.floor(c.maxHp*0.5)}))); return;
+            soundEngine.playDeath(); setExploring(false); setFloor(1); setParty(p => p.map(c => ({...c, currentHp: Math.floor(c.maxHp*0.5)}))); soundEngine.startBGM('town'); return;
           }
           if (alive.some(c => (c.currentHp/c.maxHp)*100 <= retreatHP)) {
             addLog(`【撤退】HP${retreatHP}%以下で帰還`,'special');
-            setExploring(false); setFloor(1); setParty(p => p.map(c => ({...c, currentHp: c.maxHp, currentMp: c.maxMp}))); return;
+            setExploring(false); setFloor(1); setParty(p => p.map(c => ({...c, currentHp: c.maxHp, currentMp: c.maxMp}))); soundEngine.startBGM('town'); return;
           }
           const event = Math.random();
           const dngData = DUNGEONS.find(d => d.id === dungeon);
@@ -514,6 +672,7 @@
                   setExploring(false);
                   setFloor(1);
                   setParty(p => p.map(c => ({...c, currentHp: c.maxHp, currentMp: c.maxMp})));
+                  soundEngine.startBGM('town');
                 }, 2000);
                 return;
               }
@@ -640,7 +799,7 @@
               </div>
               <div className="flex gap-3 justify-center">
                 <button onClick={() => { setPaused(false); }} className="retro-border px-6 py-2 hover:bg-green-900">⚔️ 戦う</button>
-                <button onClick={() => { setBossConfirm(null); setPaused(false); setExploring(false); setFloor(1); setParty(p => p.map(c => ({...c, currentHp: c.maxHp, currentMp: c.maxMp}))); addLog('帰還した','heal'); }} className="retro-border px-6 py-2 hover:bg-red-900 text-red-400">🏃 撤退</button>
+                <button onClick={() => { setBossConfirm(null); setPaused(false); setExploring(false); setFloor(1); setParty(p => p.map(c => ({...c, currentHp: c.maxHp, currentMp: c.maxMp}))); addLog('帰還した','heal'); soundEngine.startBGM('town'); }} className="retro-border px-6 py-2 hover:bg-red-900 text-red-400">🏃 撤退</button>
               </div>
             </div>
           </div>
@@ -666,18 +825,128 @@
         );
       };
 
+      // v14.4: 壮大なストーリー（オープニング専用）
+      const STORY = {
+        opening: [
+          { text: '太古の昔、世界は光に満ちていた。', delay: 0 },
+          { text: '', delay: 2000 },
+          { text: '人々は大地の恵みのもと、', delay: 3000 },
+          { text: '平和に暮らしていた。', delay: 4500 },
+          { text: '', delay: 6000 },
+          { text: 'しかし千年前——', delay: 7000 },
+          { text: '', delay: 8500 },
+          { text: '狂気の魔術師「ワードナ」は', delay: 9500 },
+          { text: '禁忌の魔導書「スキーマ」を発動した。', delay: 11000 },
+          { text: '', delay: 13000 },
+          { text: 'それは世界の深淵へと続く門を開く術。', delay: 14000 },
+          { text: '', delay: 16000 },
+          { text: '地の底から湧き出した魔物たちは', delay: 17000 },
+          { text: '王国を蒡い、文明を灰燼に帰した。', delay: 18500 },
+          { text: '', delay: 20500 },
+          { text: '人々は散り散りになり、', delay: 21500 },
+          { text: '光は闇に飲まれた。', delay: 23000 },
+          { text: '', delay: 25000 },
+          { text: 'それから長い時が流れた。', delay: 26000 },
+          { text: '', delay: 28000 },
+          { text: '今、廃墟の街リルガミンに', delay: 29000 },
+          { text: '勇気ある者たちが集まり始めた。', delay: 30500 },
+          { text: '', delay: 32500 },
+          { text: '彼らの目的はただひとつ。', delay: 33500 },
+          { text: '', delay: 35500 },
+          { text: '深淵の最奥に眠るワードナを討ち、', delay: 36500 },
+          { text: '「スキーマ」を永遠に封印すること。', delay: 38000 },
+          { text: '', delay: 40000 },
+          { text: 'さあ、冒険者よ——', delay: 41000 },
+          { text: '', delay: 43000 },
+          { text: 'お前の物語が、今始まる。', delay: 44000 },
+        ],
+        prologue: `深淵の最奥に眠るワードナを討ち、
+「スキーマ」を封印せよ。`,
+        cleared: `ついにワードナは倒れた。
+
+「スキーマ」の力は消え去り、
+深淵への門は永遠に閉ざされた。
+
+人々は再び地上に希望を見出し、
+リルガミンの街には活気が戻りつつある。
+
+しかし伝説は語る——
+「闇は死なず、いつか必ず蓋る」と。
+
+その日が来るまで、
+英雄たちの伝説は語り継がれていくだろう。`
+      };
+
+      // v14.4: オープニング画面
+      if (screen === 'opening') {
+        const [visibleLines, setVisibleLines] = useState([]);
+        const [openingDone, setOpeningDone] = useState(false);
+        
+        useEffect(() => {
+          STORY.opening.forEach((line, idx) => {
+            setTimeout(() => {
+              setVisibleLines(prev => [...prev, line.text]);
+              if (idx === STORY.opening.length - 1) {
+                setTimeout(() => setOpeningDone(true), 3000);
+              }
+            }, line.delay);
+          });
+        }, []);
+        
+        const skipOpening = () => {
+          setScreen('main');
+          soundEngine.startBGM('town');
+        };
+        
+        return (
+          <div className="opening-container flex items-center justify-center">
+            <div className="max-w-2xl text-center px-8">
+              <h1 className="opening-title text-4xl mb-12" style={{color: '#c4a060', fontWeight: 700, letterSpacing: '0.15em'}}>WIZARDRY SCHEMA</h1>
+              <div className="space-y-3">
+                {visibleLines.map((line, i) => (
+                  <p key={i} className="text-lg" style={{color: line ? '#b8a880' : 'transparent', animation: line ? 'fadeIn 1s ease-out' : 'none', minHeight: '1.5em'}}>
+                    {line || '\u00A0'}
+                  </p>
+                ))}
+              </div>
+              {openingDone && (
+                <button onClick={skipOpening} className="mt-12 btn-fantasy px-8 py-3 text-lg" style={{animation: 'fadeIn 1s ease-out'}}>
+                  冒険を始める
+                </button>
+              )}
+            </div>
+            <button onClick={skipOpening} className="skip-btn btn-fantasy px-4 py-2 text-sm">
+              SKIP ▶
+            </button>
+          </div>
+        );
+      }
+
       if (screen === 'title') {
+        const isCleared = clearedDungeons['trebor'];
+        const hasSave = party.length > 0;
         return (
           <div className="min-h-screen flex flex-col items-center justify-center p-4">
-            <div className="retro-border p-8 bg-black text-center max-w-md">
-              <h1 className="text-3xl mb-2 gold-text">⚔️ WIZARDRY SCHEMA ⚔️</h1>
-              <p className="text-sm mb-1 text-gray-400">〜 リルガミンの迷宮 〜</p>
-              <p className="text-sm mb-6 text-gray-600">v14.0</p>
-              <div className="space-y-3">
-                <button onClick={() => {setScreen('main'); initSound();}} className="block w-full retro-border px-6 py-3 text-lg hover:bg-green-900">{party.length > 0 ? '▶ CONTINUE' : '▶ NEW GAME'}</button>
-                {party.length > 0 && <><button onClick={exportSave} className="block w-full retro-border px-6 py-2 hover:bg-blue-900 text-blue-400">📤 EXPORT</button>
-                <button onClick={() => {if(confirm('削除？')){localStorage.removeItem('wizardrySchemaV13');location.reload();}}} className="block w-full retro-border px-6 py-2 hover:bg-red-900 text-red-400">🗑️ DELETE</button></>}
+            <div className="retro-border p-8 text-center max-w-lg">
+              <h1 className="text-3xl mb-3" style={{color: '#c4a060', fontWeight: 700, letterSpacing: '0.1em', textShadow: '0 2px 8px rgba(0,0,0,0.5)'}}>WIZARDRY SCHEMA</h1>
+              <p className="text-sm mb-6" style={{color: '#6a5a4a'}}>〜 深淵の魔導書 〜</p>
+              <div className="text-left mb-6 p-4" style={{background: 'rgba(0,0,0,0.3)', borderRadius: '4px'}}>
+                <p className="text-sm leading-relaxed whitespace-pre-line" style={{color: '#9a8a70'}}>
+                  {isCleared ? STORY.cleared : STORY.prologue}
+                </p>
               </div>
+              <div className="space-y-3">
+                {hasSave ? (
+                  <>
+                    <button onClick={() => {setScreen('main'); initSound();}} className="block w-full btn-fantasy px-6 py-3 text-lg">CONTINUE</button>
+                    <button onClick={() => {if(!confirm('セーブデータを削除して最初から始めますか？')) return; localStorage.removeItem('wizardrySchemaV13'); setParty([]); setGold(100); setMaxFloors({}); setClearedDungeons({}); setBestiary({}); setInventory([]); setScreen('opening'); initSound();}} className="block w-full btn-fantasy px-6 py-2 text-sm" style={{color: '#888'}}>NEW GAME</button>
+                    <button onClick={exportSave} className="block w-full btn-fantasy px-6 py-2 text-sm" style={{color: '#6ab0ff'}}>EXPORT</button>
+                  </>
+                ) : (
+                  <button onClick={() => {setScreen('opening'); initSound();}} className="block w-full btn-fantasy px-6 py-3 text-lg">NEW GAME</button>
+                )}
+              </div>
+              <p className="text-xs mt-4" style={{color: '#4a4035'}}>v14.4</p>
             </div>
           </div>
         );
@@ -697,7 +966,7 @@
                 <div className="flex gap-4 items-center text-base">
                   <span className="gold-text">💰{gold.toLocaleString()}G</span>
                   <span className="purple-text">📦{inventory.length}</span>
-                  <button onClick={() => {setExploring(false); setFloor(1); setPaused(false); setBossConfirm(null); setParty(p => p.map(c => ({...c, currentHp: c.maxHp, currentMp: c.maxMp}))); addLog('帰還した','heal');}} className="retro-border px-4 py-2 hover:bg-red-900 text-red-400">帰還</button>
+                  <button onClick={() => {setExploring(false); setFloor(1); setPaused(false); setBossConfirm(null); setParty(p => p.map(c => ({...c, currentHp: c.maxHp, currentMp: c.maxMp}))); addLog('帰還した','heal'); soundEngine.startBGM('town');}} className="retro-border px-4 py-2 hover:bg-red-900 text-red-400">帰還</button>
                 </div>
               </div>
               <div className="text-sm text-gray-500 mb-2 px-1">{getFloorDesc(dungeon, floor)}</div>
@@ -740,38 +1009,58 @@
           <div className="min-h-screen p-4">
             {showJobChange && <JobModal char={showJobChange} onClose={() => setShowJobChange(null)} />}
             <div className="max-w-4xl mx-auto">
-              {/* ヘッダー */}
-              <div className="text-center mb-6">
-                <h1 className="text-3xl gold-text mb-2">⚔️ WIZARDRY SCHEMA ⚔️</h1>
-                <p className="text-gray-500">〜 リルガミンの街 〜</p>
-                <div className="flex justify-center gap-6 mt-3 text-lg">
-                  <span className="gold-text">💰 {gold.toLocaleString()}G</span>
-                  <span className="purple-text">📦 {inventory.length}</span>
-                  <span className="text-cyan-400">👥 {party.length}/6</span>
+              {/* v14.2: Nilda風ヘッダー */}
+              <div className="text-center mb-6 pt-4">
+                <h1 className="text-2xl mb-2" style={{color: '#c4a060', fontWeight: 700, letterSpacing: '0.15em', textShadow: '0 2px 4px rgba(0,0,0,0.5)'}}>WIZARDRY SCHEMA</h1>
+                <p className="text-sm" style={{color: '#6a5a4a'}}>〜 リルガミンの街 〜</p>
+                <div className="flex justify-center gap-6 mt-4 text-sm" style={{color: '#6a5a4a'}}>
+                  <span className="gold-text">{gold.toLocaleString()} G</span>
+                  <span>所持品 {inventory.length}</span>
+                  <span>一行 {party.length}/6</span>
                 </div>
               </div>
-              {/* 施設メニュー */}
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-                {FACILITIES.map(f => (
+              {/* NPCガイド - ストーリー連動 */}
+              <div className="retro-border p-4 mb-5">
+                <p className="text-sm font-bold mb-2" style={{color: '#c4a060'}}>ギルドの受付</p>
+                <p className="text-sm" style={{color: '#a09080', lineHeight: '1.6'}}>
+                  {clearedDungeons['trebor'] ? '「伝説の英雄たちよ。ワードナを倒してくれたのじゃな。この世界はそなたに感謝しておる。」' :
+                   party.length === 0 ? '「ようこそ、冒険者よ。深淵の魔導書「スキーマ」を封印するために、まずは仲間が必要じゃ。」' :
+                   party.length < 3 ? `「${party[0]?.name}たちよ。深淵は危険じゃ。もう少し仲間を集めるのじゃ。」` :
+                   clearedDungeons['dragon'] ? '「いよいよ最後の試練場じゃ。ワードナが待っておる。「スキーマ」を封印せよ！」' :
+                   clearedDungeons['kaoka'] ? '「古代龍の神殿が見つかったそうじゃな。伝説の竜が封印の鍵を守っておる。」' :
+                   clearedDungeons['sewer'] ? '「遥かなる遺跡が浮上したそうじゃ。「スキーマ」の手がかりがあるやもしれん。」' :
+                   clearedDungeons['thieves'] ? '「下水道に古い悪が潜んでおるそうじゃ。気をつけるのじゃぞ。」' :
+                   clearedDungeons['kobold'] ? '「盗賊どもが古い遺物を隠し持っておるという噂もあるのう。」' :
+                   clearedDungeons['slime'] ? '「次はコボルドの巣じゃな。奇妙な魔力の波動が感じられる。」' :
+                   '「まずはスライムの穴で腕試しじゃ。深淵への道は長いぞ。」'}
+                </p>
+              </div>
+              {/* v14.2: 施設メニュー（Nilda風2列レイアウト） */}
+              <div className="grid grid-cols-2 gap-4 mb-5">
+                {FACILITIES.filter(f => f.id !== 'gate').map(f => (
                   <div key={f.id} onClick={() => setCurrentFacility(f.id)} 
-                    className={`facility-card retro-border p-4 bg-gradient-to-br ${f.color} text-center`}>
-                    <div className="facility-icon">{f.icon}</div>
-                    <h3 className="text-lg font-bold mb-1">{f.name}</h3>
-                    <p className="text-sm text-gray-300">{f.desc}</p>
+                    className="facility-card p-5" style={{background: `linear-gradient(180deg, ${f.color} 0%, #1a1512 100%)`}}>
+                    <h3 className="text-base font-bold mb-2" style={{color: '#e0d0b0'}}>{f.name}</h3>
+                    <p className="text-xs" style={{color: '#6a5a4a'}}>{f.desc}</p>
                   </div>
                 ))}
               </div>
+              {/* 出発ゲート（大きく目立たせる） */}
+              <div onClick={() => setCurrentFacility('gate')} className="gate-card facility-card p-6 cursor-pointer mb-5">
+                <h3 className="text-xl font-bold gold-text mb-2">出発ゲート</h3>
+                <p className="text-sm" style={{color: '#a08050'}}>ダンジョンへ出発</p>
+              </div>
               {/* パーティサマリー */}
               {party.length > 0 && (
-                <div className="retro-border p-3 mb-4">
-                  <h3 className="text-sm mb-2 border-b border-green-800 pb-1">【 パーティ 】</h3>
-                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2">
+                <div className="retro-border p-4 mb-5">
+                  <h3 className="section-title text-sm mb-3 pb-2" style={{borderColor: '#3a3020'}}>パーティ</h3>
+                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
                     {party.map(c => (
-                      <div key={c.id} className="text-xs bg-gray-900 p-2 rounded">
-                        <div className="font-bold truncate">{c.name}</div>
-                        <div className="text-gray-500">Lv.{c.level} {c.job}</div>
-                        <div className="flex gap-1 mt-1">
-                          <span className="red-text">HP:{Math.floor(c.currentHp/c.maxHp*100)}%</span>
+                      <div key={c.id} className="char-card p-3 text-center">
+                        <div className="font-bold truncate text-sm" style={{color: '#e0d0b0'}}>{c.name}</div>
+                        <div className="text-xs mt-1" style={{color: '#6a5a4a'}}>Lv.{c.level} {c.job}</div>
+                        <div className="mt-2 h-1 rounded" style={{background: '#1a1510', border: '1px solid #3a2a1a'}}>
+                          <div className="h-full rounded" style={{width: `${(c.currentHp/c.maxHp)*100}%`, background: 'linear-gradient(90deg, #8b3535, #a04545)'}} />
                         </div>
                       </div>
                     ))}
@@ -779,20 +1068,20 @@
                 </div>
               )}
               {/* フッター */}
-              <div className="flex justify-between items-center text-sm text-gray-600">
-                <button onClick={() => setShowSettings(!showSettings)} className="hover:text-green-400">⚙️ 設定</button>
-                <button onClick={() => setScreen('title')} className="hover:text-green-400">タイトルへ</button>
+              <div className="flex justify-between items-center text-sm" style={{color: '#5a4a3a'}}>
+                <button onClick={() => setShowSettings(!showSettings)} className="hover:opacity-80" style={{color: '#8a7a5a'}}>⚙️ 設定</button>
+                <button onClick={() => setScreen('title')} className="hover:opacity-80" style={{color: '#8a7a5a'}}>タイトルへ</button>
               </div>
               {showSettings && (
-                <div className="retro-border p-3 mt-3 bg-gray-900 text-sm">
+                <div className="retro-border p-4 mt-4 text-sm">
                   <div className="grid md:grid-cols-2 gap-4">
-                    <div><label className="flex items-center gap-2 mb-2"><input type="checkbox" checked={settings.bgm} onChange={e => setSettings(p => ({...p, bgm: e.target.checked}))} /> BGM</label>
-                    <input type="range" min="0" max="100" value={settings.bgmVol} onChange={e => setSettings(p => ({...p, bgmVol: +e.target.value}))} className="w-full" /></div>
-                    <div><label className="flex items-center gap-2 mb-2"><input type="checkbox" checked={settings.sfx} onChange={e => {setSettings(p => ({...p, sfx: e.target.checked})); soundEngine.sfxEnabled = e.target.checked;}} /> 効果音</label>
-                    <input type="range" min="0" max="100" value={settings.sfxVol} onChange={e => setSettings(p => ({...p, sfxVol: +e.target.value}))} className="w-full" /></div>
+                    <div><label className="flex items-center gap-2 mb-2" style={{color: '#a09080'}}><input type="checkbox" checked={settings.bgm} onChange={e => setSettings(p => ({...p, bgm: e.target.checked}))} /> BGM</label>
+                    <input type="range" min="0" max="100" value={settings.bgmVol} onChange={e => setSettings(p => ({...p, bgmVol: +e.target.value}))} className="w-full" style={{accentColor: '#8a7050'}} /></div>
+                    <div><label className="flex items-center gap-2 mb-2" style={{color: '#a09080'}}><input type="checkbox" checked={settings.sfx} onChange={e => {setSettings(p => ({...p, sfx: e.target.checked})); soundEngine.sfxEnabled = e.target.checked;}} /> 効果音</label>
+                    <input type="range" min="0" max="100" value={settings.sfxVol} onChange={e => setSettings(p => ({...p, sfxVol: +e.target.value}))} className="w-full" style={{accentColor: '#8a7050'}} /></div>
                   </div>
-                  <div className="mt-3 border-t border-gray-700 pt-3">
-                    <label className="flex items-center gap-2"><input type="checkbox" checked={autoPotion} onChange={e => setAutoPotion(e.target.checked)} /> 💊 自動ポーション使用</label>
+                  <div className="mt-3 pt-3" style={{borderTop: '1px solid #3a3020'}}>
+                    <label className="flex items-center gap-2" style={{color: '#a09080'}}><input type="checkbox" checked={autoPotion} onChange={e => setAutoPotion(e.target.checked)} /> 💊 自動ポーション使用</label>
                   </div>
                 </div>
               )}
@@ -810,12 +1099,12 @@
             {/* 施設ヘッダー */}
             <div className="retro-border p-3 mb-3 flex justify-between items-center flex-wrap gap-2">
               <div className="flex items-center gap-3">
-                <button onClick={() => setCurrentFacility(null)} className="text-2xl hover:scale-110 transition-transform">⬅️</button>
-                <h1 className="text-xl gold-text">{facilityInfo?.icon} {facilityInfo?.name}</h1>
+                <button onClick={() => setCurrentFacility(null)} className="text-lg hover:opacity-70 transition-opacity" style={{color: '#8a7a5a'}}>◀ 戻る</button>
+                <h1 className="text-xl gold-text">{facilityInfo?.name}</h1>
               </div>
-              <div className="flex gap-4 text-base items-center">
-                <span className="gold-text">💰{gold.toLocaleString()}G</span>
-                <span className="purple-text">📦{inventory.length}</span>
+              <div className="flex gap-4 text-sm items-center" style={{color: '#8a7a5a'}}>
+                <span className="gold-text">{gold.toLocaleString()} G</span>
+                <span>所持品 {inventory.length}</span>
               </div>
             </div>
             <div className="retro-border p-4">
@@ -836,7 +1125,7 @@
                     if (party.length === 0) lockReason = 'パーティなし';
                     else if (!isUnlocked) lockReason = `🔒 ${prevDungeon?.name}踏破で解放`;
                     else if (!meetsLevel) lockReason = `Lv不足 (平均Lv.${avgLv})`;
-                    return (<button key={d.id} onClick={() => {if (!canEnter) return; setExploring(true); setFloor(1); setLogs([]); addLog(`━━━ ${d.name}へ ━━━`,'level'); addLog(getFloorDesc(d.id, 1),'explore'); setDungeon(d.id);}} disabled={!canEnter}
+                    return (<button key={d.id} onClick={() => {if (!canEnter) return; setExploring(true); setFloor(1); setLogs([]); addLog(`━━━ ${d.name}へ ━━━`,'level'); addLog(getFloorDesc(d.id, 1),'explore'); setDungeon(d.id); soundEngine.startBGM(d.id);}} disabled={!canEnter}
                       className={`text-left p-3 text-sm bg-gray-900 ${canEnter?'hover:bg-green-800 cursor-pointer':'opacity-50'} ${isCleared?'border-l-4 border-yellow-500':''}`}>
                       <div className="font-bold flex items-center gap-1">{isCleared && '🏆'}{d.name}</div>
                       <div className="text-gray-500">B{d.floors}F / Lv.{d.minLv}+</div>
@@ -847,26 +1136,58 @@
                 </div>
                 <div className="p-2 bg-gray-900 text-sm inline-block"><span>離脱HP: {retreatHP}%</span><input type="range" min="10" max="50" value={retreatHP} onChange={e => setRetreatHP(+e.target.value)} className="ml-2 w-32" /></div>
               </>)}
-              {(currentFacility === 'guild' || currentFacility === 'tavern') && (<>
-                <h2 className="text-xl mb-3 border-b border-green-800 pb-2">【 ギルガメッシュの酒場 】({party.length}/6)</h2>
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3 mb-3">
-                  {party.map(char => {
-                    const trait = getRaceTrait(char.raceKey);
-                    return (
-                    <div key={char.id} className="p-3 bg-gray-900 text-sm">
-                      <div className="flex justify-between"><span className="font-bold text-base">{char.name}</span><span className={ALIGNMENTS[char.alignKey]?.color}>{char.alignment}</span></div>
-                      <div className="text-gray-400">Lv.{char.level} {char.race} {char.job}</div>
-                      {/* v13.1: 種族特性表示 */}
-                      {trait.desc && <div className="text-xs text-cyan-400 mt-1">✨ {trait.desc}</div>}
-                      <div className="mt-2 grid grid-cols-2 gap-1"><span className="red-text">HP:{char.currentHp}/{char.maxHp}</span><span className="blue-text">MP:{char.currentMp}/{char.maxMp}</span><span>ATK:{char.atk}</span><span>DEF:{char.def}</span></div>
-                      <div className="w-full bg-gray-700 h-1 mt-1"><div className="bg-red-500 h-1" style={{width:`${(char.currentHp/char.maxHp)*100}%`}}/></div>
-                      <div className="mt-1 text-gray-500 text-xs">EXP: {char.exp}/{char.level * 100}</div>
-                      <div className="mt-1 text-gray-600 text-xs">⚔️{char.equipment?.weapon?.name||'-'} 🛡️{char.equipment?.armor?.name||'-'} 💍{char.equipment?.accessory?.name||'-'}</div>
-                      {char.level >= 10 && <button onClick={() => setShowJobChange(char)} className="mt-2 text-xs text-cyan-400 hover:underline">🔄転職</button>}
-                    </div>
-                  )})}
+              {currentFacility === 'guild' && (<>
+                <h2 className="text-xl mb-3 border-b border-green-800 pb-2">【 冒険者登録 】</h2>
+                <p className="text-gray-400 mb-4">新たな冒険者をギルドに登録します。</p>
+                <div className="p-4 bg-gray-900 rounded mb-4">
+                  <div className="text-center mb-4">
+                    <span className="text-6xl">👤</span>
+                    <p className="text-lg mt-2">登録済み: <span className="gold-text">{party.length}</span> / 6</p>
+                  </div>
+                  <button onClick={createChar} disabled={party.length>=6} 
+                    className="w-full retro-border px-6 py-3 text-lg hover:bg-green-900 disabled:opacity-50">
+                    ＋ 新規冒険者を登録
+                  </button>
+                  {party.length >= 6 && <p className="text-center text-yellow-400 mt-2">登録上限に達しています</p>}
                 </div>
-                <div className="flex gap-2"><button onClick={createChar} disabled={party.length>=6} className="retro-border px-4 py-2 hover:bg-green-900 disabled:opacity-50">＋冒険者登録</button>{party.length > 0 && <button onClick={() => setParty(p => p.slice(0,-1))} className="text-sm text-red-400 hover:underline">解雇</button>}</div>
+                {party.length > 0 && (
+                  <div className="text-sm text-gray-500">
+                    <p className="mb-2">最近登録した冒険者:</p>
+                    <div className="p-2 bg-gray-900 rounded">
+                      <span className="font-bold">{party[party.length-1].name}</span>
+                      <span className="text-gray-400 ml-2">{party[party.length-1].race} {party[party.length-1].job}</span>
+                    </div>
+                  </div>
+                )}
+              </>)}
+              {currentFacility === 'tavern' && (<>
+                <h2 className="text-xl mb-3 border-b border-green-800 pb-2">【 パーティ管理 】({party.length}/6)</h2>
+                {party.length === 0 ? (
+                  <div className="text-center py-8">
+                    <p className="text-gray-500 mb-4">パーティに誰もいません</p>
+                    <button onClick={() => setCurrentFacility('guild')} className="retro-border px-4 py-2 hover:bg-amber-900">⚔️ ギルドで冒険者を登録</button>
+                  </div>
+                ) : (<>
+                  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3 mb-3">
+                    {party.map(char => {
+                      const trait = getRaceTrait(char.raceKey);
+                      return (
+                      <div key={char.id} className="p-3 bg-gray-900 text-sm">
+                        <div className="flex justify-between"><span className="font-bold text-base">{char.name}</span><span className={ALIGNMENTS[char.alignKey]?.color}>{char.alignment}</span></div>
+                        <div className="text-gray-400">Lv.{char.level} {char.race} {char.job}</div>
+                        {trait.desc && <div className="text-xs text-cyan-400 mt-1">✨ {trait.desc}</div>}
+                        <div className="mt-2 grid grid-cols-2 gap-1"><span className="red-text">HP:{char.currentHp}/{char.maxHp}</span><span className="blue-text">MP:{char.currentMp}/{char.maxMp}</span><span>ATK:{char.atk}</span><span>DEF:{char.def}</span></div>
+                        <div className="w-full bg-gray-700 h-1 mt-1"><div className="bg-red-500 h-1" style={{width:`${(char.currentHp/char.maxHp)*100}%`}}/></div>
+                        <div className="mt-1 text-gray-500 text-xs">EXP: {char.exp}/{char.level * 100}</div>
+                        <div className="mt-1 text-gray-600 text-xs">⚔️{char.equipment?.weapon?.name||'-'} 🛡️{char.equipment?.armor?.name||'-'} 💍{char.equipment?.accessory?.name||'-'}</div>
+                        <div className="mt-2 flex gap-2">
+                          {char.level >= 10 && <button onClick={() => setShowJobChange(char)} className="text-xs text-cyan-400 hover:underline">🔄転職</button>}
+                          <button onClick={() => setParty(p => p.filter(c => c.id !== char.id))} className="text-xs text-red-400 hover:underline">❌解雇</button>
+                        </div>
+                      </div>
+                    )})}
+                  </div>
+                </>)}
               </>)}
               {currentFacility === 'shop' && (<>
                 <h2 className="text-xl mb-3 border-b border-green-800 pb-2">【 ボルタック商店 】</h2>
