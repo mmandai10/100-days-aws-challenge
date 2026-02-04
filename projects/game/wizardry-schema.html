@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Wizardry Schema v15.0 - 放置型探索RPG</title>
+  <title>Wizardry Schema v17.1 - 放置型探索RPG</title>
   <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -485,6 +485,7 @@
         text: 'ワードナは静かに立っている。\n\n彼を倒せば、門が開く。\nだが、彼を見逃せば——\n\n何を選ぶ？',
         choices: [
           { id: 'spare', text: '見逃す' },
+          { id: 'prestige', text: '✨ 転生する' },
         ]
       },
       ending: {
@@ -534,6 +535,9 @@
       const [clearedDungeons, setClearedDungeons] = useState({});
       const [retreatHP, setRetreatHP] = useState(30);
       const [autoPotion, setAutoPotion] = useState(true); // v13.1: 自動ポーション
+      const [autoResume, setAutoResume] = useState(false); // v17.0: 自動探索再開
+      const [lastDungeon, setLastDungeon] = useState(null); // v17.0: 最後に探索したダンジョン
+      const [autoSell, setAutoSell] = useState(false); // v17.0: 自動売却
       const [activeTab, setActiveTab] = useState('dungeon');
       const [settings, setSettings] = useState({bgm:true,sfx:true,bgmVol:50,sfxVol:70});
       const [bestiary, setBestiary] = useState({});
@@ -545,12 +549,63 @@
       const [currentFacility, setCurrentFacility] = useState(null); // v14.0: 施設画面管理
       // v15.0: ストーリーシステム
       const [storyFlags, setStoryFlags] = useState({ metSeraphina: false, documents: [], eventsTriggered: [], endingReached: false });
+      // v16.0: プレステージ（転生）システム
+      const [prestige, setPrestige] = useState({ count: 0, totalClears: 0 }); // count=転生回数, totalClears=累計クリア数
       const [dialogueModal, setDialogueModal] = useState(null); // { npc: 'seraphina', lines: [...], currentLine: 0 }
       const [storyEventModal, setStoryEventModal] = useState(null); // イベント表示用
       const [endingPhase, setEndingPhase] = useState(null); // 'choice' | 'ending' | 'postcredits'
+      // v15.1: オープニング用のstate（フックルール対応）
+      const [openingLines, setOpeningLines] = useState([]);
+      const [openingDone, setOpeningDone] = useState(false);
       const logRef = useRef(null);
 
       const initSound = async () => { await soundEngine.init(); if (settings.bgm) soundEngine.startBGM(); };
+
+      // v17.0: 自動探索再開のアンロック条件（ダンジョン1つ以上クリア）
+      const isAutoResumeUnlocked = Object.keys(clearedDungeons).length > 0;
+      // v17.0: 自動売却のアンロック条件（ダンジョン3つ以上クリア）
+      const isAutoSellUnlocked = Object.keys(clearedDungeons).length >= 3;
+
+      // v16.0: プレステージボーナス計算
+      const getPrestigeBonus = () => ({
+        exp: 1 + prestige.count * 0.1,  // 転生1回ごとにEXP +10%
+        gold: 1 + prestige.count * 0.1  // 転生1回ごとにゴールド +10%
+      });
+
+      // v17.0: 自動探索再開処理
+      const startAutoResume = (dngId) => {
+        if (!autoResume || !isAutoResumeUnlocked || !dngId) return;
+        const dngData = DUNGEONS.find(d => d.id === dngId);
+        if (!dngData) return;
+        // 3秒後に自動再開
+        setTimeout(() => {
+          addLog('🔄 自動探索再開...', 'special');
+          setExploring(true);
+          setFloor(1);
+          setDungeon(dngId);
+          soundEngine.startBGM(dngId);
+          addLog(`━━━ ${dngData.name}へ ━━━`, 'level');
+          addLog(getFloorDesc(dngId, 1), 'explore');
+        }, 3000);
+      };
+
+      // v16.0: 転生処理
+      const doPrestige = () => {
+        setPrestige(prev => ({ count: prev.count + 1, totalClears: prev.totalClears + 1 }));
+        setParty([]);
+        setGold(100);
+        setMaxFloors({});
+        setClearedDungeons({});
+        setInventory([]);
+        setStoryFlags({ metSeraphina: false, documents: [], eventsTriggered: [], endingReached: false });
+        setFloor(1);
+        setDungeon(null);
+        setExploring(false);
+        setEndingPhase(null);
+        setScreen('main');
+        soundEngine.startBGM('town');
+        addLog(`✨ 転生完了！EXP/ゴールドボーナス: +${(prestige.count + 1) * 10}%`, 'level');
+      };
 
       const addLog = useCallback((msg, type='normal') => {
         const c = {normal:'text-green-400',battle:'text-yellow-400',damage:'text-red-400',heal:'text-blue-400',item:'text-purple-400',level:'text-cyan-400',special:'text-pink-400',critical:'text-orange-400',boss:'gold-text',explore:'text-gray-400',clear:'text-yellow-300'}[type] || 'text-green-400';
@@ -573,11 +628,12 @@
           setInventory(d.inventory||[]); 
           if (d.autoPotion !== undefined) setAutoPotion(d.autoPotion);
           if (d.storyFlags) setStoryFlags(d.storyFlags);
+          if (d.prestige) setPrestige(d.prestige);
         }
       }, []);
       useEffect(() => { 
-        if (party.length > 0) localStorage.setItem('wizardrySchemaV15', JSON.stringify({party,gold,maxFloors,clearedDungeons,settings,bestiary,inventory,autoPotion,storyFlags})); 
-      }, [party,gold,maxFloors,clearedDungeons,settings,bestiary,inventory,autoPotion,storyFlags]);
+        if (party.length > 0) localStorage.setItem('wizardrySchemaV15', JSON.stringify({party,gold,maxFloors,clearedDungeons,settings,bestiary,inventory,autoPotion,storyFlags,prestige})); 
+      }, [party,gold,maxFloors,clearedDungeons,settings,bestiary,inventory,autoPotion,storyFlags,prestige]);
       useEffect(() => { if (logRef.current) logRef.current.scrollTop = logRef.current.scrollHeight; }, [logs]);
       useEffect(() => { soundEngine.toggleBGM(settings.bgm); }, [settings.bgm]);
       useEffect(() => { soundEngine.setBgmVolume(-30 + settings.bgmVol*0.3); }, [settings.bgmVol]);
@@ -648,7 +704,10 @@
           }
           if (alive.some(c => (c.currentHp/c.maxHp)*100 <= retreatHP)) {
             addLog(`【撤退】HP${retreatHP}%以下で帰還`,'special');
-            setExploring(false); setFloor(1); setParty(p => p.map(c => ({...c, currentHp: c.maxHp, currentMp: c.maxMp}))); soundEngine.startBGM('town'); return;
+            const currentDng = dungeon; // v17.0: 復帰用に保存
+            setExploring(false); setFloor(1); setParty(p => p.map(c => ({...c, currentHp: c.maxHp, currentMp: c.maxMp}))); soundEngine.startBGM('town');
+            startAutoResume(currentDng); // v17.0: 自動探索再開
+            return;
           }
           const event = Math.random();
           const dngData = DUNGEONS.find(d => d.id === dungeon);
@@ -767,13 +826,22 @@
               }
               
               soundEngine.playGold();
-              setGold(prev => prev + mon.gold);
+              // v16.0: ゴールドにもプレステージボーナス適用
+              const goldPrestigeBonus = 1 + prestige.count * 0.1;
+              setGold(prev => prev + Math.floor(mon.gold * goldPrestigeBonus));
               
               if (isBoss || Math.random() < 0.12) {
                 const drop = getDrop(floor,isBoss,mon.name);
                 if (drop) {
-                  setInventory(prev => [...prev,drop]);
-                  addLog(`【ドロップ】${drop.name}`,drop.rarity==='legendary'?'boss':'item');
+                  // v17.0: 自動売却（Common装備を自動で売る）
+                  if (autoSell && isAutoSellUnlocked && drop.rarity === 'common' && !drop.heal) {
+                    const sellPrice = Math.floor((drop.price || 10) / 2);
+                    setGold(prev => prev + sellPrice);
+                    addLog(`💰自動売却: ${drop.name} (+${sellPrice}G)`, 'item');
+                  } else {
+                    setInventory(prev => [...prev,drop]);
+                    addLog(`【ドロップ】${drop.name}`,drop.rarity==='legendary'?'boss':'item');
+                  }
                 }
               }
               
@@ -786,7 +854,9 @@
                   // v13.1: 人間のEXPボーナス
                   const trait = getRaceTrait(char.raceKey);
                   const expBonus = trait.expBonus || 0;
-                  const expGain = Math.floor((mon.exp / alive.length) * (1 + expBonus));
+                  // v16.0: プレステージボーナス適用
+                  const prestigeBonus = 1 + prestige.count * 0.1; // 転生1回ごとに+10%
+                  const expGain = Math.floor((mon.exp / alive.length) * (1 + expBonus) * prestigeBonus);
                   const newExp = updated.exp + expGain;
                   const expNeed = updated.level * 100;
                   if (newExp >= expNeed) {
@@ -1074,11 +1144,19 @@
             <div className="modal-overlay">
               <div className="retro-border bg-black p-8 max-w-lg text-center">
                 <h3 className="text-2xl gold-text mb-6">{ENDING.wardnaChoice.title}</h3>
-                <p className="text-base leading-relaxed whitespace-pre-line mb-8" style={{color: '#b8a880'}}>
+                <p className="text-base leading-relaxed whitespace-pre-line mb-6" style={{color: '#b8a880'}}>
                   {ENDING.wardnaChoice.text}
                 </p>
+                {prestige.count > 0 && (
+                  <p className="text-sm mb-4" style={{color: '#6a8a6a'}}>
+                    🌀 現在の転生回数: {prestige.count}回 (EXP/Gold +{prestige.count * 10}%)
+                  </p>
+                )}
+                <p className="text-sm mb-6" style={{color: '#8a8a6a'}}>
+                  転生すると: 全リセット + 永続ボーナス EXP/Gold +{(prestige.count + 1) * 10}%
+                </p>
                 {ENDING.wardnaChoice.choices.map(c => (
-                  <button key={c.id} onClick={() => setEndingPhase('ending')} 
+                  <button key={c.id} onClick={() => c.id === 'prestige' ? doPrestige() : setEndingPhase('ending')} 
                     className="btn-fantasy px-8 py-3 text-lg mx-2">
                     {c.text}
                   </button>
@@ -1234,22 +1312,23 @@
 英雄たちの伝説は語り継がれていくだろう。`
       };
 
+      // v15.1: オープニング用useEffect（トップレベルで定義）
+      useEffect(() => {
+        if (screen !== 'opening') return;
+        setOpeningLines([]);
+        setOpeningDone(false);
+        STORY.opening.forEach((line, idx) => {
+          setTimeout(() => {
+            setOpeningLines(prev => [...prev, line.text]);
+            if (idx === STORY.opening.length - 1) {
+              setTimeout(() => setOpeningDone(true), 3000);
+            }
+          }, line.delay);
+        });
+      }, [screen]);
+
       // v14.4: オープニング画面
       if (screen === 'opening') {
-        const [visibleLines, setVisibleLines] = useState([]);
-        const [openingDone, setOpeningDone] = useState(false);
-        
-        useEffect(() => {
-          STORY.opening.forEach((line, idx) => {
-            setTimeout(() => {
-              setVisibleLines(prev => [...prev, line.text]);
-              if (idx === STORY.opening.length - 1) {
-                setTimeout(() => setOpeningDone(true), 3000);
-              }
-            }, line.delay);
-          });
-        }, []);
-        
         const skipOpening = () => {
           setScreen('main');
           soundEngine.startBGM('town');
@@ -1260,7 +1339,7 @@
             <div className="max-w-2xl text-center px-8">
               <h1 className="opening-title text-4xl mb-12" style={{color: '#c4a060', fontWeight: 700, letterSpacing: '0.15em'}}>WIZARDRY SCHEMA</h1>
               <div className="space-y-3">
-                {visibleLines.map((line, i) => (
+                {openingLines.map((line, i) => (
                   <p key={i} className="text-lg" style={{color: line ? '#b8a880' : 'transparent', animation: line ? 'fadeIn 1s ease-out' : 'none', minHeight: '1.5em'}}>
                     {line || '\u00A0'}
                   </p>
@@ -1303,7 +1382,7 @@
                   <button onClick={() => {setScreen('opening'); initSound();}} className="block w-full btn-fantasy px-6 py-3 text-lg">NEW GAME</button>
                 )}
               </div>
-              <p className="text-xs mt-4" style={{color: '#4a4035'}}>v15.0</p>
+              <p className="text-xs mt-4" style={{color: '#4a4035'}}>v17.0</p>
             </div>
           </div>
         );
@@ -1325,6 +1404,7 @@
                 </div>
                 <div className="flex gap-4 items-center text-base">
                   <span className="gold-text">💰{gold.toLocaleString()}G</span>
+                  {prestige.count > 0 && <span className="text-cyan-400 ml-4">🌀転生{prestige.count} (+{prestige.count * 10}%)</span>}
                   <span className="purple-text">📦{inventory.length}</span>
                   <button onClick={() => {setExploring(false); setFloor(1); setPaused(false); setBossConfirm(null); setParty(p => p.map(c => ({...c, currentHp: c.maxHp, currentMp: c.maxMp}))); addLog('帰還した','heal'); soundEngine.startBGM('town');}} className="retro-border px-4 py-2 hover:bg-red-900 text-red-400">帰還</button>
                 </div>
@@ -1443,7 +1523,17 @@
                     <input type="range" min="0" max="100" value={settings.sfxVol} onChange={e => setSettings(p => ({...p, sfxVol: +e.target.value}))} className="w-full" style={{accentColor: '#8a7050'}} /></div>
                   </div>
                   <div className="mt-3 pt-3" style={{borderTop: '1px solid #3a3020'}}>
-                    <label className="flex items-center gap-2" style={{color: '#a09080'}}><input type="checkbox" checked={autoPotion} onChange={e => setAutoPotion(e.target.checked)} /> 💊 自動ポーション使用</label>
+                    <label className="flex items-center gap-2 mb-2" style={{color: '#a09080'}}><input type="checkbox" checked={autoPotion} onChange={e => setAutoPotion(e.target.checked)} /> 💊 自動ポーション使用</label>
+                    {isAutoResumeUnlocked ? (
+                      <label className="flex items-center gap-2 mb-2" style={{color: '#a09080'}}><input type="checkbox" checked={autoResume} onChange={e => setAutoResume(e.target.checked)} /> 🔄 自動探索再開（撤退後3秒で再出発）</label>
+                    ) : (
+                      <p className="text-xs mb-2" style={{color: '#5a4a3a'}}>🔒 自動探索再開: ダンジョンを1つクリアで解放</p>
+                    )}
+                    {isAutoSellUnlocked ? (
+                      <label className="flex items-center gap-2" style={{color: '#a09080'}}><input type="checkbox" checked={autoSell} onChange={e => setAutoSell(e.target.checked)} /> 💰 自動売却（Common装備を即売却）</label>
+                    ) : (
+                      <p className="text-xs" style={{color: '#5a4a3a'}}>🔒 自動売却: ダンジョンを3つクリアで解放</p>
+                    )}
                   </div>
                 </div>
               )}
@@ -1487,7 +1577,7 @@
                     if (party.length === 0) lockReason = 'パーティなし';
                     else if (!isUnlocked) lockReason = `🔒 ${prevDungeon?.name}踏破で解放`;
                     else if (!meetsLevel) lockReason = `Lv不足 (平均Lv.${avgLv})`;
-                    return (<button key={d.id} onClick={() => {if (!canEnter) return; setExploring(true); setFloor(1); setLogs([]); addLog(`━━━ ${d.name}へ ━━━`,'level'); addLog(getFloorDesc(d.id, 1),'explore'); setDungeon(d.id); soundEngine.startBGM(d.id);}} disabled={!canEnter}
+                    return (<button key={d.id} onClick={() => {if (!canEnter) return; setExploring(true); setFloor(1); setLogs([]); setLastDungeon(d.id); addLog(`━━━ ${d.name}へ ━━━`,'level'); addLog(getFloorDesc(d.id, 1),'explore'); setDungeon(d.id); soundEngine.startBGM(d.id);}} disabled={!canEnter}
                       className={`text-left p-3 text-sm bg-gray-900 ${canEnter?'hover:bg-green-800 cursor-pointer':'opacity-50'} ${isCleared?'border-l-4 border-yellow-500':''}`}>
                       <div className="font-bold flex items-center gap-1">{isCleared && '🏆'}{d.name}</div>
                       <div className="text-gray-500">B{d.floors}F / Lv.{d.minLv}+</div>
