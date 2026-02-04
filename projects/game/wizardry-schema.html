@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Wizardry Schema v17.1 - 放置型探索RPG</title>
+  <title>Wizardry Schema v17.2 - 放置型探索RPG</title>
   <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -292,6 +292,73 @@
       if (!d) return '';
       const floorData = d.floors[floor] || d.floors[Object.keys(d.floors).reduce((a,b) => Math.abs(b-floor) < Math.abs(a-floor) ? b : a)];
       return floorData?.desc || '';
+    };
+
+    // v17.2: 探索ログ用雰囲気テキスト（Nilda風）
+    const EXPLORATION_TEXTS = {
+      slime: [
+        '湿った空気が纏わりつく。水滴が天井から滴り落ちる。',
+        '粘液の痕跡が床に残っている。何かが這ったようだ。',
+        '微かに光る苔が壁を覆っている。奇妙な美しさだ。',
+        '土の匂いに混じり、甘い腐敗臭が漂う。',
+        '遠くで何かが踠ける音がする。スライムの気配か。'
+      ],
+      kobold: [
+        '松明の燤ける匂いが漂う。近くに誰かいる。',
+        '壁に稚拙な絵が描かれている。コボルトの歴史か。',
+        '小さな足跡が床に無数に残っている。',
+        '遠吹きの音が反響する。警報が伝わったか。',
+        '粗末な罠が仕掛けられている。注意が必要だ。'
+      ],
+      thieves: [
+        '影が揺れた。気のせいか、それとも——',
+        '古い酒の匂いが漂う。盗賊たちの宴の痕跡か。',
+        '壁に奈落書きがある。「裏切り者に死を」',
+        '足元に外れた床板。罠か、それとも隠し通路か。',
+        '金属の擦れる音。誰かが武器を研いでいる。'
+      ],
+      sewer: [
+        '悪臭が鼻を刺す。慶れることはない。',
+        '汚水が流れる音が絶えず響く。',
+        '壁に古い血痕がこびりついている。',
+        '冷たい風が吹き抜ける。死の気配だ。',
+        '鯉の空いた棺が打ち捨てられている。'
+      ],
+      kaoka: [
+        '古代の石畳が崩れかけている。足元に注意。',
+        '壁のレリーフに忘れられた神々の姿。',
+        '微かな魔力の波動を感じる。封印が近い。',
+        '砂埃に覆われた祝詞が床に刻まれている。',
+        '遅くに味方する光が差し込む。神聖な空気だ。'
+      ],
+      deltis: [
+        '黄金の輝きが目をくらませる。欲望に注意せよ。',
+        '宝石の山。だが、守り手がいるはずだ。',
+        '古代の金庫が並ぶ。ほとんどは空だが。',
+        '金貨の上を歩く。足が沨む。',
+        '美しい宝石が散らばっている。罠の報告がない。'
+      ],
+      dragon: [
+        '竜の骨が壁を飾っている。神聖な空気だ。',
+        '炎の痕跡が床に残る。かつての戦いの証か。',
+        '冷気と熱気が交互に押し寄せる。',
+        '竜の哆き声が遠くから聞こえる。',
+        '空気が重い。千年の時が漂っている。'
+      ],
+      trebor: [
+        '絶望の気配が漂う。ここで多くの者が散った。',
+        '壁に倒れた冒険者の騸骼。合掌。',
+        '魔法の罠が張り巡らされている。',
+        'ワードナの名が刻まれた扉。「引き返せ」',
+        '最後の試練。覚悟を決めろ。'
+      ]
+    };
+
+    // ランダムな探索テキストを取得
+    const getRandomExplorationText = (dng) => {
+      const texts = EXPLORATION_TEXTS[dng];
+      if (!texts || texts.length === 0) return '';
+      return texts[Math.floor(Math.random() * texts.length)];
     };
 
     // ===== 装備品 =====
@@ -959,6 +1026,9 @@
               setFloor(newFloor);
               setMaxFloors(prev => ({...prev,[dungeon]:Math.max(prev[dungeon]||0,newFloor)}));
               addLog(`━━━ B${newFloor}Fへ降りた ━━━`,'item');
+              // v17.2: ランダム雰囲気テキスト追加
+              const explorationText = getRandomExplorationText(dungeon);
+              if (explorationText) addLog(explorationText,'explore');
               const floorDesc = getFloorDesc(dungeon, newFloor);
               if (floorDesc) addLog(floorDesc,'explore');
               
