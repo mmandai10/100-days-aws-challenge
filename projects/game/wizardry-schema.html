@@ -561,10 +561,10 @@
 
       const initSound = async () => { await soundEngine.init(); if (settings.bgm) soundEngine.startBGM(); };
 
-      // v17.0: 自動探索再開のアンロック条件（ダンジョン1つ以上クリア）
-      const isAutoResumeUnlocked = Object.keys(clearedDungeons).length > 0;
-      // v17.0: 自動売却のアンロック条件（ダンジョン3つ以上クリア）
-      const isAutoSellUnlocked = Object.keys(clearedDungeons).length >= 3;
+      // v17.1: 自動探索再開のアンロック条件（転生1回以上）
+      const isAutoResumeUnlocked = prestige.count >= 1;
+      // v17.1: 自動売却のアンロック条件（転生3回以上）
+      const isAutoSellUnlocked = prestige.count >= 3;
 
       // v16.0: プレステージボーナス計算
       const getPrestigeBonus = () => ({
@@ -1527,12 +1527,12 @@
                     {isAutoResumeUnlocked ? (
                       <label className="flex items-center gap-2 mb-2" style={{color: '#a09080'}}><input type="checkbox" checked={autoResume} onChange={e => setAutoResume(e.target.checked)} /> 🔄 自動探索再開（撤退後3秒で再出発）</label>
                     ) : (
-                      <p className="text-xs mb-2" style={{color: '#5a4a3a'}}>🔒 自動探索再開: ダンジョンを1つクリアで解放</p>
+                      <p className="text-xs mb-2" style={{color: '#5a4a3a'}}>🔒 自動探索再開: 転生1回で解放</p>
                     )}
                     {isAutoSellUnlocked ? (
                       <label className="flex items-center gap-2" style={{color: '#a09080'}}><input type="checkbox" checked={autoSell} onChange={e => setAutoSell(e.target.checked)} /> 💰 自動売却（Common装備を即売却）</label>
                     ) : (
-                      <p className="text-xs" style={{color: '#5a4a3a'}}>🔒 自動売却: ダンジョンを3つクリアで解放</p>
+                      <p className="text-xs" style={{color: '#5a4a3a'}}>🔒 自動売却: 転生3回で解放</p>
                     )}
                   </div>
                 </div>
