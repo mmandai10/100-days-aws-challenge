@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Wizardry Schema v14.4 - 放置型探索RPG</title>
+  <title>Wizardry Schema v15.0 - 放置型探索RPG</title>
   <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -393,6 +393,132 @@
       { id: 'gate', name: '出発ゲート', desc: 'ダンジョンへ出発', color: '#3d2a1a' },
     ];
 
+    // ===== v15.0: ストーリーシステム =====
+    // NPCデータ
+    const NPCS = {
+      seraphina: {
+        name: 'セラフィナ',
+        title: '古代史研究者',
+        portrait: '👩‍🔬',
+        desc: '「スキーマ」の真実を追う謎多き学者'
+      },
+      guildmaster: {
+        name: 'ギルドマスター',
+        title: '冒険者ギルド長',
+        portrait: '👴',
+        desc: '長年リルガミンを見守ってきた老人'
+      }
+    };
+
+    // ストーリーイベント（ダンジョン内発見物）
+    const STORY_EVENTS = {
+      thieves: {
+        trigger: 'clear', // ボス擃破時
+        id: 'doc_royal',
+        title: '王家の古文書',
+        text: 'マスターシーフの隠し部屋から、古びた羊皮紙が見つかった。\n王家の印章が押されているが、文字がかすれて読めない。\nセラフィナに見せれば解読できるかもしれない。',
+        item: { id: 'doc1', name: '王家の古文書', type: 'document', rarity: 'rare' }
+      },
+      kaoka: {
+        trigger: 'floor8',
+        id: 'mural',
+        title: '謎の壁画',
+        text: '崩れかけた壁に、古代の壁画が残っていた。\n\n一人の魔術師が、深淵の前に立ち塁ぐ姿。\nその背後には人々が祈りを捧げている。\n\n「悪の魔術師」の姿にしては、奇妙な構図だ…',
+        item: { id: 'doc2', name: '壁画の写し', type: 'document', rarity: 'rare' }
+      },
+      dragon: {
+        trigger: 'boss_before',
+        id: 'dragon_speak',
+        title: '竜の言葉',
+        text: 'エンシェントドラゴンは戦いの前に口を開いた。\n\n「我は1000年、この地で門を見守ってきた。\n　かの者と同じく。」\n\n「かの者」とは誰のことだ？',
+        item: null
+      },
+      trebor: {
+        trigger: 'boss_before',
+        id: 'wardna_truth',
+        title: 'ワードナの言葉',
+        text: 'ワードナは静かに語り始めた。\n\n「お前たちは…何も知らずにここまで来たのか。」\n\n「『スキーマ』は門を開く術ではない。\n　門を——閉じるための術だ。」\n\n「1000年前、門はすでに開いていた。\n　我は命を賭して、それを半分閉じたのだ。」\n\n「そして今も、我はここで門を押さえ続けている。\n　我を倒せば、門は完全に開く。」\n\n「本当の敵は、門の向こうにいる。\n　『深淵の王』が。」',
+        item: { id: 'doc3', name: 'ワードナの日記', type: 'document', rarity: 'legendary' }
+      }
+    };
+
+    // セラフィナの会話（進行度で変化）
+    const SERAPHINA_DIALOGUES = {
+      first: {
+        lines: [
+          '「初めまして。私はセラフィナ。古代史の研究をしています。」',
+          '「『スキーマ』の真実を突き止めたくて、この街に来ました。」',
+          '「あなたがダンジョンで何か見つけたら、ぜひ教えてください。」'
+        ]
+      },
+      hasDoc1: {
+        lines: [
+          '「これは…！王家の機密文書ですね。」',
+          '「解読してみます。少し時間をください…」',
+          '「…これは。歴史が書き換えられた証拠かもしれません。」',
+          '「もっと調べる必要があります。探索を続けてください。」'
+        ]
+      },
+      hasDoc2: {
+        lines: [
+          '「この壁画…伝承と全く違います。」',
+          '「ワードナは本当に『悪の魔術師』だったのでしょうか？」',
+          '「人々が彼に祈りを捧げている。まるで英雄のように…」',
+          '「真実は深淵の最奥にあるのかもしれません。」'
+        ]
+      },
+      hasDoc3: {
+        lines: [
+          '「ワードナの日記…これですべてが明らかになりました。」',
+          '「彼は1000年間、たった一人で世界を守っていたのです。」',
+          '「歴史は彼を悪と呼んだ。でも、真実は違った。」',
+          '「あなたは今、真実を知る数少ない人間の一人です。」',
+          '「この真実を…どうするかは、あなた次第です。」'
+        ]
+      }
+    };
+
+    // エンディングデータ
+    const ENDING = {
+      wardnaChoice: {
+        title: '選択',
+        text: 'ワードナは静かに立っている。\n\n彼を倒せば、門が開く。\nだが、彼を見逃せば——\n\n何を選ぶ？',
+        choices: [
+          { id: 'spare', text: '見逃す' },
+        ]
+      },
+      ending: {
+        lines: [
+          'ワードナは静かに微笑んだ。',
+          '',
+          '「今はまだ…世界はあの者と戦う力を持たぬ。」',
+          '',
+          '「だが、お前たちならいつか…」',
+          '',
+          '「その日まで、我は門を押さえ続けよう。」',
+          '',
+          '「そして、真実は…お前たちの胸の中だけに。」',
+          '',
+          '冒険者たちは地上へ戻った。',
+          '世界は何も変わらない。',
+          'ワードナは今も「悪の魔術師」として語り継がれる。',
+          '',
+          'だが、冒険者たちは知っている。',
+          '深淵の底で、孤独に世界を守り続ける男がいることを。',
+          '',
+          'そして——',
+          'いつか、本当の戦いが始まることを。',
+          '',
+          '',
+          '【 To be continued... 】'
+        ],
+        postCredits: {
+          text: '暗闇の中、巨大な目が開く。\n\n「…そろそろ、か。」',
+          hint: 'Wizardry Schema 2 - Coming Soon...'
+        }
+      }
+    };
+
     // ===== メインアプリ =====
     function App() {
       const [screen, setScreen] = useState('title');
@@ -417,6 +543,11 @@
       const [shopCat, setShopCat] = useState('weapons');
       const [selChar, setSelChar] = useState(null);
       const [currentFacility, setCurrentFacility] = useState(null); // v14.0: 施設画面管理
+      // v15.0: ストーリーシステム
+      const [storyFlags, setStoryFlags] = useState({ metSeraphina: false, documents: [], eventsTriggered: [], endingReached: false });
+      const [dialogueModal, setDialogueModal] = useState(null); // { npc: 'seraphina', lines: [...], currentLine: 0 }
+      const [storyEventModal, setStoryEventModal] = useState(null); // イベント表示用
+      const [endingPhase, setEndingPhase] = useState(null); // 'choice' | 'ending' | 'postcredits'
       const logRef = useRef(null);
 
       const initSound = async () => { await soundEngine.init(); if (settings.bgm) soundEngine.startBGM(); };
@@ -430,10 +561,23 @@
       const getRaceTrait = (raceKey) => RACES[raceKey]?.trait || {};
 
       useEffect(() => {
-        const s = localStorage.getItem('wizardrySchemaV13');
-        if (s) { const d = JSON.parse(s); setParty(d.party||[]); setGold(d.gold||100); setMaxFloors(d.maxFloors||{}); setClearedDungeons(d.clearedDungeons||{}); setSettings(d.settings||{bgm:true,sfx:true,bgmVol:50,sfxVol:70}); setBestiary(d.bestiary||{}); setInventory(d.inventory||[]); if (d.autoPotion !== undefined) setAutoPotion(d.autoPotion); }
+        const s = localStorage.getItem('wizardrySchemaV15');
+        if (s) { 
+          const d = JSON.parse(s); 
+          setParty(d.party||[]); 
+          setGold(d.gold||100); 
+          setMaxFloors(d.maxFloors||{}); 
+          setClearedDungeons(d.clearedDungeons||{}); 
+          setSettings(d.settings||{bgm:true,sfx:true,bgmVol:50,sfxVol:70}); 
+          setBestiary(d.bestiary||{}); 
+          setInventory(d.inventory||[]); 
+          if (d.autoPotion !== undefined) setAutoPotion(d.autoPotion);
+          if (d.storyFlags) setStoryFlags(d.storyFlags);
+        }
       }, []);
-      useEffect(() => { if (party.length > 0) localStorage.setItem('wizardrySchemaV13', JSON.stringify({party,gold,maxFloors,clearedDungeons,settings,bestiary,inventory,autoPotion})); }, [party,gold,maxFloors,clearedDungeons,settings,bestiary,inventory,autoPotion]);
+      useEffect(() => { 
+        if (party.length > 0) localStorage.setItem('wizardrySchemaV15', JSON.stringify({party,gold,maxFloors,clearedDungeons,settings,bestiary,inventory,autoPotion,storyFlags})); 
+      }, [party,gold,maxFloors,clearedDungeons,settings,bestiary,inventory,autoPotion,storyFlags]);
       useEffect(() => { if (logRef.current) logRef.current.scrollTop = logRef.current.scrollHeight; }, [logs]);
       useEffect(() => { soundEngine.toggleBGM(settings.bgm); }, [settings.bgm]);
       useEffect(() => { soundEngine.setBgmVolume(-30 + settings.bgmVol*0.3); }, [settings.bgmVol]);
@@ -523,6 +667,12 @@
               setPaused(true);
               setBossConfirm({ monster: mon, isFinal: isFinalBoss });
               addLog(`━━━ BOSS発見: ${mon.name} ━━━`,'boss');
+              
+              // v15.0: ボス戦前ストーリーイベント
+              const storyEvent = STORY_EVENTS[dungeon];
+              if (storyEvent && storyEvent.trigger === 'boss_before' && !storyFlags.eventsTriggered.includes(storyEvent.id)) {
+                setTimeout(() => triggerStoryEvent(dungeon, 'boss_before'), 800);
+              }
               return;
             }
             
@@ -663,6 +813,26 @@
               if (isFinalBoss) {
                 soundEngine.playClear();
                 setClearedDungeons(prev => ({...prev, [dungeon]: true}));
+                
+                // v15.0: ストーリーイベントトリガー（ボスクリア時）
+                const storyEvent = STORY_EVENTS[dungeon];
+                if (storyEvent && storyEvent.trigger === 'clear' && !storyFlags.eventsTriggered.includes(storyEvent.id)) {
+                  setTimeout(() => triggerStoryEvent(dungeon, 'clear'), 500);
+                }
+                
+                // v15.0: ワードナ撃破時は特別エンディングへ
+                if (dungeon === 'trebor' && mon.name === 'ワードナ') {
+                  addLog('','normal');
+                  addLog(`════════════════════════`,'clear');
+                  addLog(`ワードナは静かに倒れた...`,'clear');
+                  addLog(`════════════════════════`,'clear');
+                  setTimeout(() => {
+                    setExploring(false);
+                    setEndingPhase('choice');
+                  }, 2000);
+                  return;
+                }
+                
                 addLog('','normal');
                 addLog(`════════════════════════`,'clear');
                 addLog(`🏆 ${dngData.name} 踏破！ 🏆`,'clear');
@@ -685,6 +855,15 @@
               addLog(`━━━ B${newFloor}Fへ降りた ━━━`,'item');
               const floorDesc = getFloorDesc(dungeon, newFloor);
               if (floorDesc) addLog(floorDesc,'explore');
+              
+              // v15.0: 特定階層でのストーリーイベント
+              const storyEvent = STORY_EVENTS[dungeon];
+              if (storyEvent && storyEvent.trigger === `floor${newFloor}` && !storyFlags.eventsTriggered.includes(storyEvent.id)) {
+                setTimeout(() => {
+                  setPaused(true);
+                  triggerStoryEvent(dungeon, `floor${newFloor}`);
+                }, 500);
+              }
             }
           } else if (event < 0.97) {
             const hasThief = alive.some(c => c.jobKey === 'thief' || c.jobKey === 'ninja');
@@ -804,6 +983,184 @@
             </div>
           </div>
         );
+      };
+
+      // v15.0: 会話モーダル
+      const DialogueModal = () => {
+        if (!dialogueModal) return null;
+        const { npc, lines, currentLine } = dialogueModal;
+        const npcData = NPCS[npc];
+        const isLastLine = currentLine >= lines.length - 1;
+        
+        const nextLine = () => {
+          if (isLastLine) {
+            setDialogueModal(null);
+          } else {
+            setDialogueModal(prev => ({ ...prev, currentLine: prev.currentLine + 1 }));
+          }
+        };
+        
+        return (
+          <div className="modal-overlay" onClick={nextLine}>
+            <div className="retro-border bg-black p-6 max-w-lg" onClick={e => e.stopPropagation()}>
+              <div className="flex items-center gap-4 mb-4 pb-3" style={{borderBottom: '1px solid #3a3020'}}>
+                <span className="text-4xl">{npcData?.portrait}</span>
+                <div>
+                  <h3 className="text-lg" style={{color: '#c4a060'}}>{npcData?.name}</h3>
+                  <p className="text-xs" style={{color: '#6a5a4a'}}>{npcData?.title}</p>
+                </div>
+              </div>
+              <p className="text-base leading-relaxed mb-6" style={{color: '#b8a880', minHeight: '80px'}}>
+                {lines[currentLine]}
+              </p>
+              <div className="text-right">
+                <button onClick={nextLine} className="btn-fantasy px-6 py-2">
+                  {isLastLine ? '閉じる' : '次へ ▶'}
+                </button>
+              </div>
+            </div>
+          </div>
+        );
+      };
+
+      // v15.0: ストーリーイベントモーダル
+      const StoryEventModal = () => {
+        if (!storyEventModal) return null;
+        const { title, text, item } = storyEventModal;
+        
+        const closeEvent = () => {
+          // アイテムがあればインベントリに追加
+          if (item) {
+            setInventory(prev => [...prev, { ...item, uid: Date.now() }]);
+            addLog(`【発見】${item.name}`, item.rarity === 'legendary' ? 'boss' : 'item');
+          }
+          setStoryEventModal(null);
+          // 探索中なら一時停止を解除
+          if (exploring && paused && !bossConfirm) {
+            setPaused(false);
+          }
+        };
+        
+        return (
+          <div className="modal-overlay">
+            <div className="retro-border bg-black p-6 max-w-lg">
+              <h3 className="text-xl gold-text mb-4 text-center">✨ {title} ✨</h3>
+              <div className="p-4 mb-4" style={{background: 'rgba(60,50,40,0.3)', borderRadius: '4px'}}>
+                <p className="text-sm leading-relaxed whitespace-pre-line" style={{color: '#b8a880'}}>
+                  {text}
+                </p>
+              </div>
+              {item && (
+                <div className="text-center mb-4">
+                  <span className={`rarity-${item.rarity} text-lg`}>📜 {item.name} を入手！</span>
+                </div>
+              )}
+              <div className="text-center">
+                <button onClick={closeEvent} className="btn-fantasy px-8 py-2">
+                  確認
+                </button>
+              </div>
+            </div>
+          </div>
+        );
+      };
+
+      // v15.0: エンディング画面
+      const EndingScreen = () => {
+        if (!endingPhase) return null;
+        
+        if (endingPhase === 'choice') {
+          return (
+            <div className="modal-overlay">
+              <div className="retro-border bg-black p-8 max-w-lg text-center">
+                <h3 className="text-2xl gold-text mb-6">{ENDING.wardnaChoice.title}</h3>
+                <p className="text-base leading-relaxed whitespace-pre-line mb-8" style={{color: '#b8a880'}}>
+                  {ENDING.wardnaChoice.text}
+                </p>
+                {ENDING.wardnaChoice.choices.map(c => (
+                  <button key={c.id} onClick={() => setEndingPhase('ending')} 
+                    className="btn-fantasy px-8 py-3 text-lg mx-2">
+                    {c.text}
+                  </button>
+                ))}
+              </div>
+            </div>
+          );
+        }
+        
+        if (endingPhase === 'ending') {
+          return (
+            <div className="fixed inset-0 bg-black flex items-center justify-center overflow-y-auto">
+              <div className="max-w-2xl p-8 text-center">
+                <div className="space-y-4 mb-12">
+                  {ENDING.ending.lines.map((line, i) => (
+                    <p key={i} className={`text-lg ${line.includes('【') ? 'gold-text text-2xl mt-8' : ''}`} 
+                      style={{color: line ? '#b8a880' : 'transparent', animation: `fadeIn ${0.5 + i * 0.1}s ease-out`}}>
+                      {line || '\u00A0'}
+                    </p>
+                  ))}
+                </div>
+                <button onClick={() => setEndingPhase('postcredits')} className="btn-fantasy px-8 py-3 text-lg">
+                  続きを見る
+                </button>
+              </div>
+            </div>
+          );
+        }
+        
+        if (endingPhase === 'postcredits') {
+          return (
+            <div className="fixed inset-0 bg-black flex items-center justify-center">
+              <div className="max-w-lg p-8 text-center">
+                <p className="text-lg leading-relaxed whitespace-pre-line mb-8" style={{color: '#666'}}>
+                  {ENDING.ending.postCredits.text}
+                </p>
+                <p className="text-xl gold-text mb-12" style={{animation: 'textGlow 2s ease-in-out infinite'}}>
+                  {ENDING.ending.postCredits.hint}
+                </p>
+                <button onClick={() => {
+                  setEndingPhase(null);
+                  setStoryFlags(prev => ({ ...prev, endingReached: true }));
+                  setScreen('title');
+                }} className="btn-fantasy px-8 py-3">
+                  タイトルへ
+                </button>
+              </div>
+            </div>
+          );
+        }
+        
+        return null;
+      };
+
+      // セラフィナとの会話を開始
+      const talkToSeraphina = () => {
+        let dialogueKey = 'first';
+        if (storyFlags.documents.includes('doc3')) dialogueKey = 'hasDoc3';
+        else if (storyFlags.documents.includes('doc2')) dialogueKey = 'hasDoc2';
+        else if (storyFlags.documents.includes('doc1')) dialogueKey = 'hasDoc1';
+        
+        const dialogue = SERAPHINA_DIALOGUES[dialogueKey];
+        setDialogueModal({ npc: 'seraphina', lines: dialogue.lines, currentLine: 0 });
+        
+        if (!storyFlags.metSeraphina) {
+          setStoryFlags(prev => ({ ...prev, metSeraphina: true }));
+        }
+      };
+
+      // ストーリーイベントをトリガー
+      const triggerStoryEvent = (dungeonId, trigger) => {
+        const event = STORY_EVENTS[dungeonId];
+        if (!event || event.trigger !== trigger) return false;
+        if (storyFlags.eventsTriggered.includes(event.id)) return false;
+        
+        setStoryEventModal({ title: event.title, text: event.text, item: event.item });
+        setStoryFlags(prev => ({
+          ...prev,
+          eventsTriggered: [...prev.eventsTriggered, event.id],
+          documents: event.item?.type === 'document' ? [...prev.documents, event.item.id] : prev.documents
+        }));
+        return true;
       };
 
       const JobModal = ({char, onClose}) => {
@@ -939,14 +1296,14 @@
                 {hasSave ? (
                   <>
                     <button onClick={() => {setScreen('main'); initSound();}} className="block w-full btn-fantasy px-6 py-3 text-lg">CONTINUE</button>
-                    <button onClick={() => {if(!confirm('セーブデータを削除して最初から始めますか？')) return; localStorage.removeItem('wizardrySchemaV13'); setParty([]); setGold(100); setMaxFloors({}); setClearedDungeons({}); setBestiary({}); setInventory([]); setScreen('opening'); initSound();}} className="block w-full btn-fantasy px-6 py-2 text-sm" style={{color: '#888'}}>NEW GAME</button>
+                    <button onClick={() => {if(!confirm('セーブデータを削除して最初から始めますか？')) return; localStorage.removeItem('wizardrySchemaV15'); setParty([]); setGold(100); setMaxFloors({}); setClearedDungeons({}); setBestiary({}); setInventory([]); setScreen('opening'); initSound();}} className="block w-full btn-fantasy px-6 py-2 text-sm" style={{color: '#888'}}>NEW GAME</button>
                     <button onClick={exportSave} className="block w-full btn-fantasy px-6 py-2 text-sm" style={{color: '#6ab0ff'}}>EXPORT</button>
                   </>
                 ) : (
                   <button onClick={() => {setScreen('opening'); initSound();}} className="block w-full btn-fantasy px-6 py-3 text-lg">NEW GAME</button>
                 )}
               </div>
-              <p className="text-xs mt-4" style={{color: '#4a4035'}}>v14.4</p>
+              <p className="text-xs mt-4" style={{color: '#4a4035'}}>v15.0</p>
             </div>
           </div>
         );
@@ -956,6 +1313,9 @@
         return (
           <div className="min-h-screen p-2">
             <BossConfirmModal />
+            <DialogueModal />
+            <StoryEventModal />
+            <EndingScreen />
             <div className="max-w-6xl mx-auto">
               <div className="retro-border p-3 mb-2 flex justify-between items-center">
                 <div className="flex items-center gap-4">
@@ -1008,6 +1368,8 @@
         return (
           <div className="min-h-screen p-4">
             {showJobChange && <JobModal char={showJobChange} onClose={() => setShowJobChange(null)} />}
+            <DialogueModal />
+            <StoryEventModal />
             <div className="max-w-4xl mx-auto">
               {/* v14.2: Nilda風ヘッダー */}
               <div className="text-center mb-6 pt-4">
@@ -1138,6 +1500,22 @@
               </>)}
               {currentFacility === 'guild' && (<>
                 <h2 className="text-xl mb-3 border-b border-green-800 pb-2">【 冒険者登録 】</h2>
+                {/* v15.0: セラフィナNPC */}
+                <div className="p-4 mb-4" style={{background: 'rgba(80,60,40,0.3)', borderRadius: '8px', border: '1px solid #5a4a3a'}}>
+                  <div className="flex items-center gap-4">
+                    <span className="text-4xl">👩‍🔬</span>
+                    <div className="flex-1">
+                      <h3 className="text-base" style={{color: '#c4a060'}}>セラフィナ <span className="text-xs" style={{color: '#6a5a4a'}}>古代史研究者</span></h3>
+                      <p className="text-xs mt-1" style={{color: '#8a7a6a'}}>
+                        {storyFlags.documents.includes('doc3') ? '「真実を知った今、何を思いますか？」' :
+                         storyFlags.documents.length > 0 ? '「何か新しい発見はありましたか？」' :
+                         storyFlags.metSeraphina ? '「ダンジョンで見つけた物があれば、見せてください。」' :
+                         '「あなたに話したいことがあります。」'}
+                      </p>
+                    </div>
+                    <button onClick={talkToSeraphina} className="btn-fantasy px-4 py-2 text-sm">話す</button>
+                  </div>
+                </div>
                 <p className="text-gray-400 mb-4">新たな冒険者をギルドに登録します。</p>
                 <div className="p-4 bg-gray-900 rounded mb-4">
                   <div className="text-center mb-4">
