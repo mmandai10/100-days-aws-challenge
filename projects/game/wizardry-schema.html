@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Wizardry Schema v13.2 - 放置型探索RPG</title>
+  <title>Wizardry Schema v13.3 - 放置型探索RPG</title>
   <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -86,13 +86,13 @@
     const genName = (race) => { const p = NAME_PARTS[race] || NAME_PARTS.human; return p.prefix[Math.floor(Math.random()*p.prefix.length)] + p.suffix[Math.floor(Math.random()*p.suffix.length)]; };
 
     // ===== ゲームデータ =====
-    // v13.1: 種族特性を追加
+    // v13.3: 種族データをWiki本家(wiz.gamerch.com)に準拠
     const RACES = {
-      human: { name: '人間', str: 8, int: 8, pie: 5, vit: 8, agi: 8, luk: 9, trait: { expBonus: 0.3, desc: 'EXP+30%' } },
-      elf: { name: 'エルフ', str: 7, int: 10, pie: 10, vit: 6, agi: 9, luk: 6, trait: { magicBonus: 0.2, desc: '魔法+20%' } },
-      dwarf: { name: 'ドワーフ', str: 10, int: 7, pie: 10, vit: 10, agi: 5, luk: 6, trait: { defBonus: 0.15, desc: 'DEF+15%' } },
-      gnome: { name: 'ノーム', str: 7, int: 7, pie: 10, vit: 8, agi: 10, luk: 7, trait: { evasion: 0.1, magicResist: 0.15, desc: '回避+10%' } },
-      porkul: { name: 'ポークル', str: 5, int: 7, pie: 7, vit: 6, agi: 10, luk: 15, trait: { evasion: 0.15, critBonus: 0.05, desc: '回避+15% 会心+5%' } }
+      human: { name: '人間', str: 8, vit: 7, int: 8, pie: 6, agi: 6, luk: 7, trait: { expBonus: 0.3, desc: 'EXP+30%' } },
+      elf: { name: 'エルフ', str: 6, vit: 5, int: 10, pie: 8, agi: 8, luk: 6, trait: { magicBonus: 0.2, desc: '魔法攻撃+20%' } },
+      dwarf: { name: 'ドワーフ', str: 10, vit: 9, int: 6, pie: 9, agi: 4, luk: 6, trait: { atkBonus: 0.15, defBonus: 0.1, desc: 'ATK+15% DEF+10%' } },
+      gnome: { name: 'ノーム', str: 7, vit: 8, int: 7, pie: 10, agi: 7, luk: 7, trait: { healBonus: 0.2, magicResist: 0.1, desc: '回復魔法+20%' } },
+      porkul: { name: 'ポークル', str: 5, vit: 4, int: 5, pie: 6, agi: 9, luk: 8, trait: { critBonus: 0.1, desc: '会心率+10%' } }
     };
     const ALIGNMENTS = { lawful: { name: '秩序', color: 'text-blue-400' }, neutral: { name: '中立', color: 'text-gray-400' }, chaotic: { name: '混沌', color: 'text-red-400' } };
     const JOBS = {
@@ -117,7 +117,7 @@
       thieves: { name: '盗賊のアジト', rooms: ['隠し部屋','宝物庫','酒場'], floors: { 1: { desc: '偽装された入口。罠に注意。' }, 10: { desc: '【ボス階層】マスターシーフの隠れ家。' } } },
       sewer: { name: 'カリグラーゼ下水路', rooms: ['汚水路','浄化槽','管理室'], floors: { 1: { desc: '下水の入口。悪臭が鼻を突く。' }, 12: { desc: '【ボス階層】ヴァンパイアの玉座の間。' } } },
       kaoka: { name: 'カオカ・パラージ遺跡', rooms: ['崩れた神殿','宝物庫','祭司の間'], floors: { 1: { desc: '遺跡の入口。古代の威厳を感じる。' }, 15: { desc: '【ボス階層】グレーターデーモンの封印の間。' } } },
-      deltis: { name: 'デルティス大蔵室', rooms: ['金貨の山','宝石の間','王冠の部屋'], floors: { 1: { desc: '大蔵室の入口。黄金の輝きが見える。' }, 18: { desc: '【ボス階層】ゴールドドラゴンの宝物庫。' } } },
+      deltis: { name: 'デルディス大蔵室', rooms: ['金貨の山','宝石の間','王冠の部屋'], floors: { 1: { desc: '大蔵室の入口。黄金の輝きが見える。' }, 18: { desc: '【ボス階層】ゴールドドラゴンの宝物庫。' } } },
       dragon: { name: '黄龍の神殿跡', rooms: ['竜骨の回廊','炎の試練場','氷の間'], floors: { 1: { desc: '神殿の入口。竜の威厳が漂う。' }, 20: { desc: '【ボス階層】エンシェントドラゴンの聖域。' } } },
       trebor: { name: 'トレボーの試練場', rooms: ['親衛隊の詰所','魔法の迷路','死の回廊'], floors: { 1: { desc: '試練場の入口。最強の戦士たちが待つ。' }, 25: { desc: '【最終ボス階層】ワードナの玉座の間。' } } }
     };
@@ -177,7 +177,7 @@
       {id:'thieves',name:'盗賊のアジト',floors:10,minLv:5},
       {id:'sewer',name:'カリグラーゼ下水路',floors:12,minLv:8},
       {id:'kaoka',name:'カオカ・パラージ遺跡',floors:15,minLv:12},
-      {id:'deltis',name:'デルティス大蔵室',floors:18,minLv:16},
+      {id:'deltis',name:'デルディス大蔵室',floors:18,minLv:16},
       {id:'dragon',name:'黄龍の神殿跡',floors:20,minLv:20},
       {id:'trebor',name:'トレボーの試練場',floors:25,minLv:25}
     ];
@@ -397,7 +397,9 @@
                     return;
                   }
                 }
-                let dmg = Math.max(1, char.atk - mon.def + Math.floor(Math.random()*8));
+                // v13.3: ドワーフの攻撃ボーナス
+                const atkBonus = trait.atkBonus || 0;
+                let dmg = Math.max(1, Math.floor((char.atk * (1 + atkBonus)) - mon.def + Math.random()*8));
                 if (isCritical) { dmg = Math.floor(dmg * 1.5); criticalHits++; }
                 monHp -= dmg;
                 if (isBoss) addLog(`${char.name}の攻撃 → ${dmg}${isCritical?' 会心!':''}`, isCritical?'critical':'battle');
