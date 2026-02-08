@@ -12,8 +12,8 @@
 ## 現在の進捗
 
 - **Phase:** Phase 2 - コンテナ基礎
-- **Day:** 53 / 200 完了
-- **次回:** Day 54 - ECS デプロイ戦略（ローリング / Blue-Green）
+- **Day:** 54 / 200 完了
+- **次回:** Day 55 - Blue/Green デプロイ（概念 + Container Insights）
 - **Side Project:** Wizardry Schema v16.0（プレステージシステム実装完了）
 
 ## Phase 構成

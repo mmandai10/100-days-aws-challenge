@@ -1,0 +1,7 @@
+{
+  "name": "day54-rolling-update",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "node server.js"
+  }
+}
