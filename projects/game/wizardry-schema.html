@@ -581,6 +581,86 @@
       }
     };
 
+    // v17.2: セラフィナのランダム会話（日常会話・ヒント）
+    const SERAPHINA_CASUAL = [
+      '「ボルタック商店の値段、ちょっと高すぎません？」',
+      '「リルガミンの街は穏やかですね。研究にはいい環境です。」',
+      '「最近、古文書の解読が進んでいます。あと少しで…」',
+      '「サンドル寺院の神官長、何か知ってそうですが…」',
+      '「古代の魔術は現代とは全く違うらしいです。」',
+      '「ギルドマスターは1000年前のことも知っているかも。」',
+      '「テサークの宿の料理、意外と美味しいんですよ。」',
+      '「冠婚葬票の店はどこでしょう…あ、ありましたね。」'
+    ];
+
+    const SERAPHINA_HINTS = {
+      slime: '「スライムの穴は初心者向けです。まずはそこから。」',
+      kobold: '「コボルトは群れで襲ってきます。範囲攻撃が有効ですよ。」',
+      thieves: '「盗賊のアジトは罠が多いです。盗賊を連れていくといいかも。」',
+      sewer: '「下水道のアンデッドは僧侶の魔法が効きます。」',
+      kaoka: '「カオカ・パラージのゴーレムは高防御。魔法で攻めましょう。」',
+      deltis: '「デルディスのミミックに注意。宝箱に化けています。」',
+      dragon: '「竜の神殿跡は強敵揃い。十分な準備を。」',
+      trebor: '「トレボーの試練場…真実は、そこにあります。」'
+    };
+
+    // v17.2: ギルドマスターのランダム会話
+    const GUILDMASTER_DIALOGUES = {
+      noParty: [
+        '「ようこそ、若き冒険者よ。深淵は危険じゃ。まずは仲間を集めるのじゃ。」',
+        '「一人で挑むなど無謀じゃ。ギルドで仲間を探すのじゃ。」'
+      ],
+      smallParty: [
+        '「まだ仲間が少ないのう。あと数人は集めた方がいいぞ。」',
+        '「戦士、魔術師、僧侶…バランスが大事じゃ。」',
+        '「盗賊がいると罠の発見が容易になるぞ。」'
+      ],
+      ready: [
+        '「いいパーティじゃのう。準備ができたら出発するのじゃ。」',
+        '「装備の確認はしたか？ボルタック商店で買えるぞ。」',
+        '「无理は禁物じゃ。危なくなったら撤退するのじゃ。」',
+        '「ポーションは常備しておけよ。命の線じゃ。」'
+      ],
+      lore: [
+        '「千年前の戦いを覚えておる者はもうおらんのう…」',
+        '「ワードナは本当に悪だったのか？歴史は勝者が書くものじゃ。」',
+        '「『スキーマ』…禁忌の魔導書。詳細は誰も知らんのじゃ。」',
+        '「リルガミンの街は廃墟じゃったが、冒険者たちのおかげで復興しつつある。」'
+      ]
+    };
+
+    // ギルドマスターのランダム会話を取得
+    const getGuildmasterDialogue = (partySize) => {
+      let pool;
+      if (partySize === 0) pool = GUILDMASTER_DIALOGUES.noParty;
+      else if (partySize < 3) pool = GUILDMASTER_DIALOGUES.smallParty;
+      else pool = GUILDMASTER_DIALOGUES.ready;
+      
+      // 30%の確率で伝承話を追加
+      const mainLine = pool[Math.floor(Math.random() * pool.length)];
+      if (Math.random() < 0.3) {
+        const loreLine = GUILDMASTER_DIALOGUES.lore[Math.floor(Math.random() * GUILDMASTER_DIALOGUES.lore.length)];
+        return [mainLine, '', loreLine];
+      }
+      return [mainLine];
+    };
+
+    // セラフィナのランダム会話を取得
+    const getRandomSeraphinaChat = (clearedDungeons, maxFloors) => {
+      // 50%の確率でヒント、50%で雑談
+      if (Math.random() < 0.5) {
+        // 次に攻略すべきダンジョンのヒント
+        const dungeonOrder = ['slime', 'kobold', 'thieves', 'sewer', 'kaoka', 'deltis', 'dragon', 'trebor'];
+        for (const dng of dungeonOrder) {
+          if (!clearedDungeons[dng]) {
+            return SERAPHINA_HINTS[dng];
+          }
+        }
+      }
+      // ランダムな雑談
+      return SERAPHINA_CASUAL[Math.floor(Math.random() * SERAPHINA_CASUAL.length)];
+    };
+
     // エンディングデータ
     const ENDING = {
       wardnaChoice: {
@@ -1326,7 +1406,10 @@
         else if (storyFlags.documents.includes('doc0')) dialogueKey = 'hasDoc0';
         
         const dialogue = SERAPHINA_DIALOGUES[dialogueKey];
-        setDialogueModal({ npc: 'seraphina', lines: dialogue.lines, currentLine: 0 });
+        // v17.2: ランダム雑談/ヒントを追加
+        const casualChat = getRandomSeraphinaChat(clearedDungeons, maxFloors);
+        const allLines = [...dialogue.lines, '', casualChat];
+        setDialogueModal({ npc: 'seraphina', lines: allLines, currentLine: 0 });
         
         if (!storyFlags.metSeraphina) {
           setStoryFlags(prev => ({ ...prev, metSeraphina: true }));

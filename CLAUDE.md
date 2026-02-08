@@ -1,109 +1,57 @@
-# CLAUDE.md
+# Wizardry Schema プロジェクト
 
-This file provides guidance to Claude Code when working with this repository.
+## 概要
+Wizardry風の放置型ダンジョンRPG。Finding Hermit Nilda（谷内義人氏の後継作）を参考にUI改善中。
 
-## Current Status
-
-### 学習フェーズ
-- **現在**: 12月 AI/LLM 学習 Day 11-15（Claude Code 実践）
-- **次**: 1月〜 AWS + ShopX 開発
-
-### 解決済みの問題
-- ~~`.cursor/mcp.json` に GitHub トークンが Git 履歴に残っている~~ → **解決済み**（履歴をリセットして再コミット）
-- `.cursor/` は `.gitignore` で除外済み
-
-### ロードマップ v5.0
-| Day | テーマ | 状態 |
-|-----|--------|------|
-| 11 | Claude Code 導入 | ✅ 完了 |
-| 12 | Claude Code 実践① | 🔄 進行中 |
-| 13 | Claude Code 実践② | 予定 |
-| 14 | IaC 生成 | 予定 |
-| 15 | まとめ・1月計画 | 予定 |
-
----
-
-## Project Overview
-
-100-day AWS learning challenge combining EC platform development (ShopX) with AI/LLM learning. The project follows a structured curriculum: AI fundamentals in December (Claude API, Tool Use, RAG, MCP), then AWS + ShopX development from January onward.
-
-## Repository Structure
+## ファイル構成
 ```
-100-days-aws-challenge/
-├── projects/
-│   ├── ai-learning/          # 12月 AI学習（Day 1-15）
-│   │   ├── .env              # API keys (Git除外)
-│   │   ├── venv/             # Python virtual environment
-│   │   └── day01-15/         # 日別の成果物
-│   └── ec-platform/          # 1月〜 ShopX
-│       ├── frontend/shopx-ui/
-│       └── backend-node/shopx-api/
+C:\100-days-aws-challenge\
+├── projects/game/wizardry-schema.html  # メインゲーム（React 18, Tailwind CSS, Tone.js）
 ├── docs/
-│   └── learning-roadmap.md   # ロードマップ v5.0
-├── progress/
-│   └── daily-log.md          # 毎日の学習記録
-└── CLAUDE.md                 # このファイル
+│   ├── learning-roadmap.md             # 全体ロードマップ
+│   ├── daily-log.md                    # 進捗サマリー
+│   └── daily-log/2026-02.md            # 2月の作業ログ
+└── CLAUDE.md                           # このファイル
 ```
 
-## Development Commands
+## 現在のバージョン
+**v14.0** - 施設ベースUI実装済み
 
-### AI Learning (Python)
-```bash
-cd projects/ai-learning
-.\venv\Scripts\activate      # Windows venv activation
-python day01/hello_claude.py
-```
+### 実装済み施設
+| 施設 | ID | 機能 |
+|------|-----|------|
+| 冒険者ギルド | guild | 冒険者登録・編成 |
+| ギルガメッシュの酒場 | tavern | パーティ編成・転職 |
+| ボルタック商店 | shop | 武器・防具購入 |
+| カント寺院 | temple | HP/MP回復 |
+| 倉庫 | storage | 所持品管理 |
+| 図書館 | bestiary | モンスター図鑑 |
+| 迷宮入口 | gate | ダンジョン出発 |
 
-### ShopX Frontend (React)
-```bash
-cd projects/ec-platform/frontend/shopx-ui
-npm start                    # Dev server on localhost:3000
-npm test                     # Run Jest tests
-```
+## 開発ルール
 
-### ShopX Backend (SAM/Lambda)
-```bash
-cd projects/ec-platform/backend-node/shopx-api/shopx-api
-sam build
-sam deploy
-sam local start-api          # Local API testing
-```
+### 進め方
+1. `docs/learning-roadmap.md` で全体像を確認
+2. `docs/daily-log.md` で進捗サマリーを確認
+3. `docs/daily-log/2026-02.md` で前回の続きを確認
+4. **細かく分割して実装**（途中で止まらないように）
+5. 理解しながら進める（コピペ職人にしない）
 
-### Git Operations
-```bash
-git status
-git add .
-git commit -m "message"
-git push origin main
-```
+### コミット
+- 変更後は必ず git commit & push
+- コミットメッセージ例: `v14.0: 施設ベースUI実装`
 
-## Architecture
+### ログ更新
+- 作業後は `docs/daily-log/2026-02.md` を更新
 
-### ShopX Backend (Serverless)
-- **API Gateway** → **Lambda** (Node.js 20.x) → **DynamoDB**
-- Single Table Design with PK/SK pattern
-- Lambda functions: getProducts, getProductById, getCategories
+## 次の改善候補（Nilda風）
+1. **ストーリー拡充** - 各ダンジョン固有イベント・文書
+2. **探索ログ文章強化** - 雰囲気のあるテキスト追加
+3. **NPC会話充実** - セラフィナ、ボルタックなど
 
-### AI Learning Modules (December)
-- Day 1-10: Claude API, Prompt Engineering, Tool Use, RAG, MCP ✅
-- Day 11-15: Claude Code agent practices 🔄
+## 参考資料
+- Finding Hermit Nilda 4Gamer記事: https://www.4gamer.net/games/662/G066274/20221011099/
+- Wizardry Schema Wiki: https://wiz.gamerch.com/
 
-### 1月以降の開発原則
-- **テストファースト**: Jest + React Testing Library
-- **CI/CD 最初から**: GitHub Actions
-- **段階的リリース**: 小さく作って早くデプロイ
-
-## Key Patterns
-
-### DynamoDB Single Table Design
-- Categories: `PK=CATEGORY#<id>`, `SK=CATEGORY#<id>`
-- Products: `PK=PRODUCT#<id>`, `SK=PRODUCT#<id>`
-
-### Claude API Tool Use
-Tools defined with name, description, input_schema. Claude returns `stop_reason: tool_use`.
-
-## Resources
-- Anthropic Docs: https://docs.anthropic.com
-- MCP Docs: https://modelcontextprotocol.io
-- React: https://react.dev
-- AWS SAM: https://docs.aws.amazon.com/serverless-application-model/
+## メモリ（userMemories）
+Claude の memory に保存済みの情報があるので、過去の経緯はそちらも参照。
